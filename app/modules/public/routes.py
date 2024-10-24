@@ -26,7 +26,7 @@ def index():
     # Statistics: total views
     total_dataset_views = dataset_service.total_dataset_views()
     total_feature_model_views = feature_model_service.total_feature_model_views()
-    
+
     # Statistics: total size of all datasets
     # TODO: intentar que se haga solo con los datasets sincronizados por que no sabemos como son los otros
     total_datasets = dataset_service.get_all_datasets()
@@ -42,6 +42,6 @@ def index():
         total_feature_model_downloads=total_feature_model_downloads,
         total_dataset_views=total_dataset_views,
         total_feature_model_views=total_feature_model_views,
-        
+
         total_dataset_size=total_size
     )
