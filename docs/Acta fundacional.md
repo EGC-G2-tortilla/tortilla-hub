@@ -148,7 +148,7 @@ Para garantizar la claridad y calidad de los commits en el proyecto, se utilizar
 
 Los mensajes de commit deben seguir el formato:
 
-`<tipo>(<módulo>): <descripción breve>`
+`<tipo>: <descripción breve>`
 
 `<Descripción extendida del commit, si es necesario. Explicar el porqué del cambio y cualquier información adicional que sea relevante.>`
 
@@ -173,7 +173,7 @@ Buenas prácticas para un commit atómico:
 
 ## 5.4. Ejemplo de Mensaje de Commit <!--{#5.4.-ejemplo-de-mensaje-de-commit}-->
 
-`feat(auth): implement login functionality`
+`feat: implement login functionality`
 
 `Added user authentication via JWT. Created new API routes for login and logout, and added middleware to protect private routes.`
 
