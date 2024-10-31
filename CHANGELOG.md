@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.1.1...v1.2.0) (2024-10-31)
+
+
+### Features
+
+* Workflow para despliegue en render y eliminación de despliegue en pre-produccion. ([e705aa6](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e705aa6e1ef4ba4c07db1b615218142be50e7b36))
+
 ## [1.1.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.1.0...v1.1.1) (2024-10-31)
 
 
