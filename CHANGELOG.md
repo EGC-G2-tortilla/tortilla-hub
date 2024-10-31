@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.0.0...v1.1.0) (2024-10-31)
+
+
+### Features
+
+* Workflow implementado para la Integración Continua con Codacy ([9cbc477](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/9cbc4774a80a63683ad48e792641f0d68db73bdf))
+
 # 1.0.0 (2024-10-25)
 
 
