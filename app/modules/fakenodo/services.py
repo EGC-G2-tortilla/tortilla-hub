@@ -51,3 +51,4 @@ class FakenodoService(BaseService):
         self.mock_data[deposition_id] = deposition
         logger.info(f"Created new mock deposition: {deposition}")
         return deposition
+    
