@@ -51,4 +51,53 @@ class FakenodoService(BaseService):
         self.mock_data[deposition_id] = deposition
         logger.info(f"Created new mock deposition: {deposition}")
         return deposition
-    
+
+    def upload_file(self, deposition_id, file_data) -> dict:
+        """
+        Simula la subida de un archivo.
+        """
+        if deposition_id not in self.mock_data:
+            raise Exception("Deposition not found")
+
+        file_info = {
+            "filename": file_data.get("filename", "untitled.txt"),
+            "status": "uploaded"
+        }
+        self.mock_data[deposition_id].update({"file": file_info})
+        logger.info(f"Uploaded mock file to deposition {deposition_id}")
+        return file_info
+
+    def publish_deposition(self, deposition_id: int) -> dict:
+        """
+        Simula la publicación de un depósito.
+        """
+        if deposition_id not in self.mock_data:
+            raise Exception("Deposition not found")
+
+        self.mock_data[deposition_id]["status"] = "published"
+        logger.info(f"Published mock deposition with ID {deposition_id}")
+        return self.mock_data[deposition_id]
+
+    def get_deposition(self, deposition_id: int) -> dict:
+        """
+        Simula la obtención de un depósito.
+        """
+        if deposition_id not in self.mock_data:
+            raise Exception("Deposition not found")
+        return self.mock_data[deposition_id]
+
+    def delete_deposition(self, deposition_id: int) -> dict:
+        """
+        Simula la eliminación de un depósito.
+        """
+        if deposition_id in self.mock_data:
+            del self.mock_data[deposition_id]
+            logger.info(f"Deleted mock deposition with ID {deposition_id}")
+            return {"id": deposition_id, "status": "deleted"}
+        raise Exception("Deposition not found")
+
+    def get_doi(self, deposition_id: int) -> str:
+        """
+        Simula la obtención del DOI de un depósito.
+        """
+        return f"10.1234/fake-doi-{deposition_id}"
