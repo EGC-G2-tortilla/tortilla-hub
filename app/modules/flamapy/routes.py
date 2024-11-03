@@ -65,7 +65,7 @@ def check_uvl(file_id):
         return jsonify({"message": "Valid Model"}), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500   
+        return jsonify({"error": str(e)}), 500  
 
 
 @flamapy_bp.route('/flamapy/validate_uvl', methods=['POST'])
@@ -115,9 +115,12 @@ def validate_uvl_file():
 
         parser.removeErrorListeners()
         parser.addErrorListener(error_listener)
+        
+        parser.featureModel()
 
         # Eliminar el archivo temporal
         os.remove(temp_path)
+        print("Errores capturados:", error_listener.errors)
 
         if error_listener.errors:
             return jsonify({"errors": error_listener.errors}), 400
