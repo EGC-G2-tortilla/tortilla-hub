@@ -24,8 +24,8 @@ class FakenodoService(BaseService):
         """
         Simula la creación de un depósito, subida de archivo y eliminación.
         """
-        deposition_id = self.create_new_deposition({"title": "Test Deposition", "description": "Mock description"})
-        ["id"]
+        deposition = self.create_new_deposition({"title": "Test Deposition", "description": "Mock description"})
+        deposition_id = deposition["id"]
         self.upload_file(deposition_id, {"filename": "test_file.txt", "content": "Fake file content"})
         self.delete_deposition(deposition_id)
         return jsonify({"success": True, "message": "Full connection test passed with Fakenodo mock API."})
