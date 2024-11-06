@@ -1,6 +1,7 @@
 import logging
 import os
 import json
+import requests
 import shutil
 import tempfile
 import uuid
@@ -147,19 +148,25 @@ def upload():
         new_filename = file.filename
 
     try:
+        # Guardar archivo
         file.save(file_path)
+
+        # Validación de sintaxis del UVL utilizando el endpoint de validación
+        with open(file_path, 'rb') as f:
+            validation_response = requests.post(
+                url_for('flamapy.validate_uvl_file', _external=True),
+                files={'file': f}
+            )
+        validation_data = validation_response.json()
+
+        if validation_response.status_code != 200:
+            os.remove(file_path)  # Eliminar archivo en caso de error
+            return jsonify({"errors": validation_data["errors"]}), 400
+
+        return jsonify({"message": "UVL uploaded and validated successfully", "filename": new_filename}), 200
+
     except Exception as e:
         return jsonify({"message": str(e)}), 500
-
-    return (
-        jsonify(
-            {
-                "message": "UVL uploaded and validated successfully",
-                "filename": new_filename,
-            }
-        ),
-        200,
-    )
 
 
 @dataset_bp.route("/dataset/file/delete", methods=["POST"])
