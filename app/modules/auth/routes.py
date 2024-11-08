@@ -69,22 +69,26 @@ def sign_up_google():
 
 @auth_bp.route("/authorize/signup/google")
 def authorize_signup_google():
+    if current_user.is_authenticated:
+        return redirect(url_for('public.index'))
+    if not current_user.is_authenticated:
+        return redirect(url_for('auth.show_signup_form'))
     google.authorize_access_token()
     userinfo_endpoint = google.server_metadata['userinfo_endpoint']
     resp = google.get(userinfo_endpoint)
     profile = resp.json()
     user = authentication_service.get_by_email(profile['email'])
-    
+
     # Comprueba si el usuario ya existe en la base de datos y si es un usuario de OAuth
     if user and user.is_oauth_user():
         login_user(user, remember=True)
         return redirect(url_for('public.index'))
-    
+
     # Si el usuario ya existe en la base de datos pero no es un usuario de OAuth
     elif user:
         form = SignupForm()
         return render_template("auth/signup_form.html", form=form, error="Email already in use, try logging in")
-    
+
     # Si el usuario no existe en la base de datos
     else:
         random_password = generate_random_password()
@@ -130,22 +134,26 @@ def login_google():
 
 @auth_bp.route("/authorize/login/google")
 def authorize_login_google():
+    if current_user.is_authenticated:
+        return redirect(url_for('public.index'))
+    if not current_user.is_authenticated:
+        return redirect(url_for('auth.login'))
     google.authorize_access_token()
     userinfo_endpoint = google.server_metadata['userinfo_endpoint']
     resp = google.get(userinfo_endpoint)
     profile = resp.json()
     user = authentication_service.get_by_email(profile['email'])
-    
+
     # Comprueba si el usuario ya existe en la base de datos y si es un usuario de OAuth
     if user and user.is_oauth_user():
         login_user(user, remember=True)
         return redirect(url_for('public.index'))
-    
+
     # Si el usuario ya existe en la base de datos pero no es un usuario de OAuth
     elif user:
         form = LoginForm()
         return render_template("auth/login_form.html", form=form, error="Email already in use")
-    
+
     # Si el usuario no existe en la base de datos
     else:
         random_password = generate_random_password()
