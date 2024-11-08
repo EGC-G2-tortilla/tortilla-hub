@@ -44,7 +44,10 @@ def show_signup_form():
     if form.validate_on_submit():
         email = form.email.data
         if not authentication_service.is_email_available(email):
-            return render_template("auth/signup_form.html", form=form, error=f'Email {email} in use')
+            message = f'Email {email} in use'
+            if authentication_service.get_by_email(email).is_oauth_user():
+                message += ' by another provider (OAuth)'
+            return render_template("auth/signup_form.html", form=form, error=message)
 
         try:
             user = authentication_service.create_with_profile(**form.data)
@@ -58,36 +61,50 @@ def show_signup_form():
     return render_template("auth/signup_form.html", form=form)
 
 
-@auth_bp.route("/authorize/google")
-def authorize_google():
+@auth_bp.route("/signup/google")
+def sign_up_google():
+    redirect_uri = url_for('auth.authorize_signup_google', _external=True)
+    return google.authorize_redirect(redirect_uri)
 
+
+@auth_bp.route("/authorize/signup/google")
+def authorize_signup_google():
+    google.authorize_access_token()
     userinfo_endpoint = google.server_metadata['userinfo_endpoint']
     resp = google.get(userinfo_endpoint)
     profile = resp.json()
-    random_password = generate_random_password()
+    user = authentication_service.get_by_email(profile['email'])
+    
+    # Comprueba si el usuario ya existe en la base de datos y si es un usuario de OAuth
+    if user and user.is_oauth_user():
+        login_user(user, remember=True)
+        return redirect(url_for('public.index'))
+    
+    # Si el usuario ya existe en la base de datos pero no es un usuario de OAuth
+    elif user:
+        form = SignupForm()
+        return render_template("auth/signup_form.html", form=form, error="Email already in use, try logging in")
+    
+    # Si el usuario no existe en la base de datos
+    else:
+        random_password = generate_random_password()
 
-    # Crear una variable con una contraseña hash
-    hashed_password = generate_password_hash(random_password)
-    # Crear un usuario con el email y la contraseña hash
-    surname = profile.get('family_name', 'No Surname')
-    user = authentication_service.create_with_profile_and_oauth_provider_appended(
-        email=profile['email'],
-        password=hashed_password,
-        name=profile['given_name'],
-        surname=surname,
-        oauth_provider='google',
-        oauth_provider_user_id=profile['sub']
-    )
-    # Log user
-    login_user(user, remember=True)
+        # Crear una variable con una contraseña hash
+        hashed_password = generate_password_hash(random_password)
+        # Crear un usuario con el email y la contraseña hash
+        surname = profile.get('family_name', 'No Surname')
+        user = authentication_service.create_with_profile_and_oauth_provider_appended(
+            email=profile['email'],
+            password=hashed_password,
+            name=profile['given_name'],
+            surname=surname,
+            oauth_provider='google',
+            oauth_provider_user_id=profile['sub']
+        )
+        # Log user
+        login_user(user, remember=True)
 
-    return redirect(url_for('public.index'))
-
-
-@auth_bp.route("/signup/google")
-def sign_up_google():
-    redirect_uri = url_for('auth.authorize_google', _external=True)
-    return google.authorize_redirect(redirect_uri)
+        return redirect(url_for('public.index'))
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -103,6 +120,52 @@ def login():
         return render_template("auth/login_form.html", form=form, error='Invalid credentials')
 
     return render_template('auth/login_form.html', form=form)
+
+
+@auth_bp.route('/login/google')
+def login_google():
+    redirect_uri = url_for('auth.authorize_login_google', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+
+@auth_bp.route("/authorize/login/google")
+def authorize_login_google():
+    google.authorize_access_token()
+    userinfo_endpoint = google.server_metadata['userinfo_endpoint']
+    resp = google.get(userinfo_endpoint)
+    profile = resp.json()
+    user = authentication_service.get_by_email(profile['email'])
+    
+    # Comprueba si el usuario ya existe en la base de datos y si es un usuario de OAuth
+    if user and user.is_oauth_user():
+        login_user(user, remember=True)
+        return redirect(url_for('public.index'))
+    
+    # Si el usuario ya existe en la base de datos pero no es un usuario de OAuth
+    elif user:
+        form = LoginForm()
+        return render_template("auth/login_form.html", form=form, error="Email already in use")
+    
+    # Si el usuario no existe en la base de datos
+    else:
+        random_password = generate_random_password()
+
+        # Crear una variable con una contraseña hash
+        hashed_password = generate_password_hash(random_password)
+        # Crear un usuario con el email y la contraseña hash
+        surname = profile.get('family_name', 'No Surname')
+        user = authentication_service.create_with_profile_and_oauth_provider_appended(
+            email=profile['email'],
+            password=hashed_password,
+            name=profile['given_name'],
+            surname=surname,
+            oauth_provider='google',
+            oauth_provider_user_id=profile['sub']
+        )
+        # Log user
+        login_user(user, remember=True)
+
+        return redirect(url_for('public.index'))
 
 
 @auth_bp.route('/logout')

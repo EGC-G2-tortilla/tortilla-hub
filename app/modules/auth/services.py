@@ -24,6 +24,9 @@ class AuthenticationService(BaseService):
 
     def is_email_available(self, email: str) -> bool:
         return self.repository.get_by_email(email) is None
+    
+    def get_by_email(self, email: str) -> User:
+        return self.repository.get_by_email(email)
 
     def create_with_profile(self, **kwargs):
         try:
