@@ -26,22 +26,24 @@
     .search-input {
         margin-right: 10px;
     }
-
-
 </style>
 {% endblock %}
 
-
 {% block content %}
-<!-- Dataset Title and Explore Button -->
+<!-- Dataset Title, Stars and Explore Button -->
 <div class="dataset-title-container d-flex justify-content-between align-items-center" style="width: 100%;">
     <div>
         <h1><b>{{ dataset.ds_meta_data.title }}</b></h1>
     </div>
-    <a href="/explore" class="btn btn-primary btn-sm d-flex align-items-center" id="search" style="border-radius: 5px;">
-        <i data-feather="search" class="center-button-icon" style="margin-right: 5px;"></i>
-        Explore more datasets
-    </a>
+    <div class="d-flex align-items-center">
+        <button class="btn btn-outline-secondary me-2 d-flex align-items-center" id="starButton" style="border-radius: 5px;">
+            <i data-feather="star" style="margin-right: 5px;"></i> Star <span id="starCount" class="ms-1">0</span>
+        </button>
+        <a href="/explore" class="btn btn-primary btn-sm d-flex align-items-center" id="search" style="border-radius: 5px;">
+            <i data-feather="search" class="center-button-icon" style="margin-right: 5px;"></i>
+            Explore more datasets
+        </a>
+    </div>
 </div>
 
 <hr class="divider" style="margin-top: 0px;">
@@ -357,5 +359,20 @@
             }
         });
     }
+
+    document.getElementById("starButton").addEventListener("click", function () {
+        let starCount = document.getElementById("starCount");
+        let count = parseInt(starCount.textContent);
+        if (this.classList.contains("btn-outline-secondary")) {
+            this.classList.remove("btn-outline-secondary");
+            this.classList.add("btn-warning");
+            count += 1;
+        } else {
+            this.classList.remove("btn-warning");
+            this.classList.add("btn-outline-secondary");
+            count -= 1;
+        }
+        starCount.textContent = count;
+    });
 </script>
 {% endblock %}
