@@ -13,18 +13,33 @@
     .option-button:last-child {
         margin-bottom: 0;
     }
+    .dataset-title-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    .divider {
+        border-top: 2px solid #ccc;
+        margin-bottom: 2rem;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row mb-3">
-    <div class="col-6">
-        <a href="/explore" class="btn btn-primary btn-sm" id="search" style="border-radius: 5px;">
-            <i data-feather="search" class="center-button-icon"></i>
-            Explore more datasets
-        </a>
+<!-- Dataset Title and Explore Button -->
+<div class="dataset-title-container d-flex justify-content-between align-items-center" style="width: 100%;">
+    <div>
+        <h1><b>{{ dataset.ds_meta_data.title }}</b></h1>
+        <p class="text-secondary" style="font-size: 0.8rem; margin-top: 0.2rem;">{{ dataset.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
     </div>
+    <a href="/explore" class="btn btn-primary btn-sm d-flex align-items-center" id="search" style="border-radius: 5px;">
+        <i data-feather="search" class="center-button-icon" style="margin-right: 5px;"></i>
+        Explore more datasets
+    </a>
 </div>
+
+<hr class="divider" style="margin-top: 0px;">
 
 <div class="row">
     <!-- Left Column: UVL Models and Related Publications -->
@@ -136,7 +151,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
-                    <h1><b>{{ dataset.ds_meta_data.title }}</b></h1>
+                    <!--<h1><b>{{ dataset.ds_meta_data.title }}</b></h1> -->
                     <div>
                         <span class="badge bg-secondary">{{ dataset.get_cleaned_publication_type() }}</span>
                     </div>
