@@ -26,6 +26,10 @@
     .search-input {
         margin-right: 10px;
     }
+    .card-transparent {
+        background-color: transparent;
+        border: none;
+    }
 </style>
 {% endblock %}
 
@@ -160,36 +164,34 @@
 
     <!-- Right Column: Dataset Information -->
     <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
-        <div class="card">
+        <div class="card-transparent">
             <div class="card-body">
-                <div class="d-flex align-items-center justify-content-between">
-                    <!--<h1><b>{{ dataset.ds_meta_data.title }}</b></h1> -->
-                    <div>
-                        <span class="badge bg-secondary">{{ dataset.get_cleaned_publication_type() }}</span>
-                    </div>
-                </div>
-                <p class="text-secondary">{{ dataset.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
                 <div class="row mb-4">
-                    <div class="col-md-4 col-12">
-                        <span class="text-secondary">Description</span>
+                    <div class="row-md-4 col-12">
+                        <span class="text-secondary"><b>About</b></span>
                     </div>
-                    <div class="col-md-8 col-12">
+                    <div class="row-md-8 col-12">
                         <p class="card-text">{{ dataset.ds_meta_data.description }}</p>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="badge bg-secondary">{{ dataset.get_cleaned_publication_type() }}</span>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-4 col-12">
-                        <span class="text-secondary">Uploaded by</span>
+                    <div class="row-md-4 col-12">
+                        <span class="text-secondary"><b>Uploaded by</b></span>
                     </div>
-                    <div class="col-md-8 col-12">
+                    <div class="row-md-8 col-12">
                         <a href="#">{{ dataset.user.profile.surname }}, {{ dataset.user.profile.name }}</a>
                     </div>
                 </div>
                 <div class="row mb-2">
-                    <div class="col-md-4 col-12">
-                        <span class="text-secondary">Authors</span>
+                    <div class="row-md-4 col-12">
+                        <span class="text-secondary"><b>Authors</b></span>
                     </div>
-                    <div class="col-md-8 col-12">
+                    <div class="row-md-8 col-12">
                         {% for author in dataset.ds_meta_data.authors %}
                         <p class="p-0 m-0">
                             {{ author.name }}
@@ -205,20 +207,20 @@
                 </div>
                 {% if dataset.ds_meta_data.publication_doi %}
                 <div class="row mb-2">
-                    <div class="col-md-4 col-12">
-                        <span class="text-secondary">Publication DOI</span>
+                    <div class="row-md-4 col-12">
+                        <span class="text-secondary"><b>Publication DOI</b></span>
                     </div>
-                    <div class="col-md-8 col-12">
+                    <div class="row-md-8 col-12">
                         <a href="{{ dataset.ds_meta_data.publication_doi }}">{{ dataset.ds_meta_data.publication_doi }}</a>
                     </div>
                 </div>
                 {% endif %}
                 {% if dataset.ds_meta_data.dataset_doi %}
                 <div class="row mb-2">
-                    <div class="col-md-4 col-12">
-                        <span class="text-secondary">Zenodo record</span>
+                    <div class="row-md-4 col-12">
+                        <span class="text-secondary"><b>Zenodo record</b></span>
                     </div>
-                    <div class="col-md-8 col-12">
+                    <div class="row-md-8 col-12">
                         {% if FLASK_ENV == 'production' %}
                         <a href="https://zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}" target="_blank">https://zenodo.org/records/{{ dataset.ds_meta_data.deposition_id }}</a>
                         {% elif FLASK_ENV == 'development' %}
@@ -230,10 +232,10 @@
                 </div>
                 {% endif %}
                 <div class="row mb-2">
-                    <div class="col-md-4 col-12">
-                        <span class="text-secondary">Tags</span>
+                    <div class="row-md-4 col-12">
+                        <span class="text-secondary"><b>Tags</b></span>
                     </div>
-                    <div class="col-md-8 col-12">
+                    <div class="row-md-8 col-12">
                         {% for tag in dataset.ds_meta_data.tags.split(',') %}
                         <span class="badge bg-secondary">{{ tag.strip() }}</span>
                         {% endfor %}
