@@ -8,6 +8,7 @@ from app.modules.community import community_bp
 
 logger = logging.getLogger(__name__)
 
+
 @community_bp.route('/community', methods=['GET'])
 def index():
     logger.info("Access index")
