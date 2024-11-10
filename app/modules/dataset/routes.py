@@ -15,9 +15,11 @@ from flask import (
     send_from_directory,
     make_response,
     abort,
+    session,
     url_for,
 )
 from flask_login import login_required, current_user
+import requests
 
 from app.modules.dataset.forms import DataSetForm
 from app.modules.dataset.models import (
@@ -278,3 +280,24 @@ def get_unsynchronized_dataset(dataset_id):
         abort(404)
 
     return render_template("dataset/view_dataset.html", dataset=dataset)
+
+
+@dataset_bp.route('/dataset/upload/repos')
+def get_repos():
+    github_token = session.get('github_token')
+    if not github_token:
+        return jsonify({'error': 'No tienes autorización para ver los repositorios.'}), 403
+
+    headers = {
+        'Authorization': f'token {github_token}',
+        'Accept': 'application/vnd.github.v3+json'
+    }
+    
+    # Hacemos la solicitud a la API de GitHub para obtener los repositorios del usuario
+    response = requests.get('https://api.github.com/user/repos', headers=headers)
+
+    if response.status_code == 200:
+        repos = response.json()  # Obtienes la lista de repositorios en formato JSON
+        return jsonify(repos)  # Retornamos los repos como respuesta JSON
+    else:
+        return jsonify({'error': 'Hubo un error al obtener los repositorios.'}), 500

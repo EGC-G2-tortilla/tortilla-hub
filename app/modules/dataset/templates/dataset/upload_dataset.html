@@ -227,6 +227,22 @@
 
                 <ul class="mt-2" id="file-list"></ul>
 
+                <div style="margin-top: 50px;">
+                    <label>
+                        <input type="checkbox" id="uploadToRepo" onclick="toggleAuthButtons()" /> Subirlo a un repositorio
+                      </label>
+                      <div id="authButtons" style="display: none;">
+                        <button onclick="loginWithGithub()">Iniciar sesión con GitHub</button>
+                        <button onclick="loginWithGitlab()">Iniciar sesión con GitLab</button>
+                      </div>
+                      <form id="repo-form" style="display: none;">
+                        <label for="repo-select">Selecciona un repositorio para subir el modelo UVL:</label>
+                        <select id="repo-select" name="repo" required>
+                            <option value="">Seleccione un repositorio</option>
+                        </select>
+                    </form>
+                </div>
+
                 <script>
                     let dropzone = Dropzone.options.myDropzone = {
                         url: "/dataset/file/upload",
@@ -442,12 +458,10 @@
                         }
                     };
 
-
                 </script>
 
             </div>
         </div>
-
     </div>
 
     <div class="row" id="upload_dataset" style="display: none">
