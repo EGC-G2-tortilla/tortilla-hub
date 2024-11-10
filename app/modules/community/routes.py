@@ -51,3 +51,14 @@ def get_community_info_by_name(community_name):
 
     return render_template("community/community_info.html",
                            community=community)
+
+
+@community_bp.route("/community/<string:community_name>/members", methods=["GET"])
+def get_community_members_by_name(community_name):
+    community = community_service.get_community_by_name(community_name)
+
+    if not community:
+        abort(404)
+
+    return render_template("community/community_members.html",
+                           community=community)

@@ -25,17 +25,25 @@
 
     <h3 class="h3 mb-3">
 
-        <b>{{community.name}}</b> info
+        <b>{{community.name}}</b> datasets
     </h1>
 
     <div class="row">
 
-        <div class="card">
-            <div class="card-body">
-                        
-                {{community.description}}
+        <div class="mb-2 col-xl-8 col-lg-12 col-md-12 col-sm-12">
 
-            </div>
+            {% for member in community.members %}
+                <div class="card">
+                    <div class="card-body">
+                        {{member.profile.name}} {{member.profile.surname}}
+
+
+                    </div>
+                </div>
+            {% endfor %}
+
+
+
         </div>
 
     </div>
