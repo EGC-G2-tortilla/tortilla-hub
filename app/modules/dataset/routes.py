@@ -155,7 +155,8 @@ def upload():
         with open(file_path, 'rb') as f:
             validation_response = requests.post(
                 url_for('flamapy.validate_uvl_file', _external=True),
-                files={'file': f}
+                files={'file': f},
+                timeout=20
             )
         validation_data = validation_response.json()
 
