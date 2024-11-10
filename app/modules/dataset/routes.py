@@ -286,3 +286,34 @@ def get_unsynchronized_dataset(dataset_id):
         abort(404)
 
     return render_template("dataset/view_dataset.html", dataset=dataset)
+
+
+@dataset_bp.route("/dataset/stage/<int:dataset_id>", methods=["GET"])
+@login_required
+def stage_dataset(dataset_id):
+    dataset_service.set_dataset_to_staged(dataset_id)
+    return render_template(
+        "dataset/list_datasets.html",
+        datasets=dataset_service.get_synchronized(current_user.id),
+        local_datasets=dataset_service.get_unsynchronized(current_user.id),
+    )
+
+@dataset_bp.route("/dataset/unstage/<int:dataset_id>", methods=["GET"])
+@login_required
+def unstage_dataset(dataset_id):
+    dataset_service.set_dataset_to_unstaged(dataset_id)
+    return render_template(
+        "dataset/list_datasets.html",
+        datasets=dataset_service.get_synchronized(current_user.id),
+        local_datasets=dataset_service.get_unsynchronized(current_user.id),
+    )
+
+@dataset_bp.route("/dataset/publish", methods=["GET"])
+@login_required
+def publish_datasets():
+    dataset_service.publish_datasets(current_user_id=current_user.id)
+    return render_template(
+        "dataset/list_datasets.html",
+        datasets=dataset_service.get_synchronized(current_user.id),
+        local_datasets=dataset_service.get_unsynchronized(current_user.id),
+    )
