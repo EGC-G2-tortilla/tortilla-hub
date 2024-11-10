@@ -1,0 +1,43 @@
+{% extends "base_template.html" %}
+
+{% block title %}Main page{% endblock %}
+
+{% block content %}
+
+    <div class="card">
+        <div class="card-body">
+            <h2>
+                    {{ community.name }}
+            </h2>
+            <a href="{{ community.url }}">{{ community.url }}</a>
+
+            <div class="modal-footer" style="margin-top:1rem;justify-content: flex-start;gap:1rem;">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Info</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Members</button>
+            </div>
+        </div>
+    </div>
+
+
+    <h3 class="h3 mb-3">
+
+        <b>{{community.name}}</b> info
+    </h1>
+
+    <div class="row">
+
+        <div class="card">
+            <div class="card-body">
+                        
+                {{community.description}}
+
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('public.scripts') }}"></script>
+{% endblock %}
