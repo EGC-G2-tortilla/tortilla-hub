@@ -114,6 +114,9 @@ class DataSetRepository(BaseRepository):
             .all()
         )
 
+    def get_by_community_id(self, community_id: int):
+        return self.model.query.filter_by(community_id=community_id)
+
     def get_all_datasets(self):
         return self.model.query.all()
 
