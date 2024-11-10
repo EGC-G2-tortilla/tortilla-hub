@@ -1,4 +1,5 @@
 from core.seeders.BaseSeeder import BaseSeeder
+from app.modules.community.models import Community
 
 
 class CommunitySeeder(BaseSeeder):
@@ -6,7 +7,9 @@ class CommunitySeeder(BaseSeeder):
     def run(self):
 
         data = [
-            # Create any Model object you want to make seed
+            Community(name="Super Important Community", url="https://IMPORTANTimportant.com",
+                      description="Very very important because this community was " +
+                      "created by very important people in a very important place in a very important date.")
         ]
 
         self.seed(data)
