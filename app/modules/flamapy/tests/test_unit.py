@@ -97,6 +97,5 @@ def test_validate_uvl_file_invalid(test_client):
         "Line 2"  # Asegura que hay un problema en la línea 2 (por ejemplo, al no reconocer el input)
     ]
 
-    # Revisar que al menos una de las partes claves esperadas esté en los mensajes de error devueltos
     for expected in expected_messages:
-        assert any(expected in error for error in error_messages), f"Expected part of error '{expected}' not found in any error message."
+        assert any(expected in error for error in error_messages), f"Expected'{expected}' not found in message."

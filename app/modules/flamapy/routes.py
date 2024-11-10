@@ -12,7 +12,6 @@ from uvl.UVLCustomLexer import UVLCustomLexer
 from uvl.UVLPythonParser import UVLPythonParser
 from antlr4.error.ErrorListener import ErrorListener
 
-from werkzeug.utils import secure_filename
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +64,7 @@ def check_uvl(file_id):
         return jsonify({"message": "Valid Model"}), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500  
+        return jsonify({"error": str(e)}), 500
 
 
 @flamapy_bp.route('/flamapy/validate_uvl', methods=['POST'])
@@ -97,9 +96,9 @@ def validate_uvl_file():
             return jsonify({'error': 'No selected file'}), 400
 
         # Guardar el archivo temporalmente
-        filename = secure_filename(file.filename)
-        temp_path = os.path.join('/tmp', filename)
-        file.save(temp_path)
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_path = temp_file.name
+            file.save(temp_path)
 
         # Realizar el análisis sintáctico
         input_stream = FileStream(temp_path)
@@ -115,7 +114,6 @@ def validate_uvl_file():
 
         parser.removeErrorListeners()
         parser.addErrorListener(error_listener)
-        
         parser.featureModel()
 
         # Eliminar el archivo temporal
