@@ -28,6 +28,11 @@ class PublicationType(Enum):
     WORKING_PAPER = 'workingpaper'
     OTHER = 'other'
 
+class DatasetStatus(Enum):
+    STAGED = 'staged'
+    UNSTAGED = 'unstaged'
+    PUBLISHED = 'published'
+
 
 class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -63,6 +68,7 @@ class DSMetaData(db.Model):
     publication_doi = db.Column(db.String(120))
     dataset_doi = db.Column(db.String(120))
     tags = db.Column(db.String(120))
+    dataset_status = db.Column(SQLAlchemyEnum(DatasetStatus), nullable=False, default=DatasetStatus.UNSTAGED)
     ds_metrics_id = db.Column(db.Integer, db.ForeignKey('ds_metrics.id'))
     ds_metrics = db.relationship('DSMetrics', uselist=False, backref='ds_meta_data', cascade="all, delete")
     authors = db.relationship('Author', backref='ds_meta_data', lazy=True, cascade="all, delete")
