@@ -1,8 +1,8 @@
 """create community model
 
-Revision ID: 44f526d7ee7b
+Revision ID: b40c8e066fc2
 Revises: 001
-Create Date: 2024-11-09 12:25:44.394835
+Create Date: 2024-11-11 10:42:50.794202
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision = '44f526d7ee7b'
+revision = 'b40c8e066fc2'
 down_revision = '001'
 branch_labels = None
 depends_on = None
@@ -23,6 +23,8 @@ def upgrade():
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('url', sa.String(length=255), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
+    sa.Column('admin', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['admin'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )

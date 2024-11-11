@@ -11,6 +11,7 @@ class Community(db.Model):
     name = db.Column(db.String(100), unique=True, nullable=False)
     url = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=True)
+    admin = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     members = db.relationship('User', secondary=user_community_table, back_populates='communities')
 
     def __repr__(self):
