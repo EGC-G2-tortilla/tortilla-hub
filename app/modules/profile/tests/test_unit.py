@@ -4,7 +4,7 @@ from app import db
 from app.modules.conftest import login, logout
 from app.modules.auth.models import User
 from app.modules.profile.models import UserProfile
-
+from app.modules.dataset.models import DSMetaData, PublicationType, DataSet
 
 @pytest.fixture(scope="module")
 def test_client(test_client):
@@ -54,7 +54,7 @@ def test_view_other_user_profile(test_client):
     assert response.status_code == 200, "Error accessing the other user's profile."
 
 
-""" def test_view_other_user_profile_with_pagination(test_client):
+def test_view_other_user_profile_with_pagination(test_client):
     # Inicio de sesión del usuario de prueba
     login_response = login(test_client, "user@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
@@ -64,25 +64,19 @@ def test_view_other_user_profile(test_client):
     db.session.add(other_user)
     db.session.commit()
 
-    other_profile = UserProfile(user_id=other_user.id, name="Other", surname="User")
+    other_profile = UserProfile(user_id=other_user.id, name="Empanada", surname="User")
     db.session.add(other_profile)
     db.session.commit()
 
-    # Crear DSMetaData primero con un tipo de publicación válido
+    # Crear DSMetaData y DataSet asociados
     ds_meta_data = DSMetaData(
         title="Sample Dataset",
         description="Sample dataset description",
         publication_type=PublicationType.JOURNAL_ARTICLE,
-        publication_doi=None,
-        dataset_doi=None,
-        tags=None,
-        ds_metrics_id=None
     )
-
     db.session.add(ds_meta_data)
     db.session.commit()
 
-    # Crear el dataset asociado
     data_set = DataSet(
         user_id=other_user.id,
         ds_meta_data_id=ds_meta_data.id
@@ -90,10 +84,11 @@ def test_view_other_user_profile(test_client):
     db.session.add(data_set)
     db.session.commit()
 
-    # Realizar la solicitud para ver el perfil del otro usuario con paginación
-    response = test_client.get(f'/profile/summary/{other_user.id}?page=2')
+    # Realizar la solicitud
+    response = test_client.get(f'/profile/summary/{other_user.id}?page=1')
     assert response.status_code == 200
-    assert b"Other User" in response.data  # Comprobamos que el nombre del usuario está presente
-    # Verifica más cosas dependiendo de lo que necesites
 
- """
+    # También puedes verificar la estructura HTML de la tarjeta de perfil
+    assert b'<p class="card-text h5"><i class="fa fa-user"></i> <strong>Name:</strong> Empanada</p>' in response.data
+
+    assert b'Empanada' in response.data
