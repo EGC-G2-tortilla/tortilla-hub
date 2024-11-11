@@ -141,7 +141,11 @@ def authorize_signup_orcid():
 
     user = authentication_service.get_by_email(email)
 
+    is_orcid_user = user.oauth_providers.filter_by(provider_name='orcid').first()
     if user and user.is_oauth_user():
+        # Si el usuario ya existe en la base de datos y es OAuth, añadir una nueva conexión ORCID si esta no existe
+        if not is_orcid_user:
+            authentication_service.append_oauth_provider(user, 'orcid', orcid_id)
         login_user(user, remember=True)
         return redirect(url_for('public.index'))
 
@@ -271,8 +275,12 @@ def authorize_signup_google():
     profile = resp.json()
     user = authentication_service.get_by_email(profile['email'])
 
+    is_google_user = user.oauth_providers.filter_by(provider_name='google').first()
     # Comprueba si el usuario ya existe en la base de datos y si es un usuario de OAuth
     if user and user.is_oauth_user():
+        # Si el usuario ya existe en la base de datos y es OAuth, añadir una nueva conexión Google si esta no existe
+        if not is_google_user:
+            authentication_service.append_oauth_provider(user, 'google', profile['sub'])
         login_user(user, remember=True)
         session.pop('signup_state')  # Eliminar estado de signup
         return redirect(url_for('public.index'))
@@ -400,6 +408,7 @@ def authorize_github():
         profile['email'] = next((email_data['email'] for email_data in emails_resp.json() if email_data.get('primary')
                                  and email_data.get('verified')), None)
 
+    # Si no contiene el email
     if not profile.get('email'):
         session.pop('signup_state', None)
         session.pop('login_state', None)
@@ -409,8 +418,13 @@ def authorize_github():
             error="Email not available from GitHub")
     user = authentication_service.get_by_email(profile['email'])
 
+    is_github_user = user.oauth_providers.filter_by(provider_name='github').first()
     if user:
         if user.is_oauth_user():
+            # Si el usuario ya existe en la base de datos y es OAuth, añadir una nueva conexión GitHub si esta no existe
+            if not is_github_user and flow == 'signup':
+                authentication_service.append_oauth_provider(user, 'github', profile['id'])
+
             login_user(user, remember=True)
             return redirect(url_for('public.index'))
 

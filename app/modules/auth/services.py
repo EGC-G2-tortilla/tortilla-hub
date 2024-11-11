@@ -116,6 +116,22 @@ class AuthenticationService(BaseService):
             raise exc
         return user
 
+    def append_oauth_provider(self, user: User, oauth_provider: str, oauth_provider_user_id: str):
+        oauth_provider_data = {
+            "user": user,
+            "provider_name": oauth_provider,
+            "provider_user_id": oauth_provider_user_id
+        }
+
+        if oauth_provider == "orcid":
+            user.orcid = oauth_provider_user_id
+            self.repository.session.commit()
+            self.user_profile_repository.get_by_user_id(user.id).orcid = oauth_provider_user_id
+            self.repository.session.commit()
+
+        self.repository.create_oauth_provider(**oauth_provider_data)
+        self.repository.session.commit()
+
     def update_profile(self, user_profile_id, form):
 
         if form.validate():
