@@ -19,6 +19,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(256), unique=True, nullable=False)
     password = db.Column(db.String(256), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
+    orcid = db.Column(db.String(19), unique=True, nullable=True)
 
     data_sets = db.relationship('DataSet', backref='user', lazy=True)
     profile = db.relationship('UserProfile', backref='user', uselist=False)

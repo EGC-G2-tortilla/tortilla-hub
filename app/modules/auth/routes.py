@@ -9,7 +9,7 @@ from werkzeug.security import generate_password_hash
 from authlib.integrations.flask_client import OAuth
 
 from app.modules.auth import auth_bp
-from app.modules.auth.forms import SignupForm, LoginForm
+from app.modules.auth.forms import ProvideEmailForm, SignupForm, LoginForm
 from app.modules.auth.services import AuthenticationService
 from app.modules.profile.services import UserProfileService
 
@@ -40,6 +40,15 @@ github = oauth.register(
     api_base_url='https://api.github.com/',
     client_kwargs={'scope': 'user:email read:user'},
     )
+
+orcid = oauth.register(
+    name='orcid',
+    client_id=os.getenv('ORCID_CLIENT_ID'),
+    client_secret=os.getenv('ORCID_CLIENT_SECRET'),
+    authorize_url='https://orcid.org/oauth/authorize',
+    access_token_url='https://orcid.org/oauth/token',
+    client_kwargs={'scope': '/authenticate', 'token_endpoint_auth_method': 'client_secret_post'}
+)
 
 
 def generate_random_password(length=12):
@@ -75,6 +84,163 @@ def show_signup_form():
         return redirect(url_for('public.index'))
 
     return render_template("auth/signup_form.html", form=form, state=state)
+
+
+@auth_bp.route("/signup/orcid")
+def sign_up_orcid():
+    # Genera un estado único para la sesión y almacénalo
+    state = secrets.token_urlsafe(16)
+    session['signup_state'] = state
+
+    # Redirige a ORCID con el estado generado
+    redirect_uri = url_for("auth.authorize_signup_orcid", _external=True)
+    return orcid.authorize_redirect(redirect_uri, state=state)
+
+
+@auth_bp.route("/authorize/signup/orcid")
+def authorize_signup_orcid():
+    if current_user.is_authenticated:
+        return redirect(url_for('public.index'))
+
+    # Verifica que el estado almacenado en la sesión coincida con el estado recibido
+    state = request.args.get('state')
+    expected_state = session.pop('signup_state', None)
+    if state != expected_state:
+        return "CSRF Warning! State mismatch.", 400
+
+    # Autoriza el token con ORCID
+    token = orcid.authorize_access_token()
+    orcid_id = token.get('orcid')
+
+    # Solicitar la información del perfil del usuario
+    userinfo_endpoint = f"https://pub.orcid.org/v3.0/{orcid_id}"
+    headers = {'Accept': 'application/json'}
+    resp = orcid.get(userinfo_endpoint, headers=headers)
+    profile = resp.json()
+
+    # Obtener email adicionalmente desde el endpoint de emails de ORCID
+    email_endpoint = f"https://pub.orcid.org/v3.0/{orcid_id}/email"
+    email_resp = orcid.get(email_endpoint, headers=headers)
+    email_data = email_resp.json()
+    email = next(
+        (email['email'] for email in email_data.get('email', [])
+         if email.get('primary') and email.get('verified')),
+        None
+    )
+    if not email:
+        # Si el email no está disponible, redirige al usuario a una página donde pueda proporcionarlo manualmente
+        session['orcid_id'] = orcid_id
+        session['profile_data'] = {
+            'given_name': profile.get("person", {}).get("name", {}).get("given-names", {}).get("value", "No Name"),
+            'family_name': profile.get("person", {}).get("name", {}).get("family-name", {}).get("value", "No Surname"),
+        }
+        return redirect(url_for('auth.provide_email'))
+
+    given_name = profile.get("person", {}).get("name", {}).get("given-names", {}).get("value", "No Name")
+    family_name = profile.get("person", {}).get("name", {}).get("family-name", {}).get("value", "No Surname")
+
+    user = authentication_service.get_by_email(email)
+
+    if user and user.is_oauth_user():
+        login_user(user, remember=True)
+        return redirect(url_for('public.index'))
+
+    elif user:
+        form = SignupForm()
+        return render_template("auth/signup_form.html", form=form, error="Email already in use, try logging in")
+
+    random_password = generate_random_password()
+    hashed_password = generate_password_hash(random_password)
+
+    user = authentication_service.create_with_profile_and_oauth_provider_appended(
+        email=email,
+        password=hashed_password,
+        name=given_name,
+        surname=family_name,
+        oauth_provider='orcid',
+        oauth_provider_user_id=orcid_id,
+        orcid=orcid_id
+    )
+    login_user(user, remember=True)
+    return redirect(url_for('public.index'))
+
+
+@auth_bp.route("/provide_email", methods=["GET", "POST"])
+def provide_email():
+    form = ProvideEmailForm()
+    if request.method == "POST" and form.validate_on_submit():
+        email = form.email.data
+        # Recupera los datos almacenados en la sesión
+        orcid_id = session.pop('orcid_id', None)
+        profile_data = session.pop('profile_data', {})
+
+        given_name = profile_data.get('given_name', "No Name")
+        family_name = profile_data.get('family_name', "No Surname")
+
+        user = authentication_service.get_by_email(email)
+
+        if user and user.is_oauth_user():
+            login_user(user, remember=True)
+            return redirect(url_for('public.index'))
+
+        elif user:
+            return render_template("auth/provide_email.html", form=form, error="Email already in use, try logging in")
+
+        random_password = generate_random_password()
+        hashed_password = generate_password_hash(random_password)
+
+        user = authentication_service.create_with_profile_and_oauth_provider_appended(
+            email=email,
+            password=hashed_password,
+            name=given_name,
+            surname=family_name,
+            oauth_provider='orcid',
+            oauth_provider_user_id=orcid_id,
+            orcid=orcid_id
+        )
+        login_user(user, remember=True)
+        return redirect(url_for('public.index'))
+
+    return render_template("auth/provide_email.html", form=form)
+
+
+@auth_bp.route("/login/orcid")
+def login_orcid():
+    # Genera un estado único para la sesión y almacénalo
+    state = secrets.token_urlsafe(16)
+    session['login_state'] = state
+
+    # Redirige a ORCID con el estado generado
+    redirect_uri = url_for("auth.authorize_login_orcid", _external=True)
+    return orcid.authorize_redirect(redirect_uri, state=state)
+
+
+@auth_bp.route("/authorize/login/orcid")
+def authorize_login_orcid():
+    if current_user.is_authenticated:
+        return redirect(url_for('public.index'))
+
+    # Verifica que el estado almacenado en la sesión coincida con el estado recibido
+    state = request.args.get('state')
+    expected_state = session.pop('login_state', None)
+    if state != expected_state:
+        return "CSRF Warning! State mismatch.", 400
+
+    # Autoriza el token con ORCID
+    token = orcid.authorize_access_token()
+    orcid_id = token.get('orcid')
+
+    # Buscar al usuario en la base de datos utilizando el ORCID ID
+    user = authentication_service.get_by_orcid(orcid_id)
+
+    # Si el usuario existe, proceder con el login
+    if user:
+        login_user(user, remember=True)
+        return redirect(url_for('public.index'))
+
+    # Si el usuario no existe, devolver un mensaje de error
+    form = LoginForm()
+    return render_template("auth/login_form.html", form=form, error="Account with this ORCID ID does not exist")
 
 
 @auth_bp.route("/signup/google")

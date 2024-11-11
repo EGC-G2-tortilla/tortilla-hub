@@ -24,9 +24,12 @@ class AuthenticationService(BaseService):
 
     def is_email_available(self, email: str) -> bool:
         return self.repository.get_by_email(email) is None
-    
+
     def get_by_email(self, email: str) -> User:
         return self.repository.get_by_email(email)
+
+    def get_by_orcid(self, orcid: str) -> User:
+        return self.repository.get_by_orcid(orcid)
 
     def create_with_profile(self, **kwargs):
         try:
@@ -71,6 +74,7 @@ class AuthenticationService(BaseService):
             surname = kwargs.pop("surname", None)
             oauth_provider = kwargs.pop("oauth_provider", None)
             oauth_provider_user_id = kwargs.pop("oauth_provider_user_id", None)
+            orcid = kwargs.pop("orcid", None)
 
             if not email:
                 raise ValueError("Email is required.")
@@ -85,12 +89,14 @@ class AuthenticationService(BaseService):
 
             user_data = {
                 "email": email,
-                "password": password
+                "password": password,
+                "orcid": orcid
             }
 
             profile_data = {
                 "name": name,
                 "surname": surname,
+                "orcid": orcid
             }
 
             user = self.create(commit=False, **user_data)
