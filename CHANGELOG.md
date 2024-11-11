@@ -2,7 +2,25 @@
 
 Todos los cambios notables en este proyecto se documentarán en este archivo.
 
-## [1.0.0] - 2024-10-25
+# [1.2.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.1.1...v1.2.0) (2024-10-31)
+
+### Features
+
+* Workflow para despliegue en render y eliminación de despliegue en pre-producción. ([e705aa6](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e705aa6e1ef4ba4c07db1b615218142be50e7b36))
+
+## [1.1.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.1.0...v1.1.1) (2024-10-31)
+
+### Bug Fixes
+
+* Añadir .venv a gitignore ([02ddcb1](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/02ddcb1e975445e2aeea1b55d0d5a178f395467b))
+
+# [1.1.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.0.0...v1.1.0) (2024-10-31)
+
+### Features
+
+* Workflow implementado para la Integración Continua con Codacy ([9cbc477](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/9cbc4774a80a63683ad48e792641f0d68db73bdf))
+
+# 1.0.0 (2024-10-25)
 
 ### Features
 
@@ -21,4 +39,3 @@ Todos los cambios notables en este proyecto se documentarán en este archivo.
 ### Added
 
 * Primera versión estable del proyecto.
-

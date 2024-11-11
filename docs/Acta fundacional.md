@@ -82,7 +82,7 @@ El proyecto deberá cumplir con una serie de hitos/entregables, en los que el si
 
 * M1: Sistema funcionando y pruebas (23/10/2024)  
 * M2: Sistema funcionando y con incrementos (13/11/2024)  
-* M3: Entrega de proyectos y defensas (18/11/2024)
+* M3: Entrega de proyectos y defensas (18/12/2024)
 
 
 # 2\. Estructura Organizativa <!-- {#2.-estructura-organizativa} -->
@@ -162,7 +162,7 @@ Los mensajes de commit deben seguir el formato:
 
 ## 5.3. ¿Cuándo hacer commit? <!--{#5.3.-¿cuándo-hacer-commit?}-->
 
-Deberán realizarse commits atómicos (pequeño, autocontenido y fácil de entender, que no afecta a otras partes del código no relacionadas con la tarea)r. El objetivo es que, en caso de error, el commit pueda deshacerse sin causar problemas adicionales.
+Deberán realizarse commits atómicos (pequeño, autocontenido y fácil de entender, que no afecta a otras partes del código no relacionadas con la tarea). El objetivo es que, en caso de error, el commit pueda deshacerse sin causar problemas adicionales.
 
 Buenas prácticas para un commit atómico:
 
