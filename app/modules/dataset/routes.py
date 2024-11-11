@@ -317,3 +317,13 @@ def publish_datasets():
         datasets=dataset_service.get_synchronized(current_user.id),
         local_datasets=dataset_service.get_unsynchronized(current_user.id),
     )
+
+@dataset_bp.route("/dataset/stage/all", methods=["GET"])
+@login_required
+def stage_all_datasets():
+    dataset_service.stage_all_datasets(current_user.id)
+    return render_template(
+        "dataset/list_datasets.html",
+        datasets=dataset_service.get_synchronized(current_user.id),
+        local_datasets=dataset_service.get_unsynchronized(current_user.id),
+        )

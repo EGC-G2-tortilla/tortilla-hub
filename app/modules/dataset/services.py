@@ -183,6 +183,19 @@ class DataSetService(BaseService):
             logger.error(f"Exception setting dataset to published: {exc}")
             self.repository.session.rollback()
 
+    def stage_all_datasets(self, current_user_id):
+        try:
+
+            datasets = self.repository.get_user_unstaged_datasets(current_user_id)
+            if len(datasets) > 0:
+                for dataset in datasets:
+                    dataset.ds_meta_data.dataset_status = DatasetStatus.STAGED
+                    self.repository.session.commit()
+            else:
+                raise ValueError("There's no datasets available to stage")
+        except Exception as exc:
+            logger.error(f"Exception setting dataset to staged: {exc}")
+            self.repository.session.rollback()
             
 class AuthorService(BaseService):
     def __init__(self):
