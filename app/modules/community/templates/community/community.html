@@ -23,10 +23,10 @@
                 </a>
                 {% if not user_in_community %}
                 <form action="/community/{{ community.name }}/join" method="post">
-                    <input type="submit" value="Join!" type="button" class="btn btn-success">
+                    <input name="join_community_button" type="submit" value="Join!" type="button" class="btn btn-success">
                 </form>
                 {% else %}
-                <p>
+                <p class="you_are_already_a_member">
                     You are already a member
                 </p>
                 {% endif %}
