@@ -12,6 +12,9 @@
             <a href="{{ community.url }}">{{ community.url }}</a>
 
             <div class="modal-footer" style="margin-top:1rem;justify-content: flex-start;gap:1rem;">
+                <a href="/community/{{ community.name }}">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Datasets</button>
+                </a>
                 <a href="/community/{{ community.name }}/info">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Info</button>
                 </a>
