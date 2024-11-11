@@ -8,7 +8,7 @@
 
         <b>All</b> communities
         <a href="/community/create">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Create community</button>
+            <button type="button" class="btn btn-primary create_community" data-dismiss="modal">Create community</button>
         </a>
     </h1>
 
@@ -32,7 +32,9 @@
                         <div class="row mb-2">
 
                             <div class="col-12">
-                                <p class="card-text">{{ community.info }}</p>
+                                <a href="{{ community.url }}">
+                                    {{ community.url }}
+                                </a>
                             </div>
 
                         </div>

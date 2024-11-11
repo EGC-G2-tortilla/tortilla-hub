@@ -42,9 +42,9 @@
                                     </div>
                 
                                     <div class="col-6">
-                                        {{ form.description.label(class="form-label") }}
-                                        {{ form.description(class="form-control", placeholder="Enter the community description",required=true) }}
-                                        {% for error in form.description.errors %}
+                                        {{ form.description_info.label(class="form-label") }}
+                                        {{ form.description_info(class="form-control", placeholder="Enter the community description_info",required=true) }}
+                                        {% for error in form.description_info.errors %}
                                             <span style="color: red;">{{ error }}</span>
                                             <br>
                                         {% endfor %}

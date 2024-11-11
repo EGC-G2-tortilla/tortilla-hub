@@ -3,7 +3,8 @@ import logging
 from flask import (
     render_template,
     abort,
-    request
+    request,
+    redirect
 )
 from flask_login import login_required, current_user
 
@@ -92,8 +93,7 @@ def create_community():
             logger.exception(f"Exception while create community data in local {exc}")
             return [{"Exception while create community data in local: ": str(exc)}], 400
 
-        msg = "Everything works!"
-        return [{"message": msg}], 200
+        return redirect("/community")
 
     return render_template("community/create_community.html", form=form)
 
@@ -107,8 +107,5 @@ def join_a_community(community_name):
         abort(404)
 
     community_service.join_a_community(current_user, community)
-    is_user_in_community = community_service.is_user_in_community(current_user, community)
 
-    return render_template("community/community_members.html",
-                           user_in_community=is_user_in_community,
-                           community=community)
+    return redirect("/community/"+community_name)
