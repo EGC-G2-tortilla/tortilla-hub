@@ -2,11 +2,13 @@ import logging
 
 from flask import (
     render_template,
-    abort
+    abort,
+    request
 )
 from flask_login import login_required, current_user
 
 from app.modules.community.services import CommunityService
+from app.modules.community.forms import CommunityForm
 from app.modules.dataset.services import DataSetService
 from app.modules.community import community_bp
 
@@ -72,6 +74,28 @@ def get_community_members_by_name(community_name):
     return render_template("community/community_members.html",
                            user_in_community=is_user_in_community,
                            community=community)
+
+
+@community_bp.route("/community/create", methods=["GET", "POST"])
+@login_required
+def create_community():
+    form = CommunityForm()
+    if request.method == "POST":
+        if not form.validate_on_submit():
+            return [{"message": form.errors}], 400
+
+        try:
+            logger.info("Creating community...")
+            community = community_service.create_from_form(form=form, current_user=current_user)
+            logger.info(f"Created community: {community}")
+        except Exception as exc:
+            logger.exception(f"Exception while create community data in local {exc}")
+            return [{"Exception while create community data in local: ": str(exc)}], 400
+
+        msg = "Everything works!"
+        return [{"message": msg}], 200
+
+    return render_template("community/create_community.html", form=form)
 
 
 @community_bp.route("/community/<string:community_name>/join", methods=["POST"])

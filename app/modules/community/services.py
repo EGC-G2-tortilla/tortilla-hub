@@ -11,8 +11,8 @@ class CommunityService(BaseService):
 
     def get_community_by_name(self, community_name: str):
         return self.repository.get_community_by_name(community_name)
-    
-    def is_user_in_community(self,current_user, community):
+
+    def is_user_in_community(self, current_user, community):
         res = current_user in community.members
         return res
 
@@ -20,3 +20,8 @@ class CommunityService(BaseService):
         community.members.append(current_user)
 
         self.update(community.id, members=community.members)
+
+    def create_from_form(self, current_user, form):
+        community = self.create(name=form.data["name"], description=form.data["description"], url=form.data["url"],
+                                admin=current_user.id, members=[current_user])
+        return community
