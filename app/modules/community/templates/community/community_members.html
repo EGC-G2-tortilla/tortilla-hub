@@ -21,6 +21,15 @@
                 <a href="/community/{{ community.name }}/members">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Members</button>
                 </a>
+                {% if not user_in_community %}
+                <form action="/community/{{ community.name }}/join" method="post">
+                    <input type="submit" value="Join!" type="button" class="btn btn-success">
+                </form>
+                {% else %}
+                <p>
+                    You are already a member
+                </p>
+                {% endif %}
             </div>
         </div>
     </div>

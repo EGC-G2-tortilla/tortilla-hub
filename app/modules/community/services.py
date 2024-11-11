@@ -11,3 +11,12 @@ class CommunityService(BaseService):
 
     def get_community_by_name(self, community_name: str):
         return self.repository.get_community_by_name(community_name)
+    
+    def is_user_in_community(self,current_user, community):
+        res = current_user in community.members
+        return res
+
+    def join_a_community(self, current_user, community):
+        community.members.append(current_user)
+
+        self.update(community.id, members=community.members)
