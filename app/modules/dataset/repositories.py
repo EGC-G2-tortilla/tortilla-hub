@@ -12,7 +12,7 @@ from app.modules.dataset.models import (
     DSMetaData,
     DSViewRecord,
     DataSet,
-    DatasetStatus
+    DatasetStatus,
 )
 from core.repositories.BaseRepository import BaseRepository
 
@@ -53,16 +53,16 @@ class DSViewRecordRepository(BaseRepository):
         return self.model.query.filter_by(
             user_id=current_user.id if current_user.is_authenticated else None,
             dataset_id=dataset.id,
-            view_cookie=user_cookie
+            view_cookie=user_cookie,
         ).first()
 
     def create_new_record(self, dataset: DataSet, user_cookie: str) -> DSViewRecord:
         return self.create(
-                user_id=current_user.id if current_user.is_authenticated else None,
-                dataset_id=dataset.id,
-                view_date=datetime.now(timezone.utc),
-                view_cookie=user_cookie,
-            )
+            user_id=current_user.id if current_user.is_authenticated else None,
+            dataset_id=dataset.id,
+            view_date=datetime.now(timezone.utc),
+            view_cookie=user_cookie,
+        )
 
 
 class DataSetRepository(BaseRepository):
@@ -72,7 +72,9 @@ class DataSetRepository(BaseRepository):
     def get_synchronized(self, current_user_id: int) -> DataSet:
         return (
             self.model.query.join(DSMetaData)
-            .filter(DataSet.user_id == current_user_id, DSMetaData.dataset_doi.isnot(None))
+            .filter(
+                DataSet.user_id == current_user_id, DSMetaData.dataset_doi.isnot(None)
+            )
             .order_by(self.model.created_at.desc())
             .all()
         )
@@ -80,15 +82,23 @@ class DataSetRepository(BaseRepository):
     def get_unsynchronized(self, current_user_id: int) -> DataSet:
         return (
             self.model.query.join(DSMetaData)
-            .filter(DataSet.user_id == current_user_id, DSMetaData.dataset_doi.is_(None))
+            .filter(
+                DataSet.user_id == current_user_id, DSMetaData.dataset_doi.is_(None)
+            )
             .order_by(self.model.created_at.desc())
             .all()
         )
 
-    def get_unsynchronized_dataset(self, current_user_id: int, dataset_id: int) -> DataSet:
+    def get_unsynchronized_dataset(
+        self, current_user_id: int, dataset_id: int
+    ) -> DataSet:
         return (
             self.model.query.join(DSMetaData)
-            .filter(DataSet.user_id == current_user_id, DataSet.id == dataset_id, DSMetaData.dataset_doi.is_(None))
+            .filter(
+                DataSet.user_id == current_user_id,
+                DataSet.id == dataset_id,
+                DSMetaData.dataset_doi.is_(None),
+            )
             .first()
         )
 
@@ -117,23 +127,35 @@ class DataSetRepository(BaseRepository):
 
     def get_all_datasets(self):
         return self.model.query.all()
-    
+
     def get_user_staged_datasets(self, current_user_id: int):
         return (
             self.model.query.join(DSMetaData)
-            .filter(DataSet.user_id ==  current_user_id, DSMetaData.dataset_status == DatasetStatus.STAGED).all()
+            .filter(
+                DataSet.user_id == current_user_id,
+                DSMetaData.dataset_status == DatasetStatus.STAGED,
+            )
+            .all()
         )
 
     def get_user_unstaged_datasets(self, current_user_id: int):
         return (
             self.model.query.join(DSMetaData)
-            .filter(DataSet.user_id == current_user_id, DSMetaData.dataset_status == DatasetStatus.UNSTAGED).all()
+            .filter(
+                DataSet.user_id == current_user_id,
+                DSMetaData.dataset_status == DatasetStatus.UNSTAGED,
+            )
+            .all()
         )
 
     def get_user_published_datasets(self, current_user_id: int):
         return (
             self.model.query.join(DSMetaData)
-            .filter(DataSet.user_id == current_user_id, DSMetaData.dataset_status == DatasetStatus.PUBLISHED).all()
+            .filter(
+                DataSet.user_id == current_user_id,
+                DSMetaData.dataset_status == DatasetStatus.PUBLISHED,
+            )
+            .all()
         )
 
 
