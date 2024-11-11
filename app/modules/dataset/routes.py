@@ -1,6 +1,7 @@
 import logging
 import os
 import json
+import requests
 import shutil
 import tempfile
 import uuid
@@ -32,7 +33,7 @@ from app.modules.dataset.services import (
     DataSetService,
     DOIMappingService
 )
-from app.modules.zenodo.services import ZenodoService
+from app.modules.fakenodo.services import FakenodoService
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ logger = logging.getLogger(__name__)
 dataset_service = DataSetService()
 author_service = AuthorService()
 dsmetadata_service = DSMetaDataService()
-zenodo_service = ZenodoService()
+fakenodo_service = FakenodoService()
 doi_mapping_service = DOIMappingService()
 ds_view_record_service = DSViewRecordService()
 
@@ -68,12 +69,12 @@ def create_dataset():
         # send dataset as deposition to Zenodo
         data = {}
         try:
-            zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-            response_data = json.dumps(zenodo_response_json)
+            fakenodo_response_json = fakenodo_service.create_new_deposition(dataset)
+            response_data = json.dumps(fakenodo_response_json)
             data = json.loads(response_data)
         except Exception as exc:
             data = {}
-            zenodo_response_json = {}
+            fakenodo_response_json = {}
             logger.exception(f"Exception while create dataset data in Zenodo {exc}")
 
         if data.get("conceptrecid"):
@@ -85,13 +86,13 @@ def create_dataset():
             try:
                 # iterate for each feature model (one feature model = one request to Zenodo)
                 for feature_model in dataset.feature_models:
-                    zenodo_service.upload_file(dataset, deposition_id, feature_model)
+                    fakenodo_service.upload_file(dataset, deposition_id, feature_model)
 
                 # publish deposition
-                zenodo_service.publish_deposition(deposition_id)
+                fakenodo_service.publish_deposition(deposition_id)
 
                 # update DOI
-                deposition_doi = zenodo_service.get_doi(deposition_id)
+                deposition_doi = fakenodo_service.get_doi(deposition_id)
                 dataset_service.update_dsmetadata(dataset.ds_meta_data_id, dataset_doi=deposition_doi)
             except Exception as e:
                 msg = f"it has not been possible upload feature models in Zenodo and update the DOI: {e}"
@@ -147,19 +148,26 @@ def upload():
         new_filename = file.filename
 
     try:
+        # Guardar archivo
         file.save(file_path)
+
+        # Validación de sintaxis del UVL utilizando el endpoint de validación
+        with open(file_path, 'rb') as f:
+            validation_response = requests.post(
+                url_for('flamapy.validate_uvl_file', _external=True),
+                files={'file': f},
+                timeout=20
+            )
+        validation_data = validation_response.json()
+
+        if validation_response.status_code != 200:
+            os.remove(file_path)  # Eliminar archivo en caso de error
+            return jsonify({"errors": validation_data["errors"]}), 400
+
+        return jsonify({"message": "UVL uploaded and validated successfully", "filename": new_filename}), 200
+
     except Exception as e:
         return jsonify({"message": str(e)}), 500
-
-    return (
-        jsonify(
-            {
-                "message": "UVL uploaded and validated successfully",
-                "filename": new_filename,
-            }
-        ),
-        200,
-    )
 
 
 @dataset_bp.route("/dataset/file/delete", methods=["POST"])
