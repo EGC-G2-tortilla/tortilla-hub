@@ -8,6 +8,7 @@ from app.modules.dataset.models import (
     DataSet,
     DSMetaData,
     PublicationType,
+    DatasetStatus,
     DSMetrics,
     Author)
 from datetime import datetime, timezone
@@ -43,6 +44,32 @@ class DataSetSeeder(BaseSeeder):
                 ds_metrics_id=seeded_ds_metrics.id
             ) for i in range(4)
         ]
+        ds_meta_data_list.append(
+            DSMetaData(
+                deposition_id=5,
+                title='Sample dataset 5',
+                description='Description for dataset 5 staged',
+                publication_type=PublicationType.DATA_MANAGEMENT_PLAN,
+                publication_doi='10.1234/dataset5',
+                dataset_doi='10.1234/dataset5',
+                tags='tag1, tag2',
+                dataset_status=DatasetStatus.STAGED,
+                ds_metrics_id=seeded_ds_metrics.id
+            )
+        )
+        ds_meta_data_list.append(
+            DSMetaData(
+                deposition_id=6,
+                title='Sample dataset 6',
+                description='Description for dataset 6 published',
+                publication_type=PublicationType.DATA_MANAGEMENT_PLAN,
+                publication_doi='10.1234/dataset6',
+                dataset_doi='10.1234/dataset6',
+                tags='tag1, tag2',
+                dataset_status=DatasetStatus.PUBLISHED,
+                ds_metrics_id=seeded_ds_metrics.id
+            )
+        )
         seeded_ds_meta_data = self.seed(ds_meta_data_list)
 
         # Create Author instances and associate with DSMetaData
@@ -64,6 +91,21 @@ class DataSetSeeder(BaseSeeder):
                 created_at=datetime.now(timezone.utc)
             ) for i in range(4)
         ]
+        datasets.append(
+            DataSet(
+                user_id=user1.id,
+                ds_meta_data_id=seeded_ds_meta_data[4].id,  # Corresponde a dataset 5 (STAGED)
+                created_at=datetime.now(timezone.utc),
+            )
+        )
+
+        datasets.append(
+            DataSet(
+                user_id=user2.id,
+                ds_meta_data_id=seeded_ds_meta_data[5].id,  # Corresponde a dataset 6 (PUBLISHED)
+                created_at=datetime.now(timezone.utc),
+            )
+        )
         seeded_datasets = self.seed(datasets)
 
         # Assume there are 12 UVL files, create corresponding FMMetaData and FeatureModel
