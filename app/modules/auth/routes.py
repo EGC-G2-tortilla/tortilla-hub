@@ -141,8 +141,8 @@ def authorize_signup_orcid():
 
     user = authentication_service.get_by_email(email)
 
-    is_orcid_user = user.oauth_providers.filter_by(provider_name='orcid').first()
     if user and user.is_oauth_user():
+        is_orcid_user = next((provider for provider in user.oauth_providers if provider.provider_name == 'orcid'), None)
         # Si el usuario ya existe en la base de datos y es OAuth, añadir una nueva conexión ORCID si esta no existe
         if not is_orcid_user:
             authentication_service.append_oauth_provider(user, 'orcid', orcid_id)
@@ -275,9 +275,11 @@ def authorize_signup_google():
     profile = resp.json()
     user = authentication_service.get_by_email(profile['email'])
 
-    is_google_user = user.oauth_providers.filter_by(provider_name='google').first()
     # Comprueba si el usuario ya existe en la base de datos y si es un usuario de OAuth
     if user and user.is_oauth_user():
+        is_google_user = next(
+            (provider for provider in user.oauth_providers if provider.provider_name == 'google'), 
+            None)
         # Si el usuario ya existe en la base de datos y es OAuth, añadir una nueva conexión Google si esta no existe
         if not is_google_user:
             authentication_service.append_oauth_provider(user, 'google', profile['sub'])
@@ -418,8 +420,10 @@ def authorize_github():
             error="Email not available from GitHub")
     user = authentication_service.get_by_email(profile['email'])
 
-    is_github_user = user.oauth_providers.filter_by(provider_name='github').first()
     if user:
+        is_github_user = next(
+            (provider for provider in user.oauth_providers if provider.provider_name == 'github'),
+            None)
         if user.is_oauth_user():
             # Si el usuario ya existe en la base de datos y es OAuth, añadir una nueva conexión GitHub si esta no existe
             if not is_github_user and flow == 'signup':
@@ -437,7 +441,7 @@ def authorize_github():
     # Crear usuario si no existe
     random_password = generate_random_password()
     hashed_password = generate_password_hash(random_password)
-    name = profile.get('name', profile.get('login'))
+    name = profile.get('name', "No name" if profile.get('login') is None else profile.get('login'))
     surname = profile.get('family_name', 'No Surname')
     user = authentication_service.create_with_profile_and_oauth_provider_appended(
         email=profile['email'],
@@ -451,7 +455,6 @@ def authorize_github():
     login_user(user, remember=True)
     session.pop('signup_state', None)
     session.pop('login_state', None)
-    session.pop('s')
     return redirect(url_for('public.index'))
 
 
