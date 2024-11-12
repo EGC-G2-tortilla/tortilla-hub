@@ -124,10 +124,20 @@ class AuthenticationService(BaseService):
         }
 
         if oauth_provider == "orcid":
-            user.orcid = oauth_provider_user_id
-            self.repository.session.commit()
-            self.user_profile_repository.get_by_user_id(user.id).orcid = oauth_provider_user_id
-            self.repository.session.commit()
+            user_data = {
+                "email": user.email,
+                "password": user.password,
+                "orcid": oauth_provider_user_id
+            }
+            self.repository.update(user.id, **user_data)
+            user_profile = self.user_profile_repository.get_by_user_id(user.id)
+            user_profile_data = {
+                "name": user_profile.name,
+                "surname": user_profile.surname,
+                "orcid": oauth_provider_user_id
+            }
+
+            self.user_profile_repository.update(user_profile.id, **user_profile_data)
 
         self.repository.create_oauth_provider(**oauth_provider_data)
         self.repository.session.commit()
