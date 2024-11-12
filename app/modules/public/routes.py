@@ -32,7 +32,7 @@ def index():
     total_datasets = dataset_service.get_all_datasets()
     total_size = sum(dataset.get_file_total_size() for dataset in total_datasets)
     total_size = SizeService().get_human_readable_size(total_size)
-    
+
     datasets_dict = [dataset.to_dict() for dataset in total_datasets]
 
     return render_template(
