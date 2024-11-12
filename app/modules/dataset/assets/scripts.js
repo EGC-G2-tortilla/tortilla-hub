@@ -1,6 +1,99 @@
 var currentId = 0;
         var amount_authors = 0;
 
+        function toggleAuthButtons() {
+            const authButtons = document.getElementById("authButtons");
+            authButtons.style.display = authButtons.style.display === "none" ? "block" : "none";
+        }
+
+        function toggleRepoForm() {
+            const repoForm = document.getElementById("repo-form");
+            repoForm.style.display = repoForm.style.display === "none" ? "block" : "none";
+        }
+
+        function loginWithGithub() {
+            const clientId = "Ov23liirdMyilGskGdbL";
+            const redirectUri = "http://127.0.0.1:5000/auth/callback/github";
+            const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=repo&redirect_uri=${redirectUri}`;
+            openCenteredPopup(authUrl, "Login con GitHub", 600, 700);
+        }
+        
+        function loginWithGitlab() {
+            const clientId = "TU_CLIENT_ID_GITLAB";
+            const redirectUri = "http://127.0.0.1:5000/dataset/upload";
+            const authUrl = `https://gitlab.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=api`;
+            openCenteredPopup(authUrl, "Login con GitLab", 600, 700);
+        }
+
+        function openCenteredPopup(url, title, width, height) {
+            // Calcula la posición x e y para centrar la ventana
+            const screenLeft = window.screenLeft ?? window.screenX;
+            const screenTop = window.screenTop ?? window.screenY;
+        
+            const screenWidth = window.innerWidth || document.documentElement.clientWidth || screen.width;
+            const screenHeight = window.innerHeight || document.documentElement.clientHeight || screen.height;
+        
+            // Calcula el desplazamiento para centrar la ventana emergente
+            const left = screenLeft + (screenWidth - width) / 2;
+            const top = screenTop + (screenHeight - height) / 2;
+        
+            // Abre la ventana emergente con las dimensiones y posición calculadas
+            const popup = window.open(
+                url,
+                title,
+                `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`
+            );
+        
+            // Enfoca la ventana emergente si fue bloqueada o no se abrió en el primer intento
+            if (popup && popup.focus) {
+                popup.focus();
+            }
+        }
+        
+
+        window.addEventListener("message", (event) => {
+            // Asegúrate de que el origen es correcto (la URL de tu servidor local)
+            if (event.origin !== "http://127.0.0.1:5000") {
+                console.error("Origen no válido", event.origin);
+                return;
+            }
+        
+            // Almacena el token recibido
+            if (event.data && event.data.githubToken) {
+                localStorage.setItem("githubToken", event.data.githubToken);
+                toggleAuthButtons();
+                alert("¡Autenticación con GitHub completada!");
+                fetch('/dataset/upload/repos', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('githubToken')}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        const repoSelect = document.getElementById('repo-select');
+                        data.forEach(repo => {
+                            const option = document.createElement('option');
+                            option.value = repo.name;
+                            option.textContent = `${repo.name} - ${repo.html_url}`;
+                            repoSelect.appendChild(option);
+                        });
+                        toggleRepoForm();
+                    }
+                })
+                .catch(error => console.error('Error fetching repos:', error));
+            } else if (event.data && event.data.gitlabToken) {
+                localStorage.setItem("gitlabToken", event.data.gitlabToken);
+                alert("¡Autenticación con GitLab completada!");
+            } else {
+                console.error("No se recibió token válido", event.data);
+            }
+        });
+
         function show_upload_dataset() {
             document.getElementById("upload_dataset").style.display = "block";
         }

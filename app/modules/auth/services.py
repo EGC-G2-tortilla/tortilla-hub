@@ -1,6 +1,7 @@
 import os
 from flask_login import login_user
 from flask_login import current_user
+import requests
 
 from app.modules.auth.models import User
 from app.modules.auth.repositories import UserRepository
@@ -130,3 +131,25 @@ class AuthenticationService(BaseService):
 
     def temp_folder_by_user(self, user: User) -> str:
         return os.path.join(uploads_folder_name(), "temp", str(user.id))
+
+    # Cambia el codigo devuelto por un access token para cada usuario
+    def exchange_code_for_token(self, code, platform):
+        if platform == 'github':
+            url = "https://github.com/login/oauth/access_token"
+            data = {
+                'client_id': 'Ov23liirdMyilGskGdbL',
+                'client_secret': '1a272cbe8559532aaef5d017c94871fc09cf8dd6',
+                'code': code
+            }
+        elif platform == 'gitlab':
+            url = "https://gitlab.com/oauth/token"
+            data = {
+                'client_id': 'TU_CLIENT_ID_GITLAB',
+                'client_secret': 'TU_CLIENT_SECRET_GITLAB',
+                'code': code,
+                'grant_type': 'authorization_code',
+                'redirect_uri': 'https://tu_dominio.com/auth/callback/gitlab'
+            }
+        headers = {'Accept': 'application/json'}
+        response = requests.post(url, data=data, headers=headers)
+        return response.json().get('access_token')
