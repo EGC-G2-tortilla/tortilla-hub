@@ -10,7 +10,7 @@
     <div class="col-12">
 
     <h1 class="card-body card-body-slim" style="text-align: center;">
-        <strong>Welcome to UVLHub.io!</strong> <img src="../../../static/img/icons/icon-250x250.png" alt="Icon" style="vertical-align: middle; width: 50px; height: 50px;">
+        Welcome to UVLHub.io! <img src="../../../static/img/icons/icon-250x250.png" alt="Icon" style="vertical-align: middle; width: 50px; height: 50px;">
         <br></br>
     </h1>
 
@@ -97,8 +97,7 @@
 
         <div class="col-md-6" id="latest_datasets">
         <h1 class="h2 mb-3">
-
-            <b>Latest</b> datasets
+            Latest datasets
         </h1>
         <div class="container">
             <div class="row">
@@ -144,11 +143,13 @@
 
     </div>
 
+    <br></br>
+
     <div class="row">
 
         <div class="col-md-6" id="hub_statistics">
             <h1 class="h2 mb-3">
-                <b>Hub</b> statistics
+                Hub statistics
             </h1>
             <div class="card">
                 <div class="card-body">
@@ -184,8 +185,29 @@
             </div>
         </div>
 
-        <div class="col-md-6" id="trendy_tags">
-        </div>
+        <div class="col-md-6" id="trendy_autors">
+            <h1 class="h2 mb-3">
+                Most popular autors
+            </h1>
+            <div class="container">
+                <div class="row">
+                    {% for dataset in datasets[-4:] %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {% if dataset.ds_meta_data.authors %}
+                                            {{ dataset.ds_meta_data.authors[0].name }}
+                                        {% else %}
+                                            Desconocido
+                                        {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>    
 
     </div>
 
