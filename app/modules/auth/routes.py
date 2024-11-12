@@ -278,7 +278,7 @@ def authorize_signup_google():
     # Comprueba si el usuario ya existe en la base de datos y si es un usuario de OAuth
     if user and user.is_oauth_user():
         is_google_user = next(
-            (provider for provider in user.oauth_providers if provider.provider_name == 'google'), 
+            (provider for provider in user.oauth_providers if provider.provider_name == 'google'),
             None)
         # Si el usuario ya existe en la base de datos y es OAuth, añadir una nueva conexión Google si esta no existe
         if not is_google_user:
