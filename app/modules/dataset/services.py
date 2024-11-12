@@ -194,10 +194,11 @@ class DataSetService(BaseService):
         try:
             datasets = self.repository.get_user_staged_datasets(current_user_id)
             for dataset in datasets:
-                dataset.ds_meta_data.dataset_status = DatasetStatus.PUBLISHED
-                self.repository.session.commit()
-            else:
-                raise ValueError("Dataset is not in 'STAGED' status")
+                if dataset.ds_meta_data.dataset_status == DatasetStatus.STAGED:
+                    dataset.ds_meta_data.dataset_status = DatasetStatus.PUBLISHED
+                    self.repository.session.commit()
+                else:
+                    raise ValueError("Dataset is not in 'STAGED' status")
         except Exception as exc:
             logger.error(f"Exception setting dataset to published: {exc}")
             self.repository.session.rollback()
