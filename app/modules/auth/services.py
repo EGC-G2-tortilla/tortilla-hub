@@ -25,9 +25,6 @@ class AuthenticationService(BaseService):
 
     def is_email_available(self, email: str) -> bool:
         return self.repository.get_by_email(email) is None
-    
-    def get_by_email(self, email: str) -> User:
-        return self.repository.get_by_email(email)
 
     def create_with_profile(self, **kwargs):
         try:
@@ -64,55 +61,7 @@ class AuthenticationService(BaseService):
             raise exc
         return user
 
-    def create_with_profile_and_oauth_provider_appended(self, **kwargs):
-        try:
-            email = kwargs.pop("email", None)
-            password = kwargs.pop("password", None)
-            name = kwargs.pop("name", None)
-            surname = kwargs.pop("surname", None)
-            oauth_provider = kwargs.pop("oauth_provider", None)
-            oauth_provider_user_id = kwargs.pop("oauth_provider_user_id", None)
-
-            if not email:
-                raise ValueError("Email is required.")
-            if not name:
-                raise ValueError("Name is required.")
-            if not surname:
-                raise ValueError("Surname is required.")
-            if not oauth_provider:
-                raise ValueError("OAuth provider is required.")
-            if not oauth_provider_user_id:
-                raise ValueError("OAuth provider user ID is required.")
-
-            user_data = {
-                "email": email,
-                "password": password
-            }
-
-            profile_data = {
-                "name": name,
-                "surname": surname,
-            }
-
-            user = self.create(commit=False, **user_data)
-            profile_data["user_id"] = user.id
-            self.user_profile_repository.create(**profile_data)
-            self.repository.session.commit()
-
-            oauth_provider_data = {
-                "user": user,
-                "provider_name": oauth_provider,
-                "provider_user_id": oauth_provider_user_id
-            }
-            self.repository.create_oauth_provider(**oauth_provider_data)
-            self.repository.session.commit()
-        except Exception as exc:
-            self.repository.session.rollback()
-            raise exc
-        return user
-
     def update_profile(self, user_profile_id, form):
-
         if form.validate():
             updated_instance = self.update(user_profile_id, **form.data)
             return updated_instance, None
