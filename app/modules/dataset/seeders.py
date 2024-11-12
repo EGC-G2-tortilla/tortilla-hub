@@ -23,8 +23,9 @@ class DataSetSeeder(BaseSeeder):
         # Retrieve users
         user1 = User.query.filter_by(email='user1@example.com').first()
         user2 = User.query.filter_by(email='user2@example.com').first()
+        user3 = User.query.filter_by(email='user3@example.com').first()
 
-        if not user1 or not user2:
+        if not user1 or not user2 or not user3:
             raise Exception("Users not found. Please seed users first.")
 
         # Create DSMetrics instance
@@ -42,7 +43,7 @@ class DataSetSeeder(BaseSeeder):
                 dataset_doi=f'10.1234/dataset{i+1}',
                 tags='tag1, tag2',
                 ds_metrics_id=seeded_ds_metrics.id
-            ) for i in range(4)
+            ) for i in range(5)
         ]
         ds_meta_data_list.append(
             DSMetaData(
@@ -79,8 +80,9 @@ class DataSetSeeder(BaseSeeder):
                 affiliation=f'Affiliation {i+1}',
                 orcid=f'0000-0000-0000-000{i}',
                 ds_meta_data_id=seeded_ds_meta_data[i % 4].id
-            ) for i in range(4)
+            ) for i in range(5)
         ]
+
         self.seed(authors)
 
         # Create DataSet instances
@@ -104,6 +106,13 @@ class DataSetSeeder(BaseSeeder):
                 user_id=user2.id,
                 ds_meta_data_id=seeded_ds_meta_data[5].id,  # Corresponde a dataset 6 (PUBLISHED)
                 created_at=datetime.now(timezone.utc),
+            )
+        )
+        datasets.append(
+            DataSet(
+                user_id=user3.id,
+                ds_meta_data_id=seeded_ds_meta_data[4].id,
+                created_at=datetime.now(timezone.utc)
             )
         )
         seeded_datasets = self.seed(datasets)

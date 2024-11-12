@@ -159,6 +159,9 @@ class DataSetService(BaseService):
         domain = os.getenv("DOMAIN", "localhost")
         return f"http://{domain}/doi/{dataset.ds_meta_data.dataset_doi}"
 
+    def get_by_community_id(self, community_id: int):
+        return self.repository.get_by_community_id(community_id)
+
     def get_all_datasets(self):
         return self.repository.get_all_datasets()
 
