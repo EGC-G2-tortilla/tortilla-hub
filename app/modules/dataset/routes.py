@@ -7,6 +7,8 @@ import tempfile
 import uuid
 from datetime import datetime, timezone
 from zipfile import ZipFile
+from flamapy.metamodels.fm_metamodel.transformations import UVLReader, GlencoeWriter, SPLOTWriter
+from flamapy.metamodels.pysat_metamodel.transformations import FmToPysat, DimacsWriter
 
 from flask import (
     redirect,
@@ -17,6 +19,7 @@ from flask import (
     make_response,
     abort,
     url_for,
+    send_file,
 )
 from flask_login import login_required, current_user
 
@@ -32,6 +35,7 @@ from app.modules.dataset.services import (
     DOIMappingService,
 )
 from app.modules.fakenodo.services import FakenodoService
+from app.modules.hubfile.services import HubfileService
 
 logger = logging.getLogger(__name__)
 
@@ -345,3 +349,134 @@ def stage_all_datasets():
         datasets=dataset_service.get_synchronized(current_user.id),
         local_datasets=dataset_service.get_unsynchronized(current_user.id),
     )
+
+
+def to_glencoe(file_id, full_path):
+    try:
+        # Obtener el archivo original usando el file_id
+        hubfile = HubfileService().get_by_id(file_id)
+
+        # Realizar las transformaciones necesarias
+        fm = UVLReader(hubfile.get_path()).transform()
+
+        # Generar el nombre final del archivo transformado
+        final_file_name = f"{hubfile.name}_glencoe.txt"
+
+        # Combinar el full_path (directorio) con el nombre final del archivo
+        final_full_path = os.path.join(full_path, final_file_name)
+
+        # Escribir el archivo transformado en la ruta completa final
+        GlencoeWriter(final_full_path, fm).transform()
+
+        # Devolver la ruta completa al archivo transformado
+        return final_full_path
+    except Exception as e:
+        raise e
+
+
+def to_splot(file_id, full_path):
+    try:
+        # Obtener el archivo original usando el file_id
+        hubfile = HubfileService().get_by_id(file_id)
+
+        # Realizar las transformaciones necesarias
+        fm = UVLReader(hubfile.get_path()).transform()
+
+        # Generar el nombre final del archivo transformado
+        final_file_name = f"{hubfile.name}_splot.txt"
+
+        # Combinar el full_path (directorio) con el nombre final del archivo
+        final_full_path = os.path.join(full_path, final_file_name)
+
+        # Escribir el archivo transformado en la ruta completa final
+        SPLOTWriter(final_full_path, fm).transform()
+
+        # Devolver la ruta completa al archivo transformado
+        return final_full_path
+    except Exception as e:
+        raise e
+
+
+def to_cnf(file_id, full_path):
+    try:
+        # Obtener el archivo original usando el file_id
+        hubfile = HubfileService().get_by_id(file_id)
+
+        # Realizar las transformaciones necesarias
+        fm = UVLReader(hubfile.get_path()).transform()
+        sat = FmToPysat(fm).transform()
+
+        # Generar el nombre final del archivo transformado
+        final_file_name = f"{hubfile.name}_cnf.txt"
+
+        # Combinar el full_path (directorio) con el nombre final del archivo
+        final_full_path = os.path.join(full_path, final_file_name)
+
+        # Escribir el archivo transformado en la ruta completa final
+        DimacsWriter(final_full_path, sat).transform()
+
+        # Devolver la ruta completa al archivo transformado
+        return final_full_path
+    except Exception as e:
+        raise e
+
+
+@dataset_bp.route("/dataset/download_all", methods=["GET"])
+def download_all_datasets():
+    datasets = dataset_service.get_all_datasets()
+
+    # Crear un directorio temporal para almacenar archivos originales y transformados
+    temp_dir = tempfile.mkdtemp()
+    original_dir = os.path.join(temp_dir, "original_files")
+    transformed_dir = os.path.join(temp_dir, "transformed_files")
+    os.makedirs(original_dir, exist_ok=True)
+    os.makedirs(transformed_dir, exist_ok=True)
+
+    zip_path = os.path.join(temp_dir, "all_datasets.zip")
+
+    try:
+        with ZipFile(zip_path, "w") as zipf:
+            for dataset in datasets:
+                file_path = f"uploads/user_{dataset.user_id}/dataset_{dataset.id}/"
+
+                # Procesar archivos .uvl y sus transformaciones
+                for subdir, dirs, files in os.walk(file_path):
+                    for file in files:
+                        full_path = os.path.join(subdir, file)
+                        relative_path = os.path.relpath(full_path, file_path)
+
+                        # Copiar archivos originales a la carpeta temporal y agregarlos al ZIP
+                        original_file_path = os.path.join(original_dir, relative_path)
+                        os.makedirs(os.path.dirname(original_file_path), exist_ok=True)
+                        shutil.copy(full_path, original_file_path)
+                        zipf.write(original_file_path, arcname=os.path.relpath(original_file_path, temp_dir))
+                        logging.debug(f"Archivo original agregado al ZIP: {relative_path}")
+
+                        # Solo procesar archivos .uvl para las transformaciones
+                        if file.endswith(".uvl"):
+                            try:
+                                # Obtener el file_id desde el nombre del archivo
+                                file_id = int(file.split(".")[0][4:])
+                            except ValueError:
+                                logging.error(f"Error al extraer file_id del archivo: {file}")
+                                continue  # Ignorar si no se puede extraer el ID correctamente
+
+                            # Generar transformaciones en la carpeta temporal
+                            try:
+                                cnf_file = to_cnf(file_id, transformed_dir)
+                                splot_file = to_splot(file_id, transformed_dir)
+                                glencoe_file = to_glencoe(file_id, transformed_dir)
+
+                                # Agregar transformaciones al ZIP
+                                zipf.write(cnf_file, arcname=os.path.relpath(cnf_file, temp_dir))
+                                zipf.write(splot_file, arcname=os.path.relpath(splot_file, temp_dir))
+                                zipf.write(glencoe_file, arcname=os.path.relpath(glencoe_file, temp_dir))
+                            except Exception as e:
+                                logging.error(f"Error al transformar archivo {file}: {e}")
+                                continue
+
+        # Enviar el archivo ZIP para descarga
+        return send_file(zip_path, as_attachment=True, mimetype="application/zip", download_name="all_datasets.zip")
+    finally:
+        # Eliminar el directorio temporal después de su uso
+        shutil.rmtree(temp_dir)

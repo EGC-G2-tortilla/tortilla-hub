@@ -29,3 +29,6 @@ class UserRepository(BaseRepository):
         self.session.add(oauth_provider)
         self.session.commit()
         return oauth_provider
+
+    def get_all_ids(self):
+        return [user.id for user in self.model.query.all()]
