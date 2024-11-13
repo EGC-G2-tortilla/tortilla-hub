@@ -319,68 +319,61 @@ def to_cnf(file_id, full_path):
 def download_all_datasets():
     datasets = dataset_service.get_all_datasets()
 
-    # Crear el archivo ZIP temporal
+    # Crear un directorio temporal para almacenar archivos originales y transformados
     temp_dir = tempfile.mkdtemp()
+    original_dir = os.path.join(temp_dir, "original_files")
+    transformed_dir = os.path.join(temp_dir, "transformed_files")
+    os.makedirs(original_dir, exist_ok=True)
+    os.makedirs(transformed_dir, exist_ok=True)
+
     zip_path = os.path.join(temp_dir, "all_datasets.zip")
 
-    with ZipFile(zip_path, "w") as zipf:
-        for dataset in datasets:
-            file_path = f"uploads/user_{dataset.user_id}/dataset_{dataset.id}/"
+    try:
+        with ZipFile(zip_path, "w") as zipf:
+            for dataset in datasets:
+                file_path = f"uploads/user_{dataset.user_id}/dataset_{dataset.id}/"
 
-            # Agregar archivos originales al ZIP
-            for subdir, dirs, files in os.walk(file_path):
-                for file in files:
-                    full_path = os.path.join(subdir, file)
-                    relative_path = os.path.relpath(full_path, file_path)
+                # Procesar archivos .uvl y sus transformaciones
+                for subdir, dirs, files in os.walk(file_path):
+                    for file in files:
+                        full_path = os.path.join(subdir, file)
+                        relative_path = os.path.relpath(full_path, file_path)
 
-                    # Solo procesar archivos .uvl para las transformaciones
-                    if file.endswith(".uvl"):
-                        try:
-                            # Obtener el file_id desde el nombre del archivo
-                            file_id = int(file.split(".")[0][4:])
-                        except ValueError:
-                            logging.error(f"Error al extraer file_id del archivo: {file}")
-                            continue  # Ignorar si no se puede extraer el ID correctamente
-
-                        # Agregar archivo original al ZIP
-                        zipf.write(full_path, arcname=relative_path)
+                        # Copiar archivos originales a la carpeta temporal y agregarlos al ZIP
+                        original_file_path = os.path.join(original_dir, relative_path)
+                        os.makedirs(os.path.dirname(original_file_path), exist_ok=True)
+                        shutil.copy(full_path, original_file_path)
+                        zipf.write(original_file_path, arcname=os.path.relpath(original_file_path, temp_dir))
                         logging.debug(f"Archivo original agregado al ZIP: {relative_path}")
 
-                        # Obtener el directorio donde se va a guardar el archivo transformado
-                        base_dir = os.path.dirname(full_path)
+                        # Solo procesar archivos .uvl para las transformaciones
+                        if file.endswith(".uvl"):
+                            try:
+                                # Obtener el file_id desde el nombre del archivo
+                                file_id = int(file.split(".")[0][4:])
+                            except ValueError:
+                                logging.error(f"Error al extraer file_id del archivo: {file}")
+                                continue  # Ignorar si no se puede extraer el ID correctamente
 
-                        # Transformar el archivo y obtener el nombre del archivo transformado
-                        cnf_file = to_cnf(file_id, base_dir)
+                            # Generar transformaciones en la carpeta temporal
+                            try:
+                                cnf_file = to_cnf(file_id, transformed_dir)
+                                splot_file = to_splot(file_id, transformed_dir)
+                                glencoe_file = to_glencoe(file_id, transformed_dir)
 
-                        # Definir el nombre relativo del archivo transformado dentro del ZIP
-                        transformed_relative_path = os.path.join(
-                            os.path.dirname(relative_path), f"{os.path.basename(cnf_file)}")
+                                # Agregar transformaciones al ZIP
+                                zipf.write(cnf_file, arcname=os.path.relpath(cnf_file, temp_dir))
+                                zipf.write(splot_file, arcname=os.path.relpath(splot_file, temp_dir))
+                                zipf.write(glencoe_file, arcname=os.path.relpath(glencoe_file, temp_dir))
+                            except Exception as e:
+                                logging.error(f"Error al transformar archivo {file}: {e}")
+                                continue
 
-                        # Agregar el archivo transformado al ZIP
-                        zipf.write(cnf_file, arcname=transformed_relative_path)
-
-                        # Transformar el archivo y obtener el nombre del archivo transformado
-                        splot_file = to_splot(file_id, base_dir)
-
-                        # Definir el nombre relativo del archivo transformado dentro del ZIP
-                        transformed_relative_path2 = os.path.join(
-                            os.path.dirname(relative_path), f"{os.path.basename(splot_file)}")
-
-                        # Agregar el archivo transformado al ZIP
-                        zipf.write(splot_file, arcname=transformed_relative_path2)
-
-                        # Transformar el archivo y obtener el nombre del archivo transformado
-                        glencoe_file = to_glencoe(file_id, base_dir)
-
-                        # Definir el nombre relativo del archivo transformado dentro del ZIP
-                        transformed_relative_path3 = os.path.join(
-                            os.path.dirname(relative_path), f"{os.path.basename(glencoe_file)}")
-
-                        # Agregar el archivo transformado al ZIP
-                        zipf.write(glencoe_file, arcname=transformed_relative_path3)
-
-    # Enviar el archivo ZIP con las cabeceras correctas para la descarga
-    return send_file(zip_path, as_attachment=True, mimetype="application/zip", download_name="all_datasets.zip")
+        # Enviar el archivo ZIP para descarga
+        return send_file(zip_path, as_attachment=True, mimetype="application/zip", download_name="all_datasets.zip")
+    finally:
+        # Eliminar el directorio temporal después de su uso
+        shutil.rmtree(temp_dir)
 
 
 @dataset_bp.route("/doi/<path:doi>/", methods=["GET"])
@@ -420,4 +413,5 @@ def get_unsynchronized_dataset(dataset_id):
         abort(404)
 
     return render_template("dataset/view_dataset.html", dataset=dataset)
+
 
