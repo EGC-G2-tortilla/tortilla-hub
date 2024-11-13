@@ -184,6 +184,12 @@ def provide_email():
         user = authentication_service.get_by_email(email)
 
         if user and user.is_oauth_user():
+            is_orcid_user = next(
+                (provider for provider in user.oauth_providers if provider.provider_name == 'orcid'),
+                None)
+            # Si el usuario ya existe en la base de datos y es OAuth, añadir una nueva conexión ORCID si esta no existe
+            if not is_orcid_user:
+                authentication_service.append_oauth_provider(user, 'orcid', orcid_id)
             login_user(user, remember=True)
             return redirect(url_for('public.index'))
 
@@ -278,7 +284,7 @@ def authorize_signup_google():
     # Comprueba si el usuario ya existe en la base de datos y si es un usuario de OAuth
     if user and user.is_oauth_user():
         is_google_user = next(
-            (provider for provider in user.oauth_providers if provider.provider_name == 'google'), 
+            (provider for provider in user.oauth_providers if provider.provider_name == 'google'),
             None)
         # Si el usuario ya existe en la base de datos y es OAuth, añadir una nueva conexión Google si esta no existe
         if not is_google_user:
