@@ -1,6 +1,84 @@
 var currentId = 0;
         var amount_authors = 0;
 
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.hash.slice(1));
+            const tokenGithub = urlParams.get("githubToken");
+            const tokenGitlab = urlParams.get("gitlabToken");
+        
+            if (tokenGithub) {
+                sessionStorage.setItem("github_token", tokenGithub);
+                window.location.hash = ''; // Limpia el fragmento de la URL por seguridad
+            }
+            if (tokenGitlab) {
+                sessionStorage.setItem("gitlab_token", tokenGitlab);
+                window.location.hash = ''; // Limpia el fragmento de la URL por seguridad
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = sessionStorage.getItem("github_token") || sessionStorage.getItem("gitlab_token");
+        
+            if (token) {
+                document.getElementById("authButtons").style.display = "none";
+                document.getElementById("repo-form").style.display = "block";
+        
+                document.getElementById("uploadToRepo").checked = true;
+        
+                loadUserRepositories();
+            }
+        });
+        
+        function toggleAuthButtons() {
+            const isChecked = document.getElementById("uploadToRepo").checked;
+            const token = sessionStorage.getItem("github_token") || sessionStorage.getItem("gitlab_token");
+        
+            if (token) {
+                document.getElementById("authButtons").style.display = "none";
+                document.getElementById("repo-form").style.display = isChecked ? "block" : "none";
+                if (isChecked) {
+                    loadUserRepositories();
+                }
+            } else {
+                document.getElementById("authButtons").style.display = isChecked ? "flex" : "none";
+                document.getElementById("repo-form").style.display = "none";
+            }
+        }
+        
+        // Función para cargar los repositorios del usuario desde el backend
+        function loadUserRepositories() {
+            if (sessionStorage.getItem("github_token")){
+                fetch('/github/repositories')
+                .then(response => response.json())
+                .then(repos => {
+                    const repoSelect = document.getElementById("repo-select");
+                    repoSelect.innerHTML = `<option value="">Seleccione un repositorio</option>`;
+                    repos.forEach(repo => {
+                        const option = document.createElement("option");
+                        option.value = repo.full_name;
+                        option.textContent = repo.name;
+                        repoSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error al cargar repositorios:", error));
+            } else if (sessionStorage.getItem("gitlab_token")){
+                fetch('/gitlab/repositories')
+                .then(response => response.json())
+                .then(repos => {
+                    const repoSelect = document.getElementById("repo-select");
+                    repoSelect.innerHTML = `<option value="">Seleccione un repositorio</option>`;
+                    repos.forEach(repo => {
+                        const option = document.createElement("option");
+                        option.value = repo.full_name;
+                        option.textContent = repo.name;
+                        repoSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error al cargar repositorios:", error));
+            }
+        }
+        
+
         function show_upload_dataset() {
             document.getElementById("upload_dataset").style.display = "block";
         }
