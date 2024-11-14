@@ -22,6 +22,11 @@ class CommunityService(BaseService):
         self.update(community.id, members=community.members)
 
     def create_from_form(self, current_user, form):
-        community = self.create(name=form.data["name"], description=form.data["description_info"], url=form.data["url"],
-                                admin=current_user.id, members=[current_user])
+        community = self.create(
+            name=form.data["name"],
+            description=form.data["description_info"],
+            url=form.data["url"],
+            admin=current_user.id,
+            members=[current_user],
+        )
         return community

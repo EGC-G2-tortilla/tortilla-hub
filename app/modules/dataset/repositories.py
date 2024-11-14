@@ -24,8 +24,9 @@ class AuthorRepository(BaseRepository):
 
     def most_popular_authors(self):
         return (
-            self.model.query
-            .join(DSMetaData, self.model.ds_meta_data_id == DSMetaData.id)
+            self.model.query.join(
+                DSMetaData, self.model.ds_meta_data_id == DSMetaData.id
+            )
             .group_by(self.model.id)
             .order_by(desc(func.count(DSMetaData.id)))
             .limit(4)
@@ -136,8 +137,9 @@ class DataSetRepository(BaseRepository):
 
     def most_downloaded(self):
         return (
-            self.model.query
-            .join(DSDownloadRecord, DSDownloadRecord.dataset_id == self.model.id)
+            self.model.query.join(
+                DSDownloadRecord, DSDownloadRecord.dataset_id == self.model.id
+            )
             .group_by(self.model.id)
             .order_by(desc(func.count(DSDownloadRecord.id)))
             .limit(5)

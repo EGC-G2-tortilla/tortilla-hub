@@ -7,7 +7,11 @@ import tempfile
 import uuid
 from datetime import datetime, timezone
 from zipfile import ZipFile
-from flamapy.metamodels.fm_metamodel.transformations import UVLReader, GlencoeWriter, SPLOTWriter
+from flamapy.metamodels.fm_metamodel.transformations import (
+    UVLReader,
+    GlencoeWriter,
+    SPLOTWriter,
+)
 from flamapy.metamodels.pysat_metamodel.transformations import FmToPysat, DimacsWriter
 
 from flask import (
@@ -314,10 +318,10 @@ def get_unsynchronized_dataset(dataset_id):
     return render_template("dataset/view_dataset.html", dataset=dataset)
 
 
-ZIP_FOLDER = os.path.join(os.getcwd(), 'app', 'modules', 'dataset')
+ZIP_FOLDER = os.path.join(os.getcwd(), "app", "modules", "dataset")
 
 
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
 
 
 def set_full_permissions(directory):
@@ -339,11 +343,18 @@ def upload_from_zip(dataset_id):
             if not os.path.exists(temp_folder):
                 os.makedirs(temp_folder)
             else:
-                shutil.rmtree(temp_folder)  # Limpia la carpeta temporal para evitar residuos
+                shutil.rmtree(
+                    temp_folder
+                )  # Limpia la carpeta temporal para evitar residuos
                 os.makedirs(temp_folder)
         except Exception as e:
             logging.error(f"Error al preparar la carpeta temporal: {e}")
-            return jsonify({"message": f"Error al preparar la carpeta temporal: {str(e)}"}), 500
+            return (
+                jsonify(
+                    {"message": f"Error al preparar la carpeta temporal: {str(e)}"}
+                ),
+                500,
+            )
 
         # Paso 2: Validar y guardar el archivo ZIP
         try:
@@ -354,20 +365,30 @@ def upload_from_zip(dataset_id):
             file.save(file_path)
         except Exception as e:
             logging.error(f"Error al guardar el archivo ZIP: {e}")
-            return jsonify({"message": f"Error al guardar el archivo ZIP: {str(e)}"}), 500
+            return (
+                jsonify({"message": f"Error al guardar el archivo ZIP: {str(e)}"}),
+                500,
+            )
 
         # Paso 3: Extraer archivos del ZIP
         try:
             with ZipFile(file_path, "r") as zip_ref:
                 zip_ref.extractall(temp_folder)
-                extracted_files = zip_ref.namelist()  # Obtener la lista de archivos extraídos
+                extracted_files = (
+                    zip_ref.namelist()
+                )  # Obtener la lista de archivos extraídos
         except Exception as e:
             logging.error(f"Error al extraer el archivo ZIP: {e}")
-            return jsonify({"message": f"Error al extraer el archivo ZIP: {str(e)}"}), 500
+            return (
+                jsonify({"message": f"Error al extraer el archivo ZIP: {str(e)}"}),
+                500,
+            )
 
         # Paso 4: Guardar en la carpeta uploads con nombres únicos
         try:
-            upload_folder = os.path.join(UPLOAD_FOLDER, f"user_{dataset.user_id}/dataset_{dataset_id}/")
+            upload_folder = os.path.join(
+                UPLOAD_FOLDER, f"user_{dataset.user_id}/dataset_{dataset_id}/"
+            )
             if not os.path.exists(upload_folder):
                 os.makedirs(upload_folder, exist_ok=True)
 
@@ -376,7 +397,7 @@ def upload_from_zip(dataset_id):
 
             for file in extracted_files:
                 # Ignorar directorios
-                if file.endswith('/'):
+                if file.endswith("/"):
                     continue
 
                 # Ruta completa del archivo extraído
@@ -400,7 +421,10 @@ def upload_from_zip(dataset_id):
 
         except Exception as e:
             logging.error(f"Error al guardar archivos en uploads: {e}")
-            return jsonify({"message": f"Error al guardar archivos en uploads: {str(e)}"}), 500
+            return (
+                jsonify({"message": f"Error al guardar archivos en uploads: {str(e)}"}),
+                500,
+            )
 
         # Paso 5: Mover los archivos renombrados a zip_files
         try:
@@ -416,7 +440,10 @@ def upload_from_zip(dataset_id):
 
         except Exception as e:
             logging.error(f"Error al mover archivos a zip_files: {e}")
-            return jsonify({"message": f"Error al mover archivos a zip_files: {str(e)}"}), 500
+            return (
+                jsonify({"message": f"Error al mover archivos a zip_files: {str(e)}"}),
+                500,
+            )
 
         # Paso 6: Limpieza y confirmación
         add_files_to_dataset(dataset_id)
@@ -425,7 +452,10 @@ def upload_from_zip(dataset_id):
             return jsonify({"message": "Files uploaded successfully"}), 200
         except Exception as e:
             logging.error(f"Error al limpiar la carpeta temporal: {e}")
-            return jsonify({"message": f"Error al limpiar la carpeta temporal: {str(e)}"}), 500
+            return (
+                jsonify({"message": f"Error al limpiar la carpeta temporal: {str(e)}"}),
+                500,
+            )
 
     except Exception as e:
         logging.error(f"Error inesperado en upload_from_zip: {e}")
@@ -434,7 +464,11 @@ def upload_from_zip(dataset_id):
 
 def add_files_to_dataset(dataset_id):
     src_folder = os.path.join(ZIP_FOLDER, "zip_files")
-    files = [f for f in os.listdir(src_folder) if f.endswith(".uvl") and not f.startswith("._")]
+    files = [
+        f
+        for f in os.listdir(src_folder)
+        if f.endswith(".uvl") and not f.startswith("._")
+    ]
 
     for file in files:
         try:
@@ -447,14 +481,14 @@ def add_files_to_dataset(dataset_id):
 
             # Crear metadatos
             fm_meta_data = FMMetaData(
-                uvl_filename=f'file{i}.uvl',
-                title=f'Feature Model {i}',
-                description=f'Description for feature model {i}',
+                uvl_filename=f"file{i}.uvl",
+                title=f"Feature Model {i}",
+                description=f"Description for feature model {i}",
                 # (Por defecto) Es necesario para gaurdar los modelos
                 publication_type=PublicationType.SOFTWARE_DOCUMENTATION,
-                publication_doi='',
-                tags='',
-                uvl_version='1.0'
+                publication_doi="",
+                tags="",
+                uvl_version="1.0",
             )
             try:
                 seeder = BaseSeeder()
@@ -465,8 +499,7 @@ def add_files_to_dataset(dataset_id):
 
             # Crear modelo de características
             feature_model = FeatureModel(
-                data_set_id=dataset_id,
-                fm_meta_data_id=fm_meta_data.id
+                data_set_id=dataset_id, fm_meta_data_id=fm_meta_data.id
             )
             seeder = BaseSeeder()
             seeder.seed([feature_model])  # Pasar como lista
@@ -475,7 +508,7 @@ def add_files_to_dataset(dataset_id):
             file_path = os.path.join(src_folder, file)
             uvl_file = Hubfile(
                 name=file,
-                checksum=f'checksum{i}',
+                checksum=f"checksum{i}",
                 size=os.path.getsize(file_path),
                 feature_model_id=feature_model.id,
             )
@@ -636,8 +669,13 @@ def download_all_datasets():
                         original_file_path = os.path.join(original_dir, relative_path)
                         os.makedirs(os.path.dirname(original_file_path), exist_ok=True)
                         shutil.copy(full_path, original_file_path)
-                        zipf.write(original_file_path, arcname=os.path.relpath(original_file_path, temp_dir))
-                        logging.debug(f"Archivo original agregado al ZIP: {relative_path}")
+                        zipf.write(
+                            original_file_path,
+                            arcname=os.path.relpath(original_file_path, temp_dir),
+                        )
+                        logging.debug(
+                            f"Archivo original agregado al ZIP: {relative_path}"
+                        )
 
                         # Solo procesar archivos .uvl para las transformaciones
                         if file.endswith(".uvl"):
@@ -645,7 +683,9 @@ def download_all_datasets():
                                 # Obtener el file_id desde el nombre del archivo
                                 file_id = int(file.split(".")[0][4:])
                             except ValueError:
-                                logging.error(f"Error al extraer file_id del archivo: {file}")
+                                logging.error(
+                                    f"Error al extraer file_id del archivo: {file}"
+                                )
                                 continue  # Ignorar si no se puede extraer el ID correctamente
 
                             # Generar transformaciones en la carpeta temporal
@@ -655,15 +695,31 @@ def download_all_datasets():
                                 glencoe_file = to_glencoe(file_id, transformed_dir)
 
                                 # Agregar transformaciones al ZIP
-                                zipf.write(cnf_file, arcname=os.path.relpath(cnf_file, temp_dir))
-                                zipf.write(splot_file, arcname=os.path.relpath(splot_file, temp_dir))
-                                zipf.write(glencoe_file, arcname=os.path.relpath(glencoe_file, temp_dir))
+                                zipf.write(
+                                    cnf_file,
+                                    arcname=os.path.relpath(cnf_file, temp_dir),
+                                )
+                                zipf.write(
+                                    splot_file,
+                                    arcname=os.path.relpath(splot_file, temp_dir),
+                                )
+                                zipf.write(
+                                    glencoe_file,
+                                    arcname=os.path.relpath(glencoe_file, temp_dir),
+                                )
                             except Exception as e:
-                                logging.error(f"Error al transformar archivo {file}: {e}")
+                                logging.error(
+                                    f"Error al transformar archivo {file}: {e}"
+                                )
                                 continue
 
         # Enviar el archivo ZIP para descarga
-        return send_file(zip_path, as_attachment=True, mimetype="application/zip", download_name="all_datasets.zip")
+        return send_file(
+            zip_path,
+            as_attachment=True,
+            mimetype="application/zip",
+            download_name="all_datasets.zip",
+        )
     finally:
         # Eliminar el directorio temporal después de su uso
         shutil.rmtree(temp_dir)
