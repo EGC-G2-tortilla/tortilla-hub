@@ -3,8 +3,6 @@ name: Python Lint
 on:
   push:
     branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
 
 permissions:
   contents: write  
