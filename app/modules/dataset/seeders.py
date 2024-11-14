@@ -47,26 +47,26 @@ class DataSetSeeder(BaseSeeder):
         ]
         ds_meta_data_list.append(
             DSMetaData(
-                deposition_id=5,
-                title='Sample dataset 5',
-                description='Description for dataset 5 staged',
+                deposition_id=6,
+                title='Sample dataset 6',
+                description='Description for dataset 6 staged',
                 publication_type=PublicationType.DATA_MANAGEMENT_PLAN,
-                publication_doi='10.1234/dataset5',
-                dataset_doi='10.1234/dataset5',
-                tags='tag1, tag2',
+                publication_doi='10.1234/dataset6',
+                dataset_doi='10.1234/dataset6',
+                tags='tag2',
                 dataset_status=DatasetStatus.STAGED,
                 ds_metrics_id=seeded_ds_metrics.id
             )
         )
         ds_meta_data_list.append(
             DSMetaData(
-                deposition_id=6,
-                title='Sample dataset 6',
-                description='Description for dataset 6 published',
+                deposition_id=7,
+                title='Sample dataset 7',
+                description='Description for dataset 7 published',
                 publication_type=PublicationType.DATA_MANAGEMENT_PLAN,
-                publication_doi='10.1234/dataset6',
-                dataset_doi='10.1234/dataset6',
-                tags='tag1, tag2',
+                publication_doi='10.1234/dataset7',
+                dataset_doi='10.1234/dataset7',
+                tags='tag1', 
                 dataset_status=DatasetStatus.PUBLISHED,
                 ds_metrics_id=seeded_ds_metrics.id
             )
