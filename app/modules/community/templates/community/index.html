@@ -1,11 +1,56 @@
 {% extends "base_template.html" %}
 
-{% block title %}View community{% endblock %}
+{% block title %}Main page{% endblock %}
 
 {% block content %}
+
+    <h1 class="h2 mb-3">
+
+        <b>All</b> communities
+        <a href="/community/create">
+            <button type="button" class="btn btn-primary create_community" data-dismiss="modal">Create community</button>
+        </a>
+    </h1>
+
+    <div class="row">
+
+        <div class="mb-2 col-xl-8 col-lg-12 col-md-12 col-sm-12">
+
+            {% for community in communities %}
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h2>
+
+                                <a href="community/{{ community.name }}">
+                                    {{ community.name }}
+                                </a>
+
+                            </h2>
+                        </div>
+
+                        <div class="row mb-2">
+
+                            <div class="col-12">
+                                <a href="{{ community.url }}">
+                                    {{ community.url }}
+                                </a>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            {% endfor %}
+
+
+        </div>
+
+    </div>
 
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{ url_for('community.scripts') }}"></script>
+    <script src="{{ url_for('public.scripts') }}"></script>
 {% endblock %}

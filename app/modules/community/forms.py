@@ -1,14 +1,13 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms import StringField, TextAreaField, SubmitField, URLField
+from wtforms.validators import DataRequired, Length, URL
 
 
 class CommunityForm(FlaskForm):
-    name = StringField('Title', validators=[DataRequired(), Length(max=256)])
-    description = TextAreaField('Description', validators=[DataRequired()])
-    url = TextAreaField('URL', validators=[DataRequired()])
+    name = StringField("Name", validators=[DataRequired(), Length(max=256)])
+    description_info = TextAreaField(
+        "Description", validators=[DataRequired(), Length(max=30000)]
+    )
+    url = URLField("URL", validators=[DataRequired(), URL()])
 
-    # TODO: add tags
-    # TODO: add users
-
-    submit = SubmitField('Save community')
+    submit = SubmitField("Save community")

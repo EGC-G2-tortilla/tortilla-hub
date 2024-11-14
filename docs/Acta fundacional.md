@@ -28,51 +28,58 @@
 
 [Miembros](#miembros)
 
-[1\. Objetivo del Proyecto](#1.-objetivo-del-proyecto)
+[1. Objetivo del Proyecto](#1-objetivo-del-proyecto)
 
-[2\. Estructura Organizativa](#2.-estructura-organizativa)
+[2. Estructura Organizativa](#2-estructura-organizativa)
 
-[3\. Repositorio de Código](#3.-repositorio-de-código)
+[3. Repositorio de Código](#3-repositorio-de-código)
 
-[3.1. Política de Acceso](#3.1.-política-de-acceso)
+[3.1. Política de Acceso](#31-política-de-acceso)
 
-[3.2. Estructura del Repositorio](#3.2.-estructura-del-repositorio)
+[3.2. Estructura del Repositorio](#32-estructura-del-repositorio)
 
-[4\. Gestión de Ramas (Branch Management)](#4.-gestión-de-ramas-\(branch-management\))
+[4. Gestión de Ramas (Branch Management)](#4-gestión-de-ramas-branch-management)
 
-[5\. Política de Commits](#5.-política-de-commits)
+[5. Gestión de Tareas (Issues)](#5-gestión-de-tareas-issues)
 
-[5.1. Estructura del Mensaje de Commit](#5.1.-estructura-del-mensaje-de-commit)
+[5.1 Contenido de Issues](#51-contenido-de-issues)
 
-[5.2. Tipos de Commits](#5.2.-tipos-de-commits)
+[5.2 Gestión de Issues](#52-gestión-de-issues)
 
-[5.3. ¿Cuándo hacer commit?](#5.3.-¿cuándo-hacer-commit?)
+[6. Política de Commits](#6-política-de-commits)
 
-[5.4. Ejemplo de Mensaje de Commit](#5.4.-ejemplo-de-mensaje-de-commit)
+[6.1 Estructura del Mensaje de Commit](#61-estructura-del-mensaje-de-commit)
 
-[6\. Política de Versionado](#6.-política-de-versionado)
+[6.2 Tipos de Commits](#62-tipos-de-commits)
 
-[6.1. Ejemplo de Versionado](#6.1.-ejemplo-de-versionado)
+[6.3 ¿Cuándo hacer commit?](#63-cuándo-hacer-commit)
 
-[7\. Integración Continua y Revisión de Código](#7.-integración-continua-y-revisión-de-código)
+[6.4 Ejemplo de Mensaje de Commit](#64-ejemplo-de-mensaje-de-commit)
 
-[7.1. Revisión de Código](#7.1.-revisión-de-código)
+[7. Política de Versionado](#7-política-de-versionado)
 
-[7.2. Política de Aprobación](#7.2.-política-de-aprobación)
+[7.1 Ejemplo de Versionado](#71-ejemplo-de-versionado)
 
-[8\. Documentación](#8.-documentación)
+[8. Integración Continua y Revisión de Código](#8-integración-continua-y-revisión-de-código)
 
-[9\. Gestión de Incidencias](#9.-gestión-de-incidencias)
+[8.1 Revisión de Código](#81-revisión-de-código)
 
-[9.1. Depuración](#9.1.-depuración)
+[8.2 Política de Aprobación](#82-política-de-aprobación)
 
-[10\. Solución de Conflictos](#10.-solución-de-conflictos)
+[9. Documentación](#9-documentación)
 
-[10.1. Conflictos Técnicos](#10.1.-conflictos-técnicos)
+[10. Gestión de Incidencias](#10-gestión-de-incidencias)
 
-[10.2. Conflictos de Gestión o Colaboración](#10.2.-conflictos-de-gestión-o-colaboración)
+[10.1 Depuración](#101-depuración)
 
-[10.3. Conflictos en los Pull Requests (PR)](#10.3.-conflictos-en-los-pull-requests-\(pr\))
+[11. Solución de Conflictos](#11-solución-de-conflictos)
+
+[11.1 Conflictos Técnicos](#111-conflictos-técnicos)
+
+[11.2 Conflictos de Gestión o Colaboración](#112-conflictos-de-gestión-o-colaboración)
+
+[11.3 Conflictos en los Pull Requests (PR)](#113-conflictos-en-los-pull-requests-pr)
+
 
 # 1\. Objetivo del Proyecto <!-- {#1.-objetivo-del-proyecto} -->
 
@@ -82,7 +89,7 @@ El proyecto deberá cumplir con una serie de hitos/entregables, en los que el si
 
 * M1: Sistema funcionando y pruebas (23/10/2024)  
 * M2: Sistema funcionando y con incrementos (13/11/2024)  
-* M3: Entrega de proyectos y defensas (18/11/2024)
+* M3: Entrega de proyectos y defensas (18/12/2024)
 
 
 # 2\. Estructura Organizativa <!-- {#2.-estructura-organizativa} -->
@@ -138,21 +145,46 @@ La gestión de ramas del proyecto seguirá las siguientes políticas:
 * **Ramas de trabajo (`task/*`):** Se seguirá la nomenclatura task/\<nombre-descriptivo\>. Estas ramas serán empleadas para cualquier tarea necesaria en el desarrollo del proyecto (nuevas características, mejoras, correcciones de errores, etc.). Una vez completada la tarea relacionada, la rama deberá eliminarse.   
   Estas ramas serán fusionadas con develop siempre que se realice una revisión de la pull request asociada por parte de otro desarrollador miembro del equipo. La persona seleccionada para la revisión no podrá realizar ninguna otra tarea hasta que no se revise la pull request asignada.
 
+### 5. Gestión de Tareas (_Issues_) <!--{#5.-gestión-de-tareas-(issues)}-->
+
+Una gestión efectiva de los issues es fundamental para el éxito del proyecto, ya que permite organizar y hacer seguimiento de las tareas, errores y mejoras. A continuación se presenta una plantilla estandarizada para la creación de issues, así como los lineamientos para su gestión.
+
+## 5.1 Contenido de Issues
+
+Para asegurar coherencia y facilitar la comunicación, todos los issues deben crearse siguiendo la plantilla estandarizada que se describe a continuación:
+
+- **Título del Issue**: Descripción clara y concisa del problema o tarea. Seguirá el siguiente patrón:
+  * _Nombre WI / Fakenodo / Docs / Workflow: título tarea_.
+- **Descripción**: Detalle completo del problema, mejora o tarea. Incluir contexto, objetivo y detalles relevantes que permitan entender de qué se trata el issue.
+- **Criterios de Aceptación (si aplica)**: Definir las condiciones que deben cumplirse para considerar el issue resuelto. Esto garantiza un entendimiento común de cuándo se ha alcanzado el objetivo y sirve de guía a su revisor.
+- **Pasos para Reproducir (en caso de un bug)**: Lista detallada de pasos para reproducir el problema si se trata de un error.
+- **Etiquetas**: Uso de etiquetas (tags) para clasificar el issue. Se deben usar al menos las siguientes: `bug`, `WI`, `fakenodo`, `documentation`, `workflow`.
+- **Asignados**: Definir al miembro del equipo responsable de la tarea, si corresponde. Esto facilita el seguimiento de responsabilidades.
+- **Prioridad**: Utilizar una escala de prioridades (`H` high, `M` medium, `L` low) para ayudar a determinar el orden de trabajo.
+- **Fecha Límite (si aplica)**: En caso de que el issue deba completarse antes de una fecha específica.
+
+## 5.2 Gestión de Issues
+
+- **Creación de Issues**: Todo miembro del equipo puede crear un issue cuando identifique una tarea, mejora o problema. Es importante que el issue esté bien detallado y categorizado para evitar confusiones.
+- **Revisión y Priorización**: Los issues serán revisados en un plazo máximo de 24 horas desde que se coloquen en la columna `In Review`.
+- **Asignación y Seguimiento**: Una vez priorizados, los issues serán asignados a los miembros del equipo según sus habilidades y disponibilidad. El seguimiento se realizará utilizando los tableros de GitHub (Projects), que permiten mover los issues a través de las diferentes etapas (`To Do`, `In Progress`, `In Review`, `Done`, `Closed`).
+- **Comentarios y Comunicación**: Se fomenta el uso de la sección de comentarios para proporcionar actualizaciones, hacer preguntas o dar sugerencias relacionadas con el issue. Una comunicación constante asegura que todos los involucrados estén al tanto del progreso.
+- **Cierre del Issue**: Un issue se considera completado cuando cumple con todos los criterios de aceptación definidos y se verifica su correcta resolución. Se cerrará una vez que la tarea asociada esté integrada en la rama `main`.
 
 
-# 5\. Política de Commits <!--{#5.-política-de-commits}-->
+# 6\. Política de Commits <!--{#6.-política-de-commits}-->
 
 Para garantizar la claridad y calidad de los commits en el proyecto, se utilizará la siguiente plantilla para los mensajes de commits. Cada *commit* debe describir claramente lo que cambia, por qué y cómo se resolvió.
 
-## 5.1. Estructura del Mensaje de Commit <!--{#5.1.-estructura-del-mensaje-de-commit}-->
+## 6.1. Estructura del Mensaje de Commit <!--{#6.1.-estructura-del-mensaje-de-commit}-->
 
 Los mensajes de commit deben seguir el formato:
 
-`<tipo>(<módulo>): <descripción breve>`
+`<tipo>: <descripción breve>`
 
 `<Descripción extendida del commit, si es necesario. Explicar el porqué del cambio y cualquier información adicional que sea relevante.>`
 
-## 5.2. Tipos de Commits <!--{#5.2.-tipos-de-commits}-->
+## 6.2. Tipos de Commits <!--{#6.2.-tipos-de-commits}-->
 
 * **Feat:** Para la introducción de nuevas funcionalidades.  
 * **Fix:** Para corregir errores.  
@@ -160,9 +192,9 @@ Los mensajes de commit deben seguir el formato:
 * **Chore:** Cambios en la estructura del código que no alteran su comportamiento, cambios menores o tareas de mantenimiento.  
 * **Test:** Adición o modificación de tests.
 
-## 5.3. ¿Cuándo hacer commit? <!--{#5.3.-¿cuándo-hacer-commit?}-->
+## 6.3. ¿Cuándo hacer commit? <!--{#6.3.-¿cuándo-hacer-commit?}-->
 
-Deberán realizarse commits atómicos (pequeño, autocontenido y fácil de entender, que no afecta a otras partes del código no relacionadas con la tarea)r. El objetivo es que, en caso de error, el commit pueda deshacerse sin causar problemas adicionales.
+Deberán realizarse commits atómicos (pequeño, autocontenido y fácil de entender, que no afecta a otras partes del código no relacionadas con la tarea). El objetivo es que, en caso de error, el commit pueda deshacerse sin causar problemas adicionales.
 
 Buenas prácticas para un commit atómico:
 
@@ -171,15 +203,15 @@ Buenas prácticas para un commit atómico:
 * **No mezclar tipos de cambios**: No mezclar correcciones de bugs, mejoras de código y actualizaciones de documentación en un mismo commit.  
 * **Pruebas de unidad antes del commit**: Realizar pruebas para asegurarse de que el código es funcional y no introduce errores.
 
-## 5.4. Ejemplo de Mensaje de Commit <!--{#5.4.-ejemplo-de-mensaje-de-commit}-->
+## 6.4. Ejemplo de Mensaje de Commit <!--{#6.4.-ejemplo-de-mensaje-de-commit}-->
 
-`feat(auth): implement login functionality`
+`feat: implement login functionality`
 
 `Added user authentication via JWT. Created new API routes for login and logout, and added middleware to protect private routes.`
 
 
 
-# 6\. Política de Versionado <!--{#6.-política-de-versionado}-->
+# 7\. Política de Versionado <!--{#7.-política-de-versionado}-->
 
 El proyecto seguirá el esquema de versionado **SemVer** (Versionado Semántico) basado en el siguiente formato:
 
@@ -189,18 +221,18 @@ El proyecto seguirá el esquema de versionado **SemVer** (Versionado Semántico)
 * **MINOR**: Se incrementa cuando se añaden nuevas funcionalidades de manera compatible con versiones anteriores.  
 * **PATCH**: Se incrementa cuando se realizan correcciones de errores que no afectan a la funcionalidad.
 
-## 6.1. Ejemplo de Versionado <!--{#6.1.-ejemplo-de-versionado}-->
+## 7.1. Ejemplo de Versionado <!--{#7.1.-ejemplo-de-versionado}-->
 
 * `v1.0.0`: Primera versión estable del software.  
 * `v1.1.0`: Se ha añadido una nueva funcionalidad.  
 * `v1.1.1`: Se ha corregido un error en una funcionalidad existente.
 
 
-# 7\. Integración Continua y Revisión de Código <!--{#7.-integración-continua-y-revisión-de-código}-->
+# 8\. Integración Continua y Revisión de Código <!--{#8.-integración-continua-y-revisión-de-código}-->
 
 El proyecto adoptará un enfoque de **Integración Continua (CI)**, utilizando como herramienta **GitHub Actions** para automatizar pruebas, builds y validación de código antes de fusionar ramas.
 
-## 7.1. Revisión de Código <!--{#7.1.-revisión-de-código}-->
+## 8.1. Revisión de Código <!--{#8.1.-revisión-de-código}-->
 
 * Todo cambio deberá pasar por un proceso de **Pull Request (PR)** y será revisado por al menos un desarrollador antes de ser integrado a `develop` o `main`.  
 * Los PRs deben incluir una descripción clara de los cambios realizados y, cuando sea necesario, documentación o pruebas adicionales.  
@@ -211,7 +243,7 @@ El proyecto adoptará un enfoque de **Integración Continua (CI)**, utilizando c
 * **Evidencia de pruebas**: Proporcionar información sobre las pruebas ejecutadas para validar el cambio.  
 * **Instrucciones adicionales**: Indicar si es necesario realizar alguna acción posterior a la integración del PR (como migraciones de base de datos o despliegues especiales).
 
-## 7.2. Política de Aprobación <!--{#7.2.-política-de-aprobación}-->
+## 8.2. Política de Aprobación <!--{#8.2.-política-de-aprobación}-->
 
 * Al menos un revisor debe aprobar el PR antes de ser fusionado.  
 * Se requerirá una aprobación adicional para los cambios que afecten áreas críticas 
@@ -224,7 +256,7 @@ Si no se aprueba la revisión, se seguirán los siguientes pasos:
 
 
 
-# 8\. Documentación <!--{#8.-documentación}-->
+# 9\. Documentación <!--{#9.-documentación}-->
 
 Toda la documentación del proyecto se gestionará en el directorio `/docs` dentro del repositorio, incluyendo (como mínimo):
 
@@ -238,11 +270,11 @@ Toda la documentación del proyecto se gestionará en el directorio `/docs` dent
 
 
 
-# 9\. Gestión de Incidencias <!--{#9.-gestión-de-incidencias}-->
+# 10\. Gestión de Incidencias <!--{#10.-gestión-de-incidencias}-->
 
 Se llevará a cabo el siguiente proceso en caso de detección de una incidencia:
 
-## 9.1. Depuración <!--{#9.1.-depuración}-->
+## 10.1. Depuración <!--{#10.1.-depuración}-->
 
 1. **Informar de la incidencia**: se empleará la siguiente plantilla:
 
@@ -283,19 +315,19 @@ Esta documentación debe guardarse en el directorio de /docs y enlazarse desde l
 
 
 
-# 10\. Solución de Conflictos <!--{#10.-solución-de-conflictos}-->
+# 11\. Solución de Conflictos <!--{#11.-solución-de-conflictos}-->
 
-## 10.1. Conflictos Técnicos <!--{#10.1.-conflictos-técnicos}-->
+## 11.1. Conflictos Técnicos <!--{#11.1.-conflictos-técnicos}-->
 
 * Los conflictos técnicos que surjan durante el desarrollo del proyecto (como desacuerdos sobre la implementación de una funcionalidad, arquitectura del software, etc.) serán inicialmente discutidos en reuniones técnicas entre los desarrolladores involucrados y las conclusiones serán documentadas y alojadas en la carpeta /docs, junto al resto de documentación del proyecto en un documento interno de **decisiones técnicas**.  
 * Si no se alcanza un consenso en una reunión técnica, el conflicto será escalado al Director del Proyecto.
 
-## 10.2. Conflictos de Gestión o Colaboración <!--{#10.2.-conflictos-de-gestión-o-colaboración}-->
+## 11.2. Conflictos de Gestión o Colaboración <!--{#11.2.-conflictos-de-gestión-o-colaboración}-->
 
 * Los conflictos relacionados con la gestión del proyecto, roles de los colaboradores, o diferencias personales se resolverán a través de comunicación directa entre las partes afectadas.  
 * Si no se llega a un acuerdo, se convocará una reunión formal entre las partes involucradas y al menos un mediador neutral, que podría ser el coordinador o el Director del Proyecto. En última instancia se podrá solicitar la exclusión del equipo si el conflicto interfiere con la finalización del proyecto.
 
-## 10.3. Conflictos en los Pull Requests (PR) <!--{#10.3.-conflictos-en-los-pull-requests-(pr)}-->
+## 11.3. Conflictos en los Pull Requests (PR) <!--{#11.3.-conflictos-en-los-pull-requests-(pr)}-->
 
 * En caso de que se genere un conflicto en la revisión de un **Pull Request (PR)**, los desarrolladores involucrados deberán discutir el problema a través de comentarios en el PR y en las herramientas de comunicación del equipo (e.g. Discord).  
 * Si persiste el desacuerdo sobre la calidad del código o la idoneidad de los cambios, el PR será revisado por un tercero (otro desarrollador o el mantenedor principal), quien actuará como mediador técnico.  
