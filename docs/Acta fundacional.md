@@ -154,13 +154,13 @@ Una gestión efectiva de los issues es fundamental para el éxito del proyecto, 
 Para asegurar coherencia y facilitar la comunicación, todos los issues deben crearse siguiendo la plantilla estandarizada que se describe a continuación:
 
 - **Título del Issue**: Descripción clara y concisa del problema o tarea. Seguirá el siguiente patrón:
-  * _Nombre WI / Fakenodo / Docs: título tarea (P)_, donde P hace referencia a la prioridad con la que se debe resolver el issue: alta (H), media (M) o baja (L).
+  * _Nombre WI / Fakenodo / Docs / Workflow: título tarea_.
 - **Descripción**: Detalle completo del problema, mejora o tarea. Incluir contexto, objetivo y detalles relevantes que permitan entender de qué se trata el issue.
 - **Criterios de Aceptación (si aplica)**: Definir las condiciones que deben cumplirse para considerar el issue resuelto. Esto garantiza un entendimiento común de cuándo se ha alcanzado el objetivo y sirve de guía a su revisor.
 - **Pasos para Reproducir (en caso de un bug)**: Lista detallada de pasos para reproducir el problema si se trata de un error.
 - **Etiquetas**: Uso de etiquetas (tags) para clasificar el issue. Se deben usar al menos las siguientes: `bug`, `WI`, `fakenodo`, `documentation`, `workflow`.
 - **Asignados**: Definir al miembro del equipo responsable de la tarea, si corresponde. Esto facilita el seguimiento de responsabilidades.
-- **Prioridad**: Utilizar una escala de prioridades (por ejemplo, `alta`, `media`, `baja`) para ayudar a determinar el orden de trabajo.
+- **Prioridad**: Utilizar una escala de prioridades (`H` high, `M` medium, `L` low) para ayudar a determinar el orden de trabajo.
 - **Fecha Límite (si aplica)**: En caso de que el issue deba completarse antes de una fecha específica.
 
 ## 5.2 Gestión de Issues
