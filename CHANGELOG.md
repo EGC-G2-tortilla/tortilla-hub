@@ -1,3 +1,15 @@
+# [1.3.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.2.0...v1.3.0) (2024-11-14)
+
+
+### Bug Fixes
+
+* cambiada la descripción a textarea ([33a6b50](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/33a6b50eb3342e8b70e50840f001376ca00637ed))
+
+
+### Features
+
+* Añadida corrección de errores de linting detectados mediante workflow ([7c18b85](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7c18b85ac3de6accff21669ee6c66943fa217b49))
+
 # [1.2.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.1.1...v1.2.0) (2024-10-31)
 
 
