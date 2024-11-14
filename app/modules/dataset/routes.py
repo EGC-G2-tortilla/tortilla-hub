@@ -323,10 +323,10 @@ UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 def set_full_permissions(directory):
     for root, dirs, files in os.walk(directory):
         for dir_name in dirs:
-            os.chmod(os.path.join(root, dir_name), 0o660)
+            os.chmod(os.path.join(root, dir_name), 0o600)
         for file_name in files:
-            os.chmod(os.path.join(root, file_name), 0o660)
-    os.chmod(directory, 0o660)
+            os.chmod(os.path.join(root, file_name), 0o600)
+    os.chmod(directory, 0o600)
 
 
 @dataset_bp.route("/dataset/upload_zip/<int:dataset_id>", methods=["POST"])
