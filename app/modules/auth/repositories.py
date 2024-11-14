@@ -1,5 +1,6 @@
 from app.modules.auth.models import User
 from core.repositories.BaseRepository import BaseRepository
+from app.modules.auth.models import OAuthProvider
 
 
 class UserRepository(BaseRepository):
@@ -19,3 +20,15 @@ class UserRepository(BaseRepository):
 
     def get_by_email(self, email: str):
         return self.model.query.filter_by(email=email).first()
+
+    def get_by_orcid(self, orcid: str):
+        return self.model.query.filter_by(orcid=orcid).first()
+
+    def create_oauth_provider(self, user, provider_name, provider_user_id):
+        oauth_provider = OAuthProvider(user=user, provider_name=provider_name, provider_user_id=provider_user_id)
+        self.session.add(oauth_provider)
+        self.session.commit()
+        return oauth_provider
+
+    def get_all_ids(self):
+        return [user.id for user in self.model.query.all()]

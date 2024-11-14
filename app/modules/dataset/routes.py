@@ -1,11 +1,14 @@
 import logging
 import os
 import json
+import requests
 import shutil
 import tempfile
 import uuid
 from datetime import datetime, timezone
 from zipfile import ZipFile
+from flamapy.metamodels.fm_metamodel.transformations import UVLReader, GlencoeWriter, SPLOTWriter
+from flamapy.metamodels.pysat_metamodel.transformations import FmToPysat, DimacsWriter
 
 from flask import (
     redirect,
@@ -16,13 +19,12 @@ from flask import (
     make_response,
     abort,
     url_for,
+    send_file,
 )
 from flask_login import login_required, current_user
 
 from app.modules.dataset.forms import DataSetForm
-from app.modules.dataset.models import (
-    DSDownloadRecord
-)
+from app.modules.dataset.models import DSDownloadRecord
 from app.modules.dataset import dataset_bp
 from app.modules.dataset.services import (
     AuthorService,
@@ -30,9 +32,10 @@ from app.modules.dataset.services import (
     DSMetaDataService,
     DSViewRecordService,
     DataSetService,
-    DOIMappingService
+    DOIMappingService,
 )
-from app.modules.zenodo.services import ZenodoService
+from app.modules.fakenodo.services import FakenodoService
+from app.modules.hubfile.services import HubfileService
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +43,7 @@ logger = logging.getLogger(__name__)
 dataset_service = DataSetService()
 author_service = AuthorService()
 dsmetadata_service = DSMetaDataService()
-zenodo_service = ZenodoService()
+fakenodo_service = FakenodoService()
 doi_mapping_service = DOIMappingService()
 ds_view_record_service = DSViewRecordService()
 
@@ -58,41 +61,50 @@ def create_dataset():
 
         try:
             logger.info("Creating dataset...")
-            dataset = dataset_service.create_from_form(form=form, current_user=current_user)
+            dataset = dataset_service.create_from_form(
+                form=form, current_user=current_user
+            )
             logger.info(f"Created dataset: {dataset}")
             dataset_service.move_feature_models(dataset)
         except Exception as exc:
             logger.exception(f"Exception while create dataset data in local {exc}")
-            return jsonify({"Exception while create dataset data in local: ": str(exc)}), 400
+            return (
+                jsonify({"Exception while create dataset data in local: ": str(exc)}),
+                400,
+            )
 
         # send dataset as deposition to Zenodo
         data = {}
         try:
-            zenodo_response_json = zenodo_service.create_new_deposition(dataset)
-            response_data = json.dumps(zenodo_response_json)
+            fakenodo_response_json = fakenodo_service.create_new_deposition(dataset)
+            response_data = json.dumps(fakenodo_response_json)
             data = json.loads(response_data)
         except Exception as exc:
             data = {}
-            zenodo_response_json = {}
+            fakenodo_response_json = {}
             logger.exception(f"Exception while create dataset data in Zenodo {exc}")
 
         if data.get("conceptrecid"):
             deposition_id = data.get("id")
 
             # update dataset with deposition id in Zenodo
-            dataset_service.update_dsmetadata(dataset.ds_meta_data_id, deposition_id=deposition_id)
+            dataset_service.update_dsmetadata(
+                dataset.ds_meta_data_id, deposition_id=deposition_id
+            )
 
             try:
                 # iterate for each feature model (one feature model = one request to Zenodo)
                 for feature_model in dataset.feature_models:
-                    zenodo_service.upload_file(dataset, deposition_id, feature_model)
+                    fakenodo_service.upload_file(dataset, deposition_id, feature_model)
 
                 # publish deposition
-                zenodo_service.publish_deposition(deposition_id)
+                fakenodo_service.publish_deposition(deposition_id)
 
                 # update DOI
-                deposition_doi = zenodo_service.get_doi(deposition_id)
-                dataset_service.update_dsmetadata(dataset.ds_meta_data_id, dataset_doi=deposition_doi)
+                deposition_doi = fakenodo_service.get_doi(deposition_id)
+                dataset_service.update_dsmetadata(
+                    dataset.ds_meta_data_id, dataset_doi=deposition_doi
+                )
             except Exception as e:
                 msg = f"it has not been possible upload feature models in Zenodo and update the DOI: {e}"
                 return jsonify({"message": msg}), 200
@@ -147,19 +159,34 @@ def upload():
         new_filename = file.filename
 
     try:
+        # Guardar archivo
         file.save(file_path)
+
+        # Validación de sintaxis del UVL utilizando el endpoint de validación
+        with open(file_path, "rb") as f:
+            validation_response = requests.post(
+                url_for("flamapy.validate_uvl_file", _external=True),
+                files={"file": f},
+                timeout=20,
+            )
+        validation_data = validation_response.json()
+
+        if validation_response.status_code != 200:
+            os.remove(file_path)  # Eliminar archivo en caso de error
+            return jsonify({"errors": validation_data["errors"]}), 400
+
+        return (
+            jsonify(
+                {
+                    "message": "UVL uploaded and validated successfully",
+                    "filename": new_filename,
+                }
+            ),
+            200,
+        )
+
     except Exception as e:
         return jsonify({"message": str(e)}), 500
-
-    return (
-        jsonify(
-            {
-                "message": "UVL uploaded and validated successfully",
-                "filename": new_filename,
-            }
-        ),
-        200,
-    )
 
 
 @dataset_bp.route("/dataset/file/delete", methods=["POST"])
@@ -226,7 +253,7 @@ def download_dataset(dataset_id):
     existing_record = DSDownloadRecord.query.filter_by(
         user_id=current_user.id if current_user.is_authenticated else None,
         dataset_id=dataset_id,
-        download_cookie=user_cookie
+        download_cookie=user_cookie,
     ).first()
 
     if not existing_record:
@@ -248,7 +275,7 @@ def subdomain_index(doi):
     new_doi = doi_mapping_service.get_new_doi(doi)
     if new_doi:
         # Redirect to the same path with the new DOI
-        return redirect(url_for('dataset.subdomain_index', doi=new_doi), code=302)
+        return redirect(url_for("dataset.subdomain_index", doi=new_doi), code=302)
 
     # Try to search the dataset by the provided DOI (which should already be the new one)
     ds_meta_data = dsmetadata_service.filter_by_doi(doi)
@@ -278,3 +305,178 @@ def get_unsynchronized_dataset(dataset_id):
         abort(404)
 
     return render_template("dataset/view_dataset.html", dataset=dataset)
+
+
+@dataset_bp.route("/dataset/stage/<int:dataset_id>", methods=["GET"])
+@login_required
+def stage_dataset(dataset_id):
+    dataset_service.set_dataset_to_staged(dataset_id)
+    return render_template(
+        "dataset/list_datasets.html",
+        datasets=dataset_service.get_synchronized(current_user.id),
+        local_datasets=dataset_service.get_unsynchronized(current_user.id),
+    )
+
+
+@dataset_bp.route("/dataset/unstage/<int:dataset_id>", methods=["GET"])
+@login_required
+def unstage_dataset(dataset_id):
+    dataset_service.set_dataset_to_unstaged(dataset_id)
+    return render_template(
+        "dataset/list_datasets.html",
+        datasets=dataset_service.get_synchronized(current_user.id),
+        local_datasets=dataset_service.get_unsynchronized(current_user.id),
+    )
+
+
+@dataset_bp.route("/dataset/publish", methods=["GET"])
+@login_required
+def publish_datasets():
+    dataset_service.publish_datasets(current_user_id=current_user.id)
+    return render_template(
+        "dataset/list_datasets.html",
+        datasets=dataset_service.get_synchronized(current_user.id),
+        local_datasets=dataset_service.get_unsynchronized(current_user.id),
+    )
+
+
+@dataset_bp.route("/dataset/stage/all", methods=["GET"])
+@login_required
+def stage_all_datasets():
+    dataset_service.stage_all_datasets(current_user.id)
+    return render_template(
+        "dataset/list_datasets.html",
+        datasets=dataset_service.get_synchronized(current_user.id),
+        local_datasets=dataset_service.get_unsynchronized(current_user.id),
+    )
+
+
+def to_glencoe(file_id, full_path):
+    try:
+        # Obtener el archivo original usando el file_id
+        hubfile = HubfileService().get_by_id(file_id)
+
+        # Realizar las transformaciones necesarias
+        fm = UVLReader(hubfile.get_path()).transform()
+
+        # Generar el nombre final del archivo transformado
+        final_file_name = f"{hubfile.name}_glencoe.txt"
+
+        # Combinar el full_path (directorio) con el nombre final del archivo
+        final_full_path = os.path.join(full_path, final_file_name)
+
+        # Escribir el archivo transformado en la ruta completa final
+        GlencoeWriter(final_full_path, fm).transform()
+
+        # Devolver la ruta completa al archivo transformado
+        return final_full_path
+    except Exception as e:
+        raise e
+
+
+def to_splot(file_id, full_path):
+    try:
+        # Obtener el archivo original usando el file_id
+        hubfile = HubfileService().get_by_id(file_id)
+
+        # Realizar las transformaciones necesarias
+        fm = UVLReader(hubfile.get_path()).transform()
+
+        # Generar el nombre final del archivo transformado
+        final_file_name = f"{hubfile.name}_splot.txt"
+
+        # Combinar el full_path (directorio) con el nombre final del archivo
+        final_full_path = os.path.join(full_path, final_file_name)
+
+        # Escribir el archivo transformado en la ruta completa final
+        SPLOTWriter(final_full_path, fm).transform()
+
+        # Devolver la ruta completa al archivo transformado
+        return final_full_path
+    except Exception as e:
+        raise e
+
+
+def to_cnf(file_id, full_path):
+    try:
+        # Obtener el archivo original usando el file_id
+        hubfile = HubfileService().get_by_id(file_id)
+
+        # Realizar las transformaciones necesarias
+        fm = UVLReader(hubfile.get_path()).transform()
+        sat = FmToPysat(fm).transform()
+
+        # Generar el nombre final del archivo transformado
+        final_file_name = f"{hubfile.name}_cnf.txt"
+
+        # Combinar el full_path (directorio) con el nombre final del archivo
+        final_full_path = os.path.join(full_path, final_file_name)
+
+        # Escribir el archivo transformado en la ruta completa final
+        DimacsWriter(final_full_path, sat).transform()
+
+        # Devolver la ruta completa al archivo transformado
+        return final_full_path
+    except Exception as e:
+        raise e
+
+
+@dataset_bp.route("/dataset/download_all", methods=["GET"])
+def download_all_datasets():
+    datasets = dataset_service.get_all_datasets()
+
+    # Crear un directorio temporal para almacenar archivos originales y transformados
+    temp_dir = tempfile.mkdtemp()
+    original_dir = os.path.join(temp_dir, "original_files")
+    transformed_dir = os.path.join(temp_dir, "transformed_files")
+    os.makedirs(original_dir, exist_ok=True)
+    os.makedirs(transformed_dir, exist_ok=True)
+
+    zip_path = os.path.join(temp_dir, "all_datasets.zip")
+
+    try:
+        with ZipFile(zip_path, "w") as zipf:
+            for dataset in datasets:
+                file_path = f"uploads/user_{dataset.user_id}/dataset_{dataset.id}/"
+
+                # Procesar archivos .uvl y sus transformaciones
+                for subdir, dirs, files in os.walk(file_path):
+                    for file in files:
+                        full_path = os.path.join(subdir, file)
+                        relative_path = os.path.relpath(full_path, file_path)
+
+                        # Copiar archivos originales a la carpeta temporal y agregarlos al ZIP
+                        original_file_path = os.path.join(original_dir, relative_path)
+                        os.makedirs(os.path.dirname(original_file_path), exist_ok=True)
+                        shutil.copy(full_path, original_file_path)
+                        zipf.write(original_file_path, arcname=os.path.relpath(original_file_path, temp_dir))
+                        logging.debug(f"Archivo original agregado al ZIP: {relative_path}")
+
+                        # Solo procesar archivos .uvl para las transformaciones
+                        if file.endswith(".uvl"):
+                            try:
+                                # Obtener el file_id desde el nombre del archivo
+                                file_id = int(file.split(".")[0][4:])
+                            except ValueError:
+                                logging.error(f"Error al extraer file_id del archivo: {file}")
+                                continue  # Ignorar si no se puede extraer el ID correctamente
+
+                            # Generar transformaciones en la carpeta temporal
+                            try:
+                                cnf_file = to_cnf(file_id, transformed_dir)
+                                splot_file = to_splot(file_id, transformed_dir)
+                                glencoe_file = to_glencoe(file_id, transformed_dir)
+
+                                # Agregar transformaciones al ZIP
+                                zipf.write(cnf_file, arcname=os.path.relpath(cnf_file, temp_dir))
+                                zipf.write(splot_file, arcname=os.path.relpath(splot_file, temp_dir))
+                                zipf.write(glencoe_file, arcname=os.path.relpath(glencoe_file, temp_dir))
+                            except Exception as e:
+                                logging.error(f"Error al transformar archivo {file}: {e}")
+                                continue
+
+        # Enviar el archivo ZIP para descarga
+        return send_file(zip_path, as_attachment=True, mimetype="application/zip", download_name="all_datasets.zip")
+    finally:
+        # Eliminar el directorio temporal después de su uso
+        shutil.rmtree(temp_dir)
