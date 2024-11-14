@@ -22,7 +22,9 @@ def index():
 
     # Statistics: total downloads
     total_dataset_downloads = dataset_service.total_dataset_downloads()
-    total_feature_model_downloads = feature_model_service.total_feature_model_downloads()
+    total_feature_model_downloads = (
+        feature_model_service.total_feature_model_downloads()
+    )
 
     # Statistics: total views
     total_dataset_views = dataset_service.total_dataset_views()
@@ -43,9 +45,7 @@ def index():
         total_feature_model_downloads=total_feature_model_downloads,
         total_dataset_views=total_dataset_views,
         total_feature_model_views=total_feature_model_views,
-
         most_downloaded=dataset_service.most_downloaded(),
         most_popular_authors=author_service.most_popular_authors(),
-
-        total_dataset_size=total_size
+        total_dataset_size=total_size,
     )

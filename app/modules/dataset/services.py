@@ -9,7 +9,14 @@ from flask import request
 from sqlalchemy import func
 
 from app.modules.auth.services import AuthenticationService
-from app.modules.dataset.models import Author, DSDownloadRecord, DSViewRecord, DataSet, DSMetaData, DatasetStatus
+from app.modules.dataset.models import (
+    Author,
+    DSDownloadRecord,
+    DSViewRecord,
+    DataSet,
+    DSMetaData,
+    DatasetStatus,
+)
 from app.modules.dataset.repositories import (
     AuthorRepository,
     DOIMappingRepository,
@@ -92,10 +99,7 @@ class DataSetService(BaseService):
                 .filter(DSDownloadRecord.dataset_id == dataset.id)
                 .scalar()
             )
-            result.append({
-                'name': dataset.name(),
-                'downloads': download_count
-            })
+            result.append({"name": dataset.name(), "downloads": download_count})
 
         return result
 
@@ -255,10 +259,7 @@ class AuthorService(BaseService):
                 .filter(Author.id == author.id)
                 .scalar()
             )
-            result.append({
-                'name': author.name,
-                'datasets': dataset_count
-            })
+            result.append({"name": author.name, "datasets": dataset_count})
 
         return result
 

@@ -79,8 +79,8 @@ class DSMetaData(db.Model):
 
 class DataSet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    community_id = db.Column(db.Integer, db.ForeignKey('community.id'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    community_id = db.Column(db.Integer, db.ForeignKey("community.id"), nullable=True)
 
     ds_meta_data_id = db.Column(
         db.Integer, db.ForeignKey("ds_meta_data.id"), nullable=False
