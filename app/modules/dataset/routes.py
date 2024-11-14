@@ -27,6 +27,7 @@ from app.modules.dataset.forms import DataSetForm
 from app.modules.dataset.models import (
     DSDownloadRecord,
     DataSet,
+    PublicationType,
 )
 from app.modules.dataset import dataset_bp
 from app.modules.dataset.seeders import BaseSeeder
@@ -322,10 +323,10 @@ UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 def set_full_permissions(directory):
     for root, dirs, files in os.walk(directory):
         for dir_name in dirs:
-            os.chmod(os.path.join(root, dir_name), 0o777)
+            os.chmod(os.path.join(root, dir_name), 0o660)
         for file_name in files:
-            os.chmod(os.path.join(root, file_name), 0o777)
-    os.chmod(directory, 0o777)
+            os.chmod(os.path.join(root, file_name), 0o660)
+    os.chmod(directory, 0o660)
 
 
 @dataset_bp.route("/dataset/upload_zip/<int:dataset_id>", methods=["POST"])
@@ -412,16 +413,15 @@ def upload_from_zip(dataset_id):
                 dest_path = os.path.join(zip_files_folder, file)
 
                 shutil.copy(src_path, dest_path)  # Copiar a zip_files
-            shutil.rmtree(zip_files_folder)  # Eliminar la carpeta de archivos originales
 
         except Exception as e:
             logging.error(f"Error al mover archivos a zip_files: {e}")
             return jsonify({"message": f"Error al mover archivos a zip_files: {str(e)}"}), 500
 
         # Paso 6: Limpieza y confirmación
+        add_files_to_dataset(dataset_id)
         try:
             shutil.rmtree(temp_folder)
-            add_files_to_dataset(dataset_id)
             return jsonify({"message": "Files uploaded successfully"}), 200
         except Exception as e:
             logging.error(f"Error al limpiar la carpeta temporal: {e}")
@@ -450,7 +450,8 @@ def add_files_to_dataset(dataset_id):
                 uvl_filename=f'file{i}.uvl',
                 title=f'Feature Model {i}',
                 description=f'Description for feature model {i}',
-                publication_type='',
+                # (Por defecto) Es necesario para gaurdar los modelos
+                publication_type=PublicationType.SOFTWARE_DOCUMENTATION,
                 publication_doi='',
                 tags='',
                 uvl_version='1.0'
