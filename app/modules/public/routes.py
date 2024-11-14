@@ -4,7 +4,7 @@ from flask import render_template
 
 from app.modules.featuremodel.services import FeatureModelService
 from app.modules.public import public_bp
-from app.modules.dataset.services import DataSetService, SizeService
+from app.modules.dataset.services import AuthorService, DataSetService, SizeService
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +14,7 @@ def index():
     logger.info("Access index")
     dataset_service = DataSetService()
     feature_model_service = FeatureModelService()
+    author_service = AuthorService()
 
     # Statistics: total datasets and feature models
     datasets_counter = dataset_service.count_synchronized_datasets()
@@ -42,6 +43,9 @@ def index():
         total_feature_model_downloads=total_feature_model_downloads,
         total_dataset_views=total_dataset_views,
         total_feature_model_views=total_feature_model_views,
+
+        most_downloaded=dataset_service.most_downloaded(),
+        most_popular_authors=author_service.most_popular_authors(),
 
         total_dataset_size=total_size
     )

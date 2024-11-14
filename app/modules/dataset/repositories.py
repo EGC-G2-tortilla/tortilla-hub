@@ -2,7 +2,6 @@ from datetime import datetime, timezone
 import logging
 from flask_login import current_user
 from typing import Optional
-
 from sqlalchemy import desc, func
 
 from app.modules.dataset.models import (
@@ -22,6 +21,16 @@ logger = logging.getLogger(__name__)
 class AuthorRepository(BaseRepository):
     def __init__(self):
         super().__init__(Author)
+
+    def most_popular_authors(self):
+        return (
+            self.model.query
+            .join(DSMetaData, self.model.ds_meta_data_id == DSMetaData.id)
+            .group_by(self.model.id)
+            .order_by(desc(func.count(DSMetaData.id)))
+            .limit(4)
+            .all()
+        )
 
 
 class DSDownloadRecordRepository(BaseRepository):
@@ -121,6 +130,16 @@ class DataSetRepository(BaseRepository):
             self.model.query.join(DSMetaData)
             .filter(DSMetaData.dataset_doi.isnot(None))
             .order_by(desc(self.model.id))
+            .limit(5)
+            .all()
+        )
+
+    def most_downloaded(self):
+        return (
+            self.model.query
+            .join(DSDownloadRecord, DSDownloadRecord.dataset_id == self.model.id)
+            .group_by(self.model.id)
+            .order_by(desc(func.count(DSDownloadRecord.id)))
             .limit(5)
             .all()
         )
