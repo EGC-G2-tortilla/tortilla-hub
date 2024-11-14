@@ -78,7 +78,7 @@
   - Objetivo: Lograr una implicación más homogénea de cara al tercer _milestone_ y la presentación final del proyecto.
 
 - **Acuerdo 2024-02-02: Implementación de _Issues_**
-  - Se acordó implementar la gestión de tareas mediante _issues_ en el repositorio, incluyendo una plantilla en el "Acta Constitucional". Además, se deberán documentar las _issues_ correspondientes a tareas ya completadas antes del M2.
+  - Se acordó implementar la gestión de tareas mediante _issues_ en el repositorio, incluyendo una plantilla en el "Acta fundacional". Además, se deberán documentar las _issues_ correspondientes a tareas ya completadas antes del M2.
 
 - **Acuerdo 2024-02-03: Nuevos Workflows**
   - Implementación de nuevos _workflows_ relacionados con las _issues_ y la gestión de ramas. Se acordó realizar un _merge_ a `main` al menos una vez al día de forma automática.
