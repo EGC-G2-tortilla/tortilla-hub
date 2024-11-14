@@ -24,8 +24,12 @@ from flask import (
 from flask_login import login_required, current_user
 
 from app.modules.dataset.forms import DataSetForm
-from app.modules.dataset.models import DSDownloadRecord
+from app.modules.dataset.models import (
+    DSDownloadRecord,
+    DataSet,
+)
 from app.modules.dataset import dataset_bp
+from app.modules.dataset.seeders import BaseSeeder
 from app.modules.dataset.services import (
     AuthorService,
     DSDownloadRecordService,
@@ -35,6 +39,8 @@ from app.modules.dataset.services import (
     DOIMappingService,
 )
 from app.modules.fakenodo.services import FakenodoService
+from app.modules.featuremodel.models import FMMetaData, FeatureModel
+from app.modules.hubfile.models import Hubfile
 from app.modules.hubfile.services import HubfileService
 
 logger = logging.getLogger(__name__)
@@ -305,6 +311,186 @@ def get_unsynchronized_dataset(dataset_id):
         abort(404)
 
     return render_template("dataset/view_dataset.html", dataset=dataset)
+
+
+ZIP_FOLDER = os.path.join(os.getcwd(), 'app', 'modules', 'dataset')
+
+
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+
+
+def set_full_permissions(directory):
+    for root, dirs, files in os.walk(directory):
+        for dir_name in dirs:
+            os.chmod(os.path.join(root, dir_name), 0o777)
+        for file_name in files:
+            os.chmod(os.path.join(root, file_name), 0o777)
+    os.chmod(directory, 0o777)
+
+
+@dataset_bp.route("/dataset/upload_zip/<int:dataset_id>", methods=["POST"])
+def upload_from_zip(dataset_id):
+    try:
+        # Paso 1: Obtener el dataset y la carpeta temporal
+        try:
+            dataset = dataset_service.get_or_404(dataset_id)
+            temp_folder = current_user.temp_folder()
+            if not os.path.exists(temp_folder):
+                os.makedirs(temp_folder)
+            else:
+                shutil.rmtree(temp_folder)  # Limpia la carpeta temporal para evitar residuos
+                os.makedirs(temp_folder)
+        except Exception as e:
+            logging.error(f"Error al preparar la carpeta temporal: {e}")
+            return jsonify({"message": f"Error al preparar la carpeta temporal: {str(e)}"}), 500
+
+        # Paso 2: Validar y guardar el archivo ZIP
+        try:
+            file = request.files.get("zipFile")
+            if not file or not file.filename.endswith(".zip"):
+                return jsonify({"message": "No valid file"}), 400
+            file_path = os.path.join(temp_folder, file.filename)
+            file.save(file_path)
+        except Exception as e:
+            logging.error(f"Error al guardar el archivo ZIP: {e}")
+            return jsonify({"message": f"Error al guardar el archivo ZIP: {str(e)}"}), 500
+
+        # Paso 3: Extraer archivos del ZIP
+        try:
+            with ZipFile(file_path, "r") as zip_ref:
+                zip_ref.extractall(temp_folder)
+                extracted_files = zip_ref.namelist()  # Obtener la lista de archivos extraídos
+        except Exception as e:
+            logging.error(f"Error al extraer el archivo ZIP: {e}")
+            return jsonify({"message": f"Error al extraer el archivo ZIP: {str(e)}"}), 500
+
+        # Paso 4: Guardar en la carpeta uploads con nombres únicos
+        try:
+            upload_folder = os.path.join(UPLOAD_FOLDER, f"user_{dataset.user_id}/dataset_{dataset_id}/")
+            if not os.path.exists(upload_folder):
+                os.makedirs(upload_folder, exist_ok=True)
+
+            existing_files = set(os.listdir(upload_folder))
+            renamed_files = []  # Para almacenar los nombres finales de los archivos
+
+            for file in extracted_files:
+                # Ignorar directorios
+                if file.endswith('/'):
+                    continue
+
+                # Ruta completa del archivo extraído
+                full_path = os.path.join(temp_folder, file)
+
+                if os.path.isfile(full_path):
+                    # Generar un nombre único si el archivo ya existe
+                    base_name, extension = os.path.splitext(os.path.basename(file))
+                    new_filename = base_name + extension
+                    counter = 1
+
+                    while new_filename in existing_files:
+                        new_filename = f"{base_name}_{counter}{extension}"
+                        counter += 1
+
+                    # Mover el archivo al upload_folder con el nombre único
+                    new_path = os.path.join(upload_folder, new_filename)
+                    shutil.move(full_path, new_path)
+                    renamed_files.append(new_filename)
+                    existing_files.add(new_filename)
+
+        except Exception as e:
+            logging.error(f"Error al guardar archivos en uploads: {e}")
+            return jsonify({"message": f"Error al guardar archivos en uploads: {str(e)}"}), 500
+
+        # Paso 5: Mover los archivos renombrados a zip_files
+        try:
+            zip_files_folder = os.path.join(ZIP_FOLDER, "zip_files")
+            if not os.path.exists(zip_files_folder):
+                os.makedirs(zip_files_folder, exist_ok=True)
+
+            for file in renamed_files:
+                src_path = os.path.join(upload_folder, file)
+                dest_path = os.path.join(zip_files_folder, file)
+
+                shutil.copy(src_path, dest_path)  # Copiar a zip_files
+            shutil.rmtree(zip_files_folder)  # Eliminar la carpeta de archivos originales
+
+        except Exception as e:
+            logging.error(f"Error al mover archivos a zip_files: {e}")
+            return jsonify({"message": f"Error al mover archivos a zip_files: {str(e)}"}), 500
+
+        # Paso 6: Limpieza y confirmación
+        try:
+            shutil.rmtree(temp_folder)
+            add_files_to_dataset(dataset_id)
+            return jsonify({"message": "Files uploaded successfully"}), 200
+        except Exception as e:
+            logging.error(f"Error al limpiar la carpeta temporal: {e}")
+            return jsonify({"message": f"Error al limpiar la carpeta temporal: {str(e)}"}), 500
+
+    except Exception as e:
+        logging.error(f"Error inesperado en upload_from_zip: {e}")
+        return jsonify({"message": f"Unexpected server error: {str(e)}"}), 500
+
+
+def add_files_to_dataset(dataset_id):
+    src_folder = os.path.join(ZIP_FOLDER, "zip_files")
+    files = [f for f in os.listdir(src_folder) if f.endswith(".uvl") and not f.startswith("._")]
+
+    for file in files:
+        try:
+            if not file.startswith("file") or not file.endswith(".uvl"):
+                logging.error(f"Archivo con nombre inesperado: {file}")
+                continue
+
+            # Extraer índice del archivo
+            i = int(file.split(".")[0][4:])
+
+            # Crear metadatos
+            fm_meta_data = FMMetaData(
+                uvl_filename=f'file{i}.uvl',
+                title=f'Feature Model {i}',
+                description=f'Description for feature model {i}',
+                publication_type='',
+                publication_doi='',
+                tags='',
+                uvl_version='1.0'
+            )
+            try:
+                seeder = BaseSeeder()
+                seeder.seed([fm_meta_data])  # Pasar como lista
+            except Exception as e:
+                logging.error("Error procesando el archivo: %s", e)
+                continue
+
+            # Crear modelo de características
+            feature_model = FeatureModel(
+                data_set_id=dataset_id,
+                fm_meta_data_id=fm_meta_data.id
+            )
+            seeder = BaseSeeder()
+            seeder.seed([feature_model])  # Pasar como lista
+
+            # Crear el archivo asociado
+            file_path = os.path.join(src_folder, file)
+            uvl_file = Hubfile(
+                name=file,
+                checksum=f'checksum{i}',
+                size=os.path.getsize(file_path),
+                feature_model_id=feature_model.id,
+            )
+            seeder = BaseSeeder()
+            seeder.seed([uvl_file])  # Pasar como lista
+
+            # add model to dataset
+            dataset = DataSet.query.get(dataset_id)
+            dataset.feature_models.append(feature_model)
+            seeder.seed([dataset])
+
+        except Exception as e:
+            logging.error(f"Error procesando el archivo {file}: {e}")
+            continue
+
+    logging.info("Archivos procesados e insertados en la base de datos correctamente.")
 
 
 @dataset_bp.route("/dataset/stage/<int:dataset_id>", methods=["GET"])

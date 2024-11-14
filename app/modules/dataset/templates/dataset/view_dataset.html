@@ -254,11 +254,41 @@
                 Upload from Github
             </a>
             
-            <a href="/dataset/upload_zip/{{ dataset.id }}" class="btn btn-primary mt-3" style="border-radius: 5px;">
-                <i data-feather="download" class="center-button-icon"></i>
-                Upload from ZIP 
-            </a>
-
+                                    <!-- Botón visible -->
+                        <a href="#" id="uploadButton" class="btn btn-primary mt-3" style="border-radius: 5px;">
+                            <i data-feather="download" class="center-button-icon"></i>
+                            Upload from ZIP
+                        </a>
+                        
+                        <!-- Formulario oculto -->
+                        <form id="uploadForm" action="/dataset/upload_zip/{{ dataset.id }}" method="post" enctype="multipart/form-data" style="display: none;">
+                            <input type="file" id="zipFileInput" name="zipFile" accept=".zip">
+                        </form>
+                        
+                        <script>
+                        document.getElementById('uploadButton').addEventListener('click', function(event) {
+                            event.preventDefault();
+                            document.getElementById('zipFileInput').click();
+                        });
+                        
+                        document.getElementById('zipFileInput').addEventListener('change', function() {
+                            if (this.files.length > 0) {
+                                var formData = new FormData();
+                                formData.append('zipFile', this.files[0]);
+                        
+                                var xhr = new XMLHttpRequest();
+                                xhr.open('POST', document.getElementById('uploadForm').action, true);
+                                xhr.onload = function () {
+                                    if (xhr.status === 200) {
+                                        location.reload();  // Recargar la página
+                                    } else {
+                                        alert('Error uploading file: ' + xhr.responseText);
+                                    }
+                                };
+                                xhr.send(formData);
+                            }
+                        });
+                        </script>
     </div>
 </div>
 
@@ -313,6 +343,33 @@
 
     function hideLoading() {
         document.getElementById("loading").style.display = "none";
+    }
+
+    function handleZipUpload(event) {
+        const file = event.target.files[0];
+        const datasetId = `{{ dataset.id }}`;
+        console.log(datasetId);
+        if (file && (file.type === "application/zip" || file.type === "application/x-zip-compressed")) {
+            const formData = new FormData();
+            formData.append("zipFile", file);
+
+            // Enviar el archivo al backend
+            fetch(`/dataset/upload_zip/${ datasetId }`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Respuesta del backend:", data);
+                alert("Archivo subido y procesado exitosamente.");
+            })
+            .catch(error => {
+                console.error("Error en la subida del archivo:", error);
+                alert("Hubo un error al subir el archivo.");
+            });
+        } else {
+            alert("Por favor selecciona un archivo ZIP válido.");
+        }
     }
 
     function checkUVL(file_id) {
