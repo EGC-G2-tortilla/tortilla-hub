@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.3.0...v1.3.1) (2024-11-16)
+
+
+### Bug Fixes
+
+* Eliminados campos redundantes en la plantilla de issue ([e141c29](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e141c2996ba14d1912e278f16cfdc823ea76bd28))
+
 # [1.3.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.2.0...v1.3.0) (2024-11-14)
 
 
