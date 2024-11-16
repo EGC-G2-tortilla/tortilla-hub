@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.3.1...v1.4.0) (2024-11-16)
+
+
+### Features
+
+* Añadido workflow para creación automática de PRs ([3ef6558](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/3ef6558fb7718d7482bf4c6bc40b65651eddb438))
+
 ## [1.3.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.3.0...v1.3.1) (2024-11-16)
 
 
