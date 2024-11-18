@@ -7,7 +7,10 @@
     <div class="card">
         <div class="card-body">
             <h2>
-                    {{ community.name }}
+                    {{ community.name }}                 
+                    <a href="/community/{{ community.name }}">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Upload dataset</button>
+                    </a>
             </h2>
             <a href="{{ community.url }}">{{ community.url }}</a>
 
