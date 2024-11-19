@@ -68,6 +68,9 @@ class DataSetService(BaseService):
         dest_dir = os.path.join(
             working_dir, "uploads", f"user_{current_user.id}", f"dataset_{dataset.id}"
         )
+        dest_dir = os.path.join(
+            working_dir, "uploads", f"user_{current_user.id}", f"dataset_{dataset.id}"
+        )
 
         os.makedirs(dest_dir, exist_ok=True)
 
@@ -80,7 +83,7 @@ class DataSetService(BaseService):
 
     def get_unsynchronized(self, current_user_id: int) -> DataSet:
         return self.repository.get_unsynchronized(current_user_id)
-
+        
     def get_unsynchronized_dataset(
         self, current_user_id: int, dataset_id: int
     ) -> DataSet:

@@ -36,8 +36,11 @@ class User(db.Model, UserMixin):
         super(User, self).__init__(**kwargs)
         if "password" in kwargs:
             self.set_password(kwargs["password"])
+        if "password" in kwargs:
+            self.set_password(kwargs["password"])
 
     def __repr__(self):
+        return f"<User {self.email}>"
         return f"<User {self.email}>"
 
     def set_password(self, password):
@@ -48,6 +51,7 @@ class User(db.Model, UserMixin):
 
     def temp_folder(self) -> str:
         from app.modules.auth.services import AuthenticationService
+
 
         return AuthenticationService().temp_folder_by_user(self)
 

@@ -42,8 +42,11 @@ class Author(db.Model):
     orcid = db.Column(db.String(120))
     ds_meta_data_id = db.Column(db.Integer, db.ForeignKey("ds_meta_data.id"))
     fm_meta_data_id = db.Column(db.Integer, db.ForeignKey("fm_meta_data.id"))
+    ds_meta_data_id = db.Column(db.Integer, db.ForeignKey("ds_meta_data.id"))
+    fm_meta_data_id = db.Column(db.Integer, db.ForeignKey("fm_meta_data.id"))
 
     def to_dict(self):
+        return {"name": self.name, "affiliation": self.affiliation, "orcid": self.orcid}
         return {"name": self.name, "affiliation": self.affiliation, "orcid": self.orcid}
 
 
@@ -53,6 +56,7 @@ class DSMetrics(db.Model):
     number_of_features = db.Column(db.String(120))
 
     def __repr__(self):
+        return f"DSMetrics<models={self.number_of_models}, features={self.number_of_features}>"
         return f"DSMetrics<models={self.number_of_models}, features={self.number_of_features}>"
 
 
@@ -85,8 +89,17 @@ class DataSet(db.Model):
     ds_meta_data_id = db.Column(
         db.Integer, db.ForeignKey("ds_meta_data.id"), nullable=False
     )
+    ds_meta_data_id = db.Column(
+        db.Integer, db.ForeignKey("ds_meta_data.id"), nullable=False
+    )
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
+    ds_meta_data = db.relationship(
+        "DSMetaData", backref=db.backref("data_set", uselist=False)
+    )
+    feature_models = db.relationship(
+        "FeatureModel", backref="data_set", lazy=True, cascade="all, delete"
+    )
     ds_meta_data = db.relationship(
         "DSMetaData", backref=db.backref("data_set", uselist=False)
     )
@@ -106,8 +119,14 @@ class DataSet(db.Model):
 
     def get_cleaned_publication_type(self):
         return self.ds_meta_data.publication_type.name.replace("_", " ").title()
+        return self.ds_meta_data.publication_type.name.replace("_", " ").title()
 
     def get_zenodo_url(self):
+        return (
+            f"https://zenodo.org/record/{self.ds_meta_data.deposition_id}"
+            if self.ds_meta_data.dataset_doi
+            else None
+        )
         return (
             f"https://zenodo.org/record/{self.ds_meta_data.deposition_id}"
             if self.ds_meta_data.dataset_doi
@@ -123,10 +142,12 @@ class DataSet(db.Model):
     def get_file_total_size_for_human(self):
         from app.modules.dataset.services import SizeService
 
+
         return SizeService().get_human_readable_size(self.get_file_total_size())
 
     def get_uvlhub_doi(self):
         from app.modules.dataset.services import DataSetService
+
 
         return DataSetService().get_uvlhub_doi(self)
 
