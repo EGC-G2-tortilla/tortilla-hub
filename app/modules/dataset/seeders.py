@@ -8,6 +8,7 @@ from app.modules.dataset.models import (
     DataSet,
     DSMetaData,
     PublicationType,
+    DatasetStatus,
     DSMetrics,
     Author,
 )
@@ -23,8 +24,9 @@ class DataSetSeeder(BaseSeeder):
         # Retrieve users
         user1 = User.query.filter_by(email="user1@example.com").first()
         user2 = User.query.filter_by(email="user2@example.com").first()
+        user3 = User.query.filter_by(email="user3@example.com").first()
 
-        if not user1 or not user2:
+        if not user1 or not user2 or not user3:
             raise Exception("Users not found. Please seed users first.")
 
         # Create DSMetrics instance
@@ -43,8 +45,34 @@ class DataSetSeeder(BaseSeeder):
                 tags="tag1, tag2",
                 ds_metrics_id=seeded_ds_metrics.id,
             )
-            for i in range(4)
+            for i in range(5)
         ]
+        ds_meta_data_list.append(
+            DSMetaData(
+                deposition_id=6,
+                title="Sample dataset 6",
+                description="Description for dataset 6 staged",
+                publication_type=PublicationType.DATA_MANAGEMENT_PLAN,
+                publication_doi="10.1234/dataset6",
+                dataset_doi="10.1234/dataset6",
+                tags="tag2",
+                dataset_status=DatasetStatus.STAGED,
+                ds_metrics_id=seeded_ds_metrics.id,
+            )
+        )
+        ds_meta_data_list.append(
+            DSMetaData(
+                deposition_id=7,
+                title="Sample dataset 7",
+                description="Description for dataset 7 published",
+                publication_type=PublicationType.DATA_MANAGEMENT_PLAN,
+                publication_doi="10.1234/dataset7",
+                dataset_doi="10.1234/dataset7",
+                tags="tag1",
+                dataset_status=DatasetStatus.PUBLISHED,
+                ds_metrics_id=seeded_ds_metrics.id,
+            )
+        )
         seeded_ds_meta_data = self.seed(ds_meta_data_list)
 
         # Create Author instances and associate with DSMetaData
@@ -55,8 +83,9 @@ class DataSetSeeder(BaseSeeder):
                 orcid=f"0000-0000-0000-000{i}",
                 ds_meta_data_id=seeded_ds_meta_data[i % 4].id,
             )
-            for i in range(4)
+            for i in range(5)
         ]
+
         self.seed(authors)
 
         # Create DataSet instances
@@ -68,6 +97,32 @@ class DataSetSeeder(BaseSeeder):
             )
             for i in range(4)
         ]
+        datasets.append(
+            DataSet(
+                user_id=user1.id,
+                ds_meta_data_id=seeded_ds_meta_data[
+                    4
+                ].id,  # Corresponde a dataset 5 (STAGED)
+                created_at=datetime.now(timezone.utc),
+            )
+        )
+
+        datasets.append(
+            DataSet(
+                user_id=user2.id,
+                ds_meta_data_id=seeded_ds_meta_data[
+                    5
+                ].id,  # Corresponde a dataset 6 (PUBLISHED)
+                created_at=datetime.now(timezone.utc),
+            )
+        )
+        datasets.append(
+            DataSet(
+                user_id=user3.id,
+                ds_meta_data_id=seeded_ds_meta_data[4].id,
+                created_at=datetime.now(timezone.utc),
+            )
+        )
         seeded_datasets = self.seed(datasets)
 
         # Assume there are 12 UVL files, create corresponding FMMetaData and FeatureModel
