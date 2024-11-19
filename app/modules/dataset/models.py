@@ -142,12 +142,10 @@ class DataSet(db.Model):
     def get_file_total_size_for_human(self):
         from app.modules.dataset.services import SizeService
 
-
         return SizeService().get_human_readable_size(self.get_file_total_size())
 
     def get_uvlhub_doi(self):
         from app.modules.dataset.services import DataSetService
-
 
         return DataSetService().get_uvlhub_doi(self)
 

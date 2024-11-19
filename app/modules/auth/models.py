@@ -52,7 +52,6 @@ class User(db.Model, UserMixin):
     def temp_folder(self) -> str:
         from app.modules.auth.services import AuthenticationService
 
-
         return AuthenticationService().temp_folder_by_user(self)
 
     def is_oauth_user(self):
