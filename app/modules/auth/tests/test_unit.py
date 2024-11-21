@@ -41,8 +41,7 @@ def test_login_unsuccessful_bad_email(test_client):
 
 def test_login_unsuccessful_bad_password(test_client):
     response = test_client.post(
-        "/login", data=dict(email="test@example.com", password="basspassword"), follow_redirects=True
-    )
+        "/login", data=dict(email="test@example.com", password="basspassword"), follow_redirects=True)
 
     assert response.request.path == url_for("auth.login"), "Login was unsuccessful"
 
@@ -114,6 +113,149 @@ def test_service_create_with_profile_fail_no_password(clean_database):
 
     with pytest.raises(ValueError, match="Password is required."):
         AuthenticationService().create_with_profile(**data)
+
+    assert UserRepository().count() == 0
+    assert UserProfileRepository().count() == 0
+
+# TESTING OAuthProvider #
+
+
+def test_service_create_oauth_provider_success(clean_database):
+    data = {
+        "name": "Test",
+        "surname": "Foo",
+        "email": "oauth_test@example.com",
+        "password": "hashed_password",
+        "oauth_provider": "google",
+        "oauth_provider_user_id": "1234",
+    }
+
+    provider_data = {
+        "oauth_provider": "github",
+        "oauth_provider_user_id": "5678"
+    }
+
+    user = AuthenticationService().create_with_profile_and_oauth_provider_appended(**data)
+
+    AuthenticationService().append_oauth_provider(user, **provider_data)
+
+    user = UserRepository().get_by_email(data["email"])
+    assert UserRepository().count() == 1
+    assert UserProfileRepository().count() == 1
+    assert len(user.oauth_providers) == 2
+
+
+def test_service_create_oauth_provider_success_orcid(clean_database):
+    data = {
+        "name": "Test",
+        "surname": "Foo",
+        "email": "oauth_test@example.com",
+        "password": "hashed_password",
+        "oauth_provider": "google",
+        "oauth_provider_user_id": "1234",
+    }
+
+    provider_data = {
+        "oauth_provider": "orcid",
+        "oauth_provider_user_id": "0000-0000-0000-0000",
+    }
+
+    user = AuthenticationService().create_with_profile_and_oauth_provider_appended(**data)
+
+    AuthenticationService().append_oauth_provider(user, **provider_data)
+
+    user = UserRepository().get_by_email(data["email"])
+    assert UserRepository().count() == 1
+    assert UserProfileRepository().count() == 1
+    assert len(user.oauth_providers) == 2
+    assert user.orcid == "0000-0000-0000-0000"
+
+
+def test_service_create_with_profile_and_oauth_provider_success(clean_database):
+    data = {
+        "name": "Test",
+        "surname": "Foo",
+        "email": "oauth_test@example.com",
+        "password": "hashed_password",
+        "oauth_provider": "google",
+        "oauth_provider_user_id": "1234",
+    }
+
+    AuthenticationService().create_with_profile_and_oauth_provider_appended(**data)
+
+    assert UserRepository().count() == 1
+    assert UserProfileRepository().count() == 1
+    user = UserRepository().get_by_email(data["email"])
+    assert user.oauth_providers[0].provider_name == "google"
+    assert user.oauth_providers[0].provider_user_id == "1234"
+
+
+def test_service_create_with_profile_and_oauth_provider_orcid_success(clean_database):
+    data = {
+        "name": "Test",
+        "surname": "Foo",
+        "email": "oauth_test@example.com",
+        "password": "hashed_password",
+        "oauth_provider": "orcid",
+        "oauth_provider_user_id": "1234",
+        "orcid": "0000-0000-0000-0000",
+    }
+
+    AuthenticationService().create_with_profile_and_oauth_provider_appended(**data)
+
+    assert UserRepository().count() == 1
+    assert UserProfileRepository().count() == 1
+    user = UserRepository().get_by_orcid(data["orcid"])
+    assert user.oauth_providers[0].provider_name == "orcid"
+    assert user.oauth_providers[0].provider_user_id == "1234"
+    assert user.orcid == "0000-0000-0000-0000"
+
+
+def test_service_create_with_profile_and_oauth_provider_fail_no_email(clean_database):
+    data = {
+        "name": "Test",
+        "surname": "Foo",
+        "email": "",
+        "password": "hashed_password",
+        "oauth_provider": "google",
+        "oauth_provider_user_id": "1234",
+    }
+
+    with pytest.raises(ValueError, match="Email is required."):
+        AuthenticationService().create_with_profile_and_oauth_provider_appended(**data)
+
+    assert UserRepository().count() == 0
+    assert UserProfileRepository().count() == 0
+
+
+def test_service_create_with_profile_and_oauth_provider_fail_no_password(clean_database):
+    data = {
+        "name": "Test",
+        "surname": "Foo",
+        "email": "oauth_test@gmail.com",
+        "oauth_provider": "google",
+        "oauth_provider_user_id": "1234",
+    }
+
+    with pytest.raises(ValueError, match="Password is required."):
+        AuthenticationService().create_with_profile_and_oauth_provider_appended(**data)
+
+    assert UserRepository().count() == 0
+    assert UserProfileRepository().count() == 0
+
+
+def test_service_create_with_profile_and_oauth_provider_fail_no_oauth_provider(clean_database):
+    data = {
+        "name": "Test",
+        "surname": "Foo",
+        "email": "oauth_example@gmail.com",
+        "password": "hashed_password",
+        "oauth_provider": "",
+        "oauth_provider_user_id": "1234",
+    }
+
+    with pytest.raises(ValueError, match="OAuth provider is required."):
+        AuthenticationService().create_with_profile_and_oauth_provider_appended(**data)
 
     assert UserRepository().count() == 0
     assert UserProfileRepository().count() == 0
