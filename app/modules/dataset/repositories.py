@@ -12,6 +12,7 @@ from app.modules.dataset.models import (
     DSViewRecord,
     DataSet,
     DatasetStatus,
+    DatasetRating,
 )
 from core.repositories.BaseRepository import BaseRepository
 
@@ -189,3 +190,24 @@ class DOIMappingRepository(BaseRepository):
 
     def get_new_doi(self, old_doi: str) -> str:
         return self.model.query.filter_by(dataset_doi_old=old_doi).first()
+
+
+class DatasetRatingRepository(BaseRepository):
+    def __init__(self):
+        super().__init__(DatasetRating)
+
+    def get_rating_by_user_and_dataset(self, user_id: int, dataset_id: int) -> Optional[DatasetRating]:
+        """Obtiene la calificación de un usuario para un dataset específico."""
+        return self.model.query.filter_by(user_id=user_id, dataset_id=dataset_id).first()
+
+    def get_average_rating(self, dataset_id: int) -> float:
+        """Calcula el promedio de calificaciones de un dataset."""
+        return (
+            self.model.query.with_entities(func.avg(self.model.rating))
+            .filter_by(dataset_id=dataset_id)
+            .scalar()
+        ) or 0.0
+
+    def get_ratings_count(self, dataset_id: int) -> int:
+        """Obtiene el número total de calificaciones de un dataset."""
+        return self.model.query.filter_by(dataset_id=dataset_id).count()

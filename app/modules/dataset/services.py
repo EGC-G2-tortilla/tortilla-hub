@@ -24,6 +24,7 @@ from app.modules.dataset.repositories import (
     DSMetaDataRepository,
     DSViewRecordRepository,
     DataSetRepository,
+    DatasetRatingRepository
 )
 from app.modules.featuremodel.repositories import (
     FMMetaDataRepository,
@@ -335,3 +336,34 @@ class SizeService:
             return f"{round(size / (1024 ** 2), 2)} MB"
         else:
             return f"{round(size / (1024 ** 3), 2)} GB"
+
+
+class DatasetRatingService(BaseService):
+    def __init__(self):
+        super().__init__(DatasetRatingRepository())
+
+    def rate_dataset(self, user_id: int, dataset_id: int, rating_value: int):
+        """Crea o actualiza una calificación para un dataset."""
+        if not (1 <= rating_value <= 5):
+            raise ValueError("La calificación debe estar entre 1 y 5.")
+
+        # Verificar si el usuario ya calificó este dataset
+        existing_rating = self.repository.get_rating_by_user_and_dataset(user_id, dataset_id)
+        if existing_rating:
+            # Actualizar calificación
+            existing_rating.rating = rating_value
+            self.repository.session.commit()
+            return {"message": "Calificación actualizada con éxito."}
+        else:
+            # Crear nueva calificación
+            new_rating = self.repository.create(
+                user_id=user_id, dataset_id=dataset_id, rating=rating_value
+            )
+            self.repository.session.commit()
+            return {"message": "Calificación registrada con éxito."}
+
+    def get_dataset_rating_summary(self, dataset_id: int):
+        """Obtiene el promedio y el número de calificaciones de un dataset."""
+        average_rating = self.repository.get_average_rating(dataset_id)
+        ratings_count = self.repository.get_ratings_count(dataset_id)
+        return {"average_rating": average_rating, "ratings_count": ratings_count}

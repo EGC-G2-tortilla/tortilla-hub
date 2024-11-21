@@ -42,6 +42,7 @@ from app.modules.dataset.services import (
     DSViewRecordService,
     DataSetService,
     DOIMappingService,
+    DatasetRatingService
 )
 from app.modules.fakenodo.services import FakenodoService
 from app.modules.featuremodel.models import FMMetaData, FeatureModel
@@ -57,6 +58,7 @@ dsmetadata_service = DSMetaDataService()
 fakenodo_service = FakenodoService()
 doi_mapping_service = DOIMappingService()
 ds_view_record_service = DSViewRecordService()
+dataset_rating_service = DatasetRatingService()
 
 
 @dataset_bp.route("/dataset/upload", methods=["GET", "POST"])
@@ -725,3 +727,26 @@ def download_all_datasets():
     finally:
         # Eliminar el directorio temporal después de su uso
         shutil.rmtree(temp_dir)
+    
+
+@dataset_bp.route("/datasets/<int:dataset_id>/rate", methods=["POST"])
+@login_required
+def rate_dataset(dataset_id):
+    """Permite a un usuario calificar un dataset."""
+    data = request.get_json()
+    rating = data.get("rating")
+
+    try:
+        result = dataset_rating_service.rate_dataset(
+            user_id=current_user.id, dataset_id=dataset_id, rating_value=rating
+        )
+        return jsonify(result), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@dataset_bp.route("/datasets/<int:dataset_id>/ratings", methods=["GET"])
+def get_dataset_ratings(dataset_id):
+    """Devuelve el promedio y la cantidad total de calificaciones de un dataset."""
+    result = dataset_rating_service.get_dataset_rating_summary(dataset_id)
+    return jsonify(result), 200
