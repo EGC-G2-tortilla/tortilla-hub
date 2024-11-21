@@ -1,0 +1,52 @@
+name: "Informe de Incidencia"
+description: "Crea un informe de una incidencia"
+labels: ['bug']
+assignees: []
+
+body:
+  - type: textarea
+    attributes:
+      value: |
+        ## Descripción de la incidencia
+        (Describir brevemente el problema)
+      validations:
+        required: true
+      
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: "Pasos para reproducir"
+      description: "Especificar los pasos necesarios para reproducir el error"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: "Comportamiento esperado"
+      description: "Describir qué comportamiento se esperaba"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: "Comportamiento actual"
+      description: "Describir el comportamiento real observado"
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: "Versión del sistema"
+      description: "Indicar la versión del sistema afectada"
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: "Información adicional"
+      description: "Adjuntar cualquier otra información relevante (logs, capturas de pantalla, etc.)"

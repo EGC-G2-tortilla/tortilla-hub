@@ -61,6 +61,7 @@ def upgrade():
     sa.Column('publication_doi', sa.String(length=120), nullable=True),
     sa.Column('dataset_doi', sa.String(length=120), nullable=True),
     sa.Column('tags', sa.String(length=120), nullable=True),
+    sa.Column('dataset_status', sa.Enum('STAGED', 'UNSTAGED', 'PENDING', 'PUBLISHED', 'REJECTED', name='datasetstatus'), nullable=False,default='UNSTAGED'),
     sa.Column('ds_metrics_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['ds_metrics_id'], ['ds_metrics.id'], ),
     sa.PrimaryKeyConstraint('id')

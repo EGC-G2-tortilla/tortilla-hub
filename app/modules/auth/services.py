@@ -25,6 +25,12 @@ class AuthenticationService(BaseService):
     def is_email_available(self, email: str) -> bool:
         return self.repository.get_by_email(email) is None
 
+    def get_by_email(self, email: str) -> User:
+        return self.repository.get_by_email(email)
+
+    def get_by_orcid(self, orcid: str) -> User:
+        return self.repository.get_by_orcid(orcid)
+
     def create_with_profile(self, **kwargs):
         try:
             email = kwargs.pop("email", None)
@@ -41,10 +47,7 @@ class AuthenticationService(BaseService):
             if not surname:
                 raise ValueError("Surname is required.")
 
-            user_data = {
-                "email": email,
-                "password": password
-            }
+            user_data = {"email": email, "password": password}
 
             profile_data = {
                 "name": name,
@@ -60,7 +63,78 @@ class AuthenticationService(BaseService):
             raise exc
         return user
 
+    def create_with_profile_and_oauth_provider_appended(self, **kwargs):
+        try:
+            email = kwargs.pop("email", None)
+            password = kwargs.pop("password", None)
+            name = kwargs.pop("name", None)
+            surname = kwargs.pop("surname", None)
+            oauth_provider = kwargs.pop("oauth_provider", None)
+            oauth_provider_user_id = kwargs.pop("oauth_provider_user_id", None)
+            orcid = kwargs.pop("orcid", None)
+
+            if not email:
+                raise ValueError("Email is required.")
+            if not name:
+                raise ValueError("Name is required.")
+            if not surname:
+                raise ValueError("Surname is required.")
+            if not oauth_provider:
+                raise ValueError("OAuth provider is required.")
+            if not oauth_provider_user_id:
+                raise ValueError("OAuth provider user ID is required.")
+
+            user_data = {"email": email, "password": password, "orcid": orcid}
+
+            profile_data = {"name": name, "surname": surname, "orcid": orcid}
+
+            user = self.create(commit=False, **user_data)
+            profile_data["user_id"] = user.id
+            self.user_profile_repository.create(**profile_data)
+            self.repository.session.commit()
+
+            oauth_provider_data = {
+                "user": user,
+                "provider_name": oauth_provider,
+                "provider_user_id": oauth_provider_user_id,
+            }
+            self.repository.create_oauth_provider(**oauth_provider_data)
+            self.repository.session.commit()
+        except Exception as exc:
+            self.repository.session.rollback()
+            raise exc
+        return user
+
+    def append_oauth_provider(
+        self, user: User, oauth_provider: str, oauth_provider_user_id: str
+    ):
+        oauth_provider_data = {
+            "user": user,
+            "provider_name": oauth_provider,
+            "provider_user_id": oauth_provider_user_id,
+        }
+
+        if oauth_provider == "orcid":
+            user_data = {
+                "email": user.email,
+                "password": user.password,
+                "orcid": oauth_provider_user_id,
+            }
+            self.repository.update(user.id, **user_data)
+            user_profile = self.user_profile_repository.get_by_user_id(user.id)
+            user_profile_data = {
+                "name": user_profile.name,
+                "surname": user_profile.surname,
+                "orcid": oauth_provider_user_id,
+            }
+
+            self.user_profile_repository.update(user_profile.id, **user_profile_data)
+
+        self.repository.create_oauth_provider(**oauth_provider_data)
+        self.repository.session.commit()
+
     def update_profile(self, user_profile_id, form):
+
         if form.validate():
             updated_instance = self.update(user_profile_id, **form.data)
             return updated_instance, None
@@ -79,3 +153,6 @@ class AuthenticationService(BaseService):
 
     def temp_folder_by_user(self, user: User) -> str:
         return os.path.join(uploads_folder_name(), "temp", str(user.id))
+
+    def get_all_user_ids(self):
+        return self.repository.get_all_ids()
