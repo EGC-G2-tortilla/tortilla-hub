@@ -7,6 +7,7 @@ from typing import Optional
 import uuid
 
 from flask import request, session
+from sqlalchemy import func
 import requests
 
 from app.modules.auth.services import AuthenticationService
