@@ -10,7 +10,14 @@ from flask import request, session
 import requests
 
 from app.modules.auth.services import AuthenticationService
-from app.modules.dataset.models import DSViewRecord, DataSet, DSMetaData, DatasetStatus
+from app.modules.dataset.models import (
+    Author,
+    DSDownloadRecord,
+    DSViewRecord,
+    DataSet,
+    DSMetaData,
+    DatasetStatus,
+)
 from app.modules.dataset.repositories import (
     AuthorRepository,
     DOIMappingRepository,
@@ -62,6 +69,9 @@ class DataSetService(BaseService):
         dest_dir = os.path.join(
             working_dir, "uploads", f"user_{current_user.id}", f"dataset_{dataset.id}"
         )
+        dest_dir = os.path.join(
+            working_dir, "uploads", f"user_{current_user.id}", f"dataset_{dataset.id}"
+        )
 
         os.makedirs(dest_dir, exist_ok=True)
 
@@ -82,6 +92,20 @@ class DataSetService(BaseService):
 
     def latest_synchronized(self):
         return self.repository.latest_synchronized()
+
+    def most_downloaded(self):
+        downloaded_datasets = self.repository.most_downloaded()
+        result = []
+
+        for dataset in downloaded_datasets:
+            download_count = (
+                self.repository.session.query(func.count(DSDownloadRecord.id))
+                .filter(DSDownloadRecord.dataset_id == dataset.id)
+                .scalar()
+            )
+            result.append({"name": dataset.name(), "downloads": download_count})
+
+        return result
 
     def count_synchronized_datasets(self):
         return self.repository.count_synchronized_datasets()
@@ -280,6 +304,22 @@ class DataSetService(BaseService):
 class AuthorService(BaseService):
     def __init__(self):
         super().__init__(AuthorRepository())
+
+    def most_popular_authors(self):
+        popular_authors = self.repository.most_popular_authors()
+        result = []
+
+        for author in popular_authors:
+            dataset_count = (
+                self.repository.session.query(func.count(DataSet.id))
+                .join(DSMetaData, DSMetaData.id == DataSet.ds_meta_data_id)
+                .filter(Author.ds_meta_data_id == DSMetaData.id)
+                .filter(Author.id == author.id)
+                .scalar()
+            )
+            result.append({"name": author.name, "datasets": dataset_count})
+
+        return result
 
 
 class DSDownloadRecordService(BaseService):
