@@ -343,27 +343,28 @@ class DatasetRatingService(BaseService):
         super().__init__(DatasetRatingRepository())
 
     def rate_dataset(self, user_id: int, dataset_id: int, rating_value: int):
-        """Crea o actualiza una calificación para un dataset."""
+        """Creates a rating for a dataset if it does not exist; avoids updates."""
         if not (1 <= rating_value <= 5):
-            raise ValueError("La calificación debe estar entre 1 y 5.")
+            raise ValueError("The rating must be between 1 and 5.")
 
-        # Verificar si el usuario ya calificó este dataset
+        # Check if the user has already rated this dataset
         existing_rating = self.repository.get_rating_by_user_and_dataset(user_id, dataset_id)
         if existing_rating:
-            # Actualizar calificación
-            existing_rating.rating = rating_value
-            self.repository.session.commit()
-            return {"message": "Calificación actualizada con éxito."}
+            # If a rating already exists, reject the operation
+            return {
+                "message": "You have already rated this dataset. You cannot rate it again.",
+                "status": "error",
+            }
         else:
-            # Crear nueva calificación
+            # Create new rating
             new_rating = self.repository.create(
                 user_id=user_id, dataset_id=dataset_id, rating=rating_value
             )
             self.repository.session.commit()
-            return {"message": "Calificación registrada con éxito."}
+            return {"message": "Rating successfully recorded.", "status": "success"}
 
     def get_dataset_rating_summary(self, dataset_id: int):
-        """Obtiene el promedio y el número de calificaciones de un dataset."""
+        """Gets the average and number of ratings for a dataset."""
         average_rating = self.repository.get_average_rating(dataset_id)
         ratings_count = self.repository.get_ratings_count(dataset_id)
         return {"average_rating": average_rating, "ratings_count": ratings_count}
