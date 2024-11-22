@@ -100,7 +100,7 @@ class DataSetService(BaseService):
 
     def total_dataset_views(self) -> int:
         return self.dsviewrecord_repostory.total_dataset_views()
-    
+
     def upload_to_hub(self, hub, owner_repo, file_path):
         if hub == "github":
             base_url = f"https://api.github.com/repos/{owner_repo}/contents/uvlmodels"
@@ -119,7 +119,7 @@ class DataSetService(BaseService):
                 "Authorization": f"Bearer {token}",
                 "Accept": "application/vnd.github.v3+json"
             }
-            response = requests.put(base_url, json=data, headers=headers)
+            response = requests.put(base_url, json=data, headers=headers, timeout=10)
             return response.status_code
         elif hub == "gitlab":
             base_url = f"https://gitlab.com/api/v4/projects/{owner_repo}/repository/commits"
@@ -145,7 +145,7 @@ class DataSetService(BaseService):
             headers = {
                 "Authorization": f"Bearer {token}"
             }
-            response = requests.post(base_url, json=data, headers=headers)
+            response = requests.post(base_url, json=data, headers=headers, timeout=10)
             return response.status_code
 
     def create_from_form(self, form, current_user) -> DataSet:

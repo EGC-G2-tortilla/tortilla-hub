@@ -2,7 +2,7 @@ import os
 import secrets
 import string
 from dotenv import load_dotenv
-from flask import jsonify, render_template, redirect, render_template_string, url_for, session, request, Flask
+from flask import jsonify, render_template, redirect, url_for, session, request, Flask
 from flask_login import current_user, login_user, logout_user
 import requests
 from werkzeug.security import generate_password_hash
@@ -478,7 +478,7 @@ def authorize_github():
         return redirect(f"{origin_url}#githubToken={token}")
     else:
         redirect(f"url_for('public.index')#githubToken={token}")
-        
+
 
 @auth_bp.route("/github/repositories", methods=["GET"])
 def get_github_repositories():
@@ -488,7 +488,7 @@ def get_github_repositories():
 
     headers = {"Authorization": f"token {token}"}
     params = {"affiliation": "owner,collaborator,organization_member"}
-    response = requests.get("https://api.github.com/user/repos", headers=headers, params=params)
+    response = requests.get("https://api.github.com/user/repos", headers=headers, params=params, timeout=10)
 
     if response.status_code != 200:
         return jsonify({"error": "Failed to fetch repositories"}), response.status_code
@@ -597,7 +597,7 @@ def get_gitlab_repositories():
         return jsonify({"error": "No authentication token found"}), 401
 
     headers = {"Authorization": f"Bearer {token}"}
-    response = requests.get("https://gitlab.com/api/v4/projects", headers=headers, params={'membership': True})
+    response = requests.get("https://gitlab.com/api/v4/projects", headers=headers, params={'membership': True}, timeout=10)
 
     if response.status_code != 200:
         return jsonify({"error": "Failed to fetch repositories"}), response.status_code
