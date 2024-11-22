@@ -29,7 +29,7 @@ var currentId = 0;
             }
         });
         
-        /* eslint-disable no-unused-vars */
+        /* eslint-disable-next-line no-unused-vars */
         function toggleAuthButtons() {
             const isChecked = document.getElementById("uploadToRepo").checked;
             const token = sessionStorage.getItem("github_token") || sessionStorage.getItem("gitlab_token");
@@ -45,7 +45,6 @@ var currentId = 0;
                 document.getElementById("repo-form").style.display = "none";
             }
         }
-        /* eslint-enable no-unused-vars */
         
         // Función para cargar los repositorios del usuario desde el backend
         function loadUserRepositories() {
