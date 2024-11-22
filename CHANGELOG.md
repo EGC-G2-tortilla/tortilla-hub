@@ -1,3 +1,11 @@
+# [1.6.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.5.0...v1.6.0) (2024-11-22)
+
+
+### Features
+
+* Añadir carpeta faltante y eliminar carpeta temporal ([b0a58f0](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b0a58f06548838568e85c63894cb0c43e3118824))
+* Ver datasets de usuarios ([7382f5a](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7382f5a38395e0f2a4f29bebdeeaff65bb9d3686))
+
 # [1.5.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.4.0...v1.5.0) (2024-11-19)
 
 
