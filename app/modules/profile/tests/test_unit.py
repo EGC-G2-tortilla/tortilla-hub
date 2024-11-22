@@ -6,6 +6,7 @@ from app.modules.auth.models import User
 from app.modules.profile.models import UserProfile
 from app.modules.dataset.models import DSMetaData, PublicationType, DataSet
 
+
 @pytest.fixture(scope="module")
 def test_client(test_client):
     """
@@ -81,21 +82,22 @@ def test_view_other_user_profile_with_pagination(test_client):
     db.session.add(ds_meta_data)
     db.session.commit()
 
-    data_set = DataSet(
-        user_id=other_user.id,
-        ds_meta_data_id=ds_meta_data.id
-    )
+    data_set = DataSet(user_id=other_user.id, ds_meta_data_id=ds_meta_data.id)
     db.session.add(data_set)
     db.session.commit()
 
     # Realizar la solicitud
-    response = test_client.get(f'/profile/summary/{other_user.id}?page=2')
+    response = test_client.get(f"/profile/summary/{other_user.id}?page=2")
     assert response.status_code == 200
 
     # También puedes verificar la estructura HTML de la tarjeta de perfil
-    assert b'<p class="card-text h5"><i class="fa fa-user"></i> <strong>Name:</strong> Empanada</p>' in response.data
+    assert (
+        b'<p class="card-text h5"><i class="fa fa-user"></i> <strong>Name:</strong> Empanada</p>'
+        in response.data
+    )
 
-    assert b'Empanada' in response.data
+    assert b"Empanada" in response.data
+
 
 def test_view_nonexistent_profile(test_client):
     login_response = login(test_client, "user@example.com", "test1234")
@@ -103,7 +105,10 @@ def test_view_nonexistent_profile(test_client):
 
     nonexistent_user_id = 99999  # Un ID que no existe en la base de datos
     response = test_client.get(f"/profile/summary/{nonexistent_user_id}")
-    assert response.status_code == 404, "Expected a 404 error for a nonexistent profile."
+    assert (
+        response.status_code == 404
+    ), "Expected a 404 error for a nonexistent profile."
+
 
 def test_view_profile_unauthenticated(test_client):
     other_user = User(email="unauth_user@example.com", password="password123")
@@ -141,16 +146,14 @@ def test_view_profile_invalid_page(test_client):
     db.session.add(ds_meta_data)
     db.session.commit()
 
-    data_set = DataSet(
-        user_id=other_user.id,
-        ds_meta_data_id=ds_meta_data.id
-    )
+    data_set = DataSet(user_id=other_user.id, ds_meta_data_id=ds_meta_data.id)
     db.session.add(data_set)
     db.session.commit()
 
     # Realizar la solicitud
-    response = test_client.get(f'/profile/summary/{other_user.id}?page=14')
+    response = test_client.get(f"/profile/summary/{other_user.id}?page=14")
     assert response.status_code == 200
+
 
 def test_view_profile_sensitive_data_not_exposed(test_client):
     login_response = login(test_client, "user@example.com", "test1234")

@@ -28,39 +28,52 @@ def validate_profile(driver, url, is_self=True):
         By.XPATH, "//p[contains(@class, 'card-text') and contains(., 'Name:')]"
     )
     name_text = name_element.text
-    assert "Name:" in name_text and name_text.split(":")[1].strip() != "", "Test failed! Name not found."
+    assert (
+        "Name:" in name_text and name_text.split(":")[1].strip() != ""
+    ), "Test failed! Name not found."
 
     # Apellido
     surname_element = driver.find_element(
         By.XPATH, "//p[contains(@class, 'card-text') and contains(., 'Surname:')]"
     )
     surname_text = surname_element.text
-    assert "Surname:" in surname_text and surname_text.split(":")[1].strip() != "", "Test failed! Surname not found."
+    assert (
+        "Surname:" in surname_text and surname_text.split(":")[1].strip() != ""
+    ), "Test failed! Surname not found."
 
     # Afiliación
     affiliation_element = driver.find_element(
         By.XPATH, "//p[contains(@class, 'card-text') and contains(., 'Affiliation:')]"
     )
     affiliation_text = affiliation_element.text
-    assert "Affiliation:" in affiliation_text and affiliation_text.split(":")[1].strip() != "", \
-        "Test failed! Affiliation not found."
+    assert (
+        "Affiliation:" in affiliation_text
+        and affiliation_text.split(":")[1].strip() != ""
+    ), "Test failed! Affiliation not found."
 
     # Email
     email_element = driver.find_element(
         By.XPATH, "//p[contains(@class, 'card-text') and contains(., 'Email:')]"
     )
     email_text = email_element.text
-    assert "Email:" in email_text and email_text.split(":")[1].strip() != "", "Test failed! Email not found."
+    assert (
+        "Email:" in email_text and email_text.split(":")[1].strip() != ""
+    ), "Test failed! Email not found."
 
     # Número de datasets
     datasets_element = driver.find_element(
-        By.XPATH, "//p[contains(@class, 'card-text') and contains(., 'Uploaded datasets:')]"
+        By.XPATH,
+        "//p[contains(@class, 'card-text') and contains(., 'Uploaded datasets:')]",
     )
     datasets_text = datasets_element.text
-    assert "Uploaded datasets:" in datasets_text and datasets_text.split(":")[1].strip() != "", \
-        "Test failed! Datasets info not found."
+    assert (
+        "Uploaded datasets:" in datasets_text
+        and datasets_text.split(":")[1].strip() != ""
+    ), "Test failed! Datasets info not found."
 
-    print(f"Perfil validado para {'usuario actual' if is_self else 'otro usuario'} exitosamente!")
+    print(
+        f"Perfil validado para {'usuario actual' if is_self else 'otro usuario'} exitosamente!"
+    )
     print(
         f"Nombre: {name_text}, Apellido: {surname_text}, Afiliación: {affiliation_text}, "
         f"Email: {email_text}, Datasets: {datasets_text}"

@@ -63,30 +63,32 @@ def my_profile():
     )
 
 
-@profile_bp.route('/profile/summary/<int:user_id>')
+@profile_bp.route("/profile/summary/<int:user_id>")
 def view_profile(user_id):
     profile = UserProfile.query.filter_by(user_id=user_id).first()
     if not profile:
         return abort(404)
 
-    page = request.args.get('page', 1, type=int)
+    page = request.args.get("page", 1, type=int)
     per_page = 5
 
     # Paginación para los datasets del usuario especificado
-    user_datasets_pagination = db.session.query(DataSet) \
-        .filter(DataSet.user_id == user_id) \
-        .order_by(DataSet.created_at.desc()) \
+    user_datasets_pagination = (
+        db.session.query(DataSet)
+        .filter(DataSet.user_id == user_id)
+        .order_by(DataSet.created_at.desc())
         .paginate(page=page, per_page=per_page, error_out=False)
+    )
 
-    total_datasets_count = db.session.query(DataSet) \
-        .filter(DataSet.user_id == user_id) \
-        .count()
+    total_datasets_count = (
+        db.session.query(DataSet).filter(DataSet.user_id == user_id).count()
+    )
 
     return render_template(
-        'profile/summary.html',
+        "profile/summary.html",
         user_profile=profile,
         user=profile.user,
         datasets=user_datasets_pagination.items,
         pagination=user_datasets_pagination,
-        total_datasets=total_datasets_count
+        total_datasets=total_datasets_count,
     )
