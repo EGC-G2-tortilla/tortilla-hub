@@ -67,6 +67,8 @@ class DataSetForm(FlaskForm):
     tags = StringField("Tags (separated by commas)")
     authors = FieldList(FormField(AuthorForm))
     feature_models = FieldList(FormField(FeatureModelForm), min_entries=1)
+    github_repo = StringField("GitHub Repository")
+    gitlab_repo = StringField("GitLab Repository")
 
     submit = SubmitField("Submit")
 

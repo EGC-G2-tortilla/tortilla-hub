@@ -69,7 +69,7 @@ var currentId = 0;
                     repoSelect.innerHTML = `<option value="">Seleccione un repositorio</option>`;
                     repos.forEach(repo => {
                         const option = document.createElement("option");
-                        option.value = repo.full_name;
+                        option.value = repo.id;
                         option.textContent = repo.name;
                         repoSelect.appendChild(option);
                     });
@@ -222,6 +222,16 @@ var currentId = 0;
                     // process data form
                     const formData = {};
 
+                    const selectedRepo = document.getElementById("repo-select").value;
+                    const githubToken = sessionStorage.getItem("github_token");
+                    const gitlabToken = sessionStorage.getItem("gitlab_token");
+                    if (githubToken && selectedRepo) {
+                        formData['github_repo'] = selectedRepo;
+                    }
+                    if (gitlabToken && selectedRepo) {
+                        formData['gitlab_repo'] = selectedRepo;
+                    }
+
                     ["basic_info_form", "uploaded_models_form"].forEach((formId) => {
                         const form = document.getElementById(formId);
                         const inputs = form.querySelectorAll('input, select, textarea');
@@ -237,14 +247,14 @@ var currentId = 0;
                     console.log(formDataJson);
 
                     const csrfToken = document.getElementById('csrf_token').value;
+                    
                     const formUploadData = new FormData();
                     formUploadData.append('csrf_token', csrfToken);
-
                     for (let key in formData) {
                         if (formData.hasOwnProperty(key)) {
                             formUploadData.set(key, formData[key]);
                         }
-                    }
+                    }               
 
                     let checked_orcid = true;
                     if (Array.isArray(formData.author_orcid)) {
