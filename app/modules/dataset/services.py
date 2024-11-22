@@ -114,7 +114,7 @@ class DataSetService(BaseService):
                 "content": content_base64,
                 "branch": "main"
             }
-            
+
             headers = {
                 "Authorization": f"Bearer {token}",
                 "Accept": "application/vnd.github.v3+json"
@@ -200,7 +200,7 @@ class DataSetService(BaseService):
                     self.upload_to_hub("github", github_repo, file_path)
                 if (gitlab_repo):
                     self.upload_to_hub("gitlab", gitlab_repo, file_path)
-                    
+
             self.repository.session.commit()
         except Exception as exc:
             logger.info(f"Exception creating dataset from form...: {exc}")
