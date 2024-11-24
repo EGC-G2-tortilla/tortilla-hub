@@ -460,23 +460,23 @@
                 <label>
                     <input type="checkbox" id="uploadToRepo" onclick="toggleAuthButtons()" /> Subirlo a un repositorio
                 </label>
-                  <div id="authButtons" style="display: none;">
-                    <div class="col-lg-6 col-12 mb-3">
+                  <div id="authButtons" style="display: none; justify-content: space-between; margin-top: 10px;">
+                    <div class="col-lg-6 col-12 mb-3" style="padding-right: 10px;">
                         <a href="{{ url_for('auth.login_github') }}" class="btn btn-block" style="background-color: #333; color: white; display: flex; align-items: center; justify-content: center; border-radius: 5px; padding: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: background-color 0.3s ease;">
                             <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub logo" style="width: 20px; height: 20px; margin-right: 10px;">
                             <span style="font-weight: bold;">Sign In with GitHub</span>
                         </a>
                     </div>
-                    <div class="col-lg-6 col-12 mb-3">
+                    <div class="col-lg-6 col-12 mb-3" style="padding-left: 10px;">
                         <a href="{{ url_for('auth.login_gitlab') }}" class="btn btn-block" style="background-color: #FC6D26; color: white; display: flex; align-items: center; justify-content: center; border-radius: 5px; padding: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: background-color 0.3s ease;">
                             <img src="https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png" alt="GitLab logo" style="width: 20px; height: 20px; margin-right: 10px;">
                             <span style="font-weight: bold;">Sign In with GitLab</span>
                         </a>
                     </div>
                   </div>
-                  <form id="repo-form" style="display: none;">
+                  <form id="repo-form" style="display: none; margin-top: 10px;">
                     <label for="repo-select">Selecciona un repositorio para subir el modelo UVL:</label>
-                    <select id="repo-select" name="repo" required>
+                    <select class="custom-select" id="repo-select" name="repo" required>
                         <option value="">Seleccione un repositorio</option>
                     </select>
                 </form>
@@ -485,6 +485,30 @@
         
 
     </div>
+
+    <style>
+        .custom-select {
+            background-color: #00000000;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0px 16px;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+        }
+
+        .custom-select option:checked {
+            background-color: #00000000;
+        }
+    </style>
 
     <div class="row" id="upload_dataset" style="display: none">
 

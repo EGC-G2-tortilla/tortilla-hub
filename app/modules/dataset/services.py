@@ -127,33 +127,45 @@ class DataSetService(BaseService):
         return self.dsviewrecord_repostory.total_dataset_views()
 
     def upload_to_hub(self, hub, owner_repo, file_path):
-        if hub == "github":
-            base_url = f"https://api.github.com/repos/{owner_repo}/contents/uvlmodels"
-            token = session["github_token"]
-            with open(file_path, "rb") as file:
-                content = file.read()
+        file_name = file_path.split("/")[-1]
 
-            content_base64 = base64.b64encode(content).decode("utf-8")
-            data = {
-                "message": "Subiendo modelo uvl desde uvlhub",
-                "content": content_base64,
-                "branch": "main"
-            }
+        if hub == "github":
+            base_url = f"https://api.github.com/repos/{owner_repo}/contents/uvlmodels/{file_name}"
+            token = session["github_token"]
 
             headers = {
                 "Authorization": f"Bearer {token}",
                 "Accept": "application/vnd.github.v3+json"
             }
+            sha = None
+            response = requests.get(base_url, headers=headers, timeout=10)
+            if response.status_code == 200:
+                sha = response.json().get("sha")
+
+            with open(file_path, "rb") as file:
+                content = file.read()
+            content_base64 = base64.b64encode(content).decode("utf-8")
+
+            data = {
+                "message": "Subiendo modelo uvl desde uvlhub",
+                "content": content_base64,
+                "branch": "main"
+            }
+            if sha:
+                data["sha"] = sha  # Agregar el SHA si el archivo ya existe
+
+            # Subir el archivo
             response = requests.put(base_url, json=data, headers=headers, timeout=10)
-            return response.status_code
+            return logger.info(f"Subida a GitHub del archivo {file_name}: {response.status_code} {response.reason}")
+
         elif hub == "gitlab":
             base_url = f"https://gitlab.com/api/v4/projects/{owner_repo}/repository/commits"
             token = session["gitlab_token"]
+
             with open(file_path, "rb") as file:
                 content = file.read()
-
             content_base64 = base64.b64encode(content).decode("utf-8")
-            file_name = file_path.split("/")[-1]
+
             data = {
                 "branch": "main",
                 "commit_message": "Subiendo modelo uvl desde uvlhub",
@@ -170,8 +182,13 @@ class DataSetService(BaseService):
             headers = {
                 "Authorization": f"Bearer {token}"
             }
+
             response = requests.post(base_url, json=data, headers=headers, timeout=10)
-            return response.status_code
+            if response.status_code == 400:  # Error si el archivo ya existe
+                data["actions"][0]["action"] = "update"
+                response = requests.post(base_url, json=data, headers=headers, timeout=10)
+
+            return logger.info(f"Subida a GitLab del archivo {file_name}: {response.status_code} {response.reason}")
 
     def create_from_form(self, form, current_user) -> DataSet:
         main_author = {
