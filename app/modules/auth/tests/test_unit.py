@@ -1,7 +1,10 @@
 import pytest
 from flask import url_for
-
+from unittest.mock import patch, MagicMock
+from app import db
+from werkzeug.security import check_password_hash
 from app.modules.auth.services import AuthenticationService
+from app.modules.auth.models import User, OAuthProvider
 from app.modules.auth.repositories import UserRepository
 from app.modules.profile.repositories import UserProfileRepository
 
@@ -12,8 +15,7 @@ def test_client(test_client):
     Extends the test_client fixture to add additional specific data for module testing.
     """
     with test_client.application.app_context():
-        # Add HERE new elements to the database that you want to exist in the test context.
-        # DO NOT FORGET to use db.session.add(<element>) and db.session.commit() to save the data.
+
         pass
 
     yield test_client
@@ -271,3 +273,83 @@ def test_service_create_with_profile_and_oauth_provider_fail_no_oauth_provider(c
 
     assert UserRepository().count() == 0
     assert UserProfileRepository().count() == 0
+
+# TESTING OAuth_provider GitHub #
+
+
+def test_signup_github_no_signup_state(test_client):
+    with test_client.session_transaction() as session:
+        session["signup_state"] = None
+    response = test_client.get(url_for("auth.sign_up_github"))
+    assert response.status_code == 302
+    assert response.location.endswith(url_for("auth.show_signup_form"))
+
+
+@patch("app.modules.auth.routes.github.authorize_redirect")
+def test_signup_github_redirect(mock_authorize_redirect, test_client):
+    with test_client.session_transaction() as session:
+        session["signup_state"] = "active"
+    test_client.get(url_for("auth.sign_up_github"))
+    mock_authorize_redirect.assert_called_once_with(url_for("auth.authorize_github", _external=True, flow="signup"))
+
+
+@patch("app.modules.auth.routes.github.authorize_redirect")
+def test_login_github_redirect(mock_authorize_redirect, test_client):
+    with test_client.session_transaction() as session:
+        session["login_state"] = "active"
+    test_client.get(url_for("auth.login_github"))
+    mock_authorize_redirect.assert_called_once_with(
+        url_for("auth.authorize_github", _external=True, flow="login")
+    )
+
+
+@patch("app.modules.auth.routes.github.get")
+@patch("app.modules.auth.routes.github.authorize_access_token")
+@patch("app.modules.auth.routes.authentication_service")
+def test_authorize_github_existing_user_with_provider(
+    mock_auth_service, mock_authorize_access_token, mock_github_get, test_client, clean_database
+):
+    # Create a user with a GitHub provider
+    user = User(email="test@example.com", password="hashed", oauth_providers=[])
+    provider = OAuthProvider(provider_name="github", provider_user_id="12345", user=user)
+    db.session.add(user)
+    db.session.add(provider)
+    db.session.commit()
+
+    mock_authorize_access_token.return_value = None
+    mock_github_get.return_value = MagicMock(
+        json=lambda: {"email": "test@example.com", "id": "12345"}
+    )
+    mock_auth_service.get_by_email.return_value = user
+
+    response = test_client.get(url_for("auth.authorize_github"))
+    assert response.status_code == 302
+    assert response.location.endswith(url_for("public.index"))
+
+
+@patch("app.modules.auth.routes.github.authorize_access_token")
+@patch("app.modules.auth.routes.github.get")
+@patch("app.modules.auth.routes.authentication_service")
+def test_authorize_github_new_user(
+    mock_authorize_access_token, mock_github_get, mock_authentication_service, test_client, clean_database
+):
+    mock_authorize_access_token.return_value = None
+
+    # Set up the mock to return the GitHub user data
+    mock_github_get.return_value = MagicMock(
+        json=lambda: {"email": "new@example.com", "id": "12345", "name": "John"}
+    )
+
+    # Set up the mock to return the user
+    user = User(
+        email="new@example.com",
+        password="hashed",
+        oauth_providers=[
+            OAuthProvider(provider_name="github", provider_user_id="12345")
+        ],)
+    mock_authentication_service.get_by_email.return_value = None
+    mock_authentication_service.create_with_profile_and_oauth_provider_appended.return_value = user
+
+    response = test_client.get(url_for("auth.authorize_github"))
+    assert response.status_code == 302
+    assert response.location.endswith(url_for("public.index"))

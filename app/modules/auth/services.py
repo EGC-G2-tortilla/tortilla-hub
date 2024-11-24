@@ -79,6 +79,8 @@ class AuthenticationService(BaseService):
                 raise ValueError("Name is required.")
             if not surname:
                 raise ValueError("Surname is required.")
+            if not password:
+                raise ValueError("Password is required.")
             if not oauth_provider:
                 raise ValueError("OAuth provider is required.")
             if not oauth_provider_user_id:
