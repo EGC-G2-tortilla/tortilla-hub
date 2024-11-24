@@ -23,13 +23,13 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349
 
       - name: Build and push Docker image
         run: |
@@ -37,13 +37,16 @@ jobs:
           docker push uvlhubtortilla/tortilla-hub:latest
 
       - name: Set up and deploy containers
+        env:
+          MYSQL_ROOT_PASSWORD: uvlhub_root_password
+          MYSQL_DATABASE: uvlhubdb
         run: |
           docker volume create flask_mysql_volume
           docker network create flask_network || true
           docker run -d --name mysql-container --network flask_network \
             -v flask_mysql_volume:/var/lib/mysql \
-            -e MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} \
-            -e MYSQL_DATABASE=flask_app \
+            -e MYSQL_ROOT_PASSWORD=${{ env.MYSQL_ROOT_PASSWORD }} \
+            -e MYSQL_DATABASE=${{ env.MYSQL_DATABASE }} \
             mysql:latest
           docker compose -f docker/docker-compose.dev.yml up -d 
 
