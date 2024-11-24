@@ -33,7 +33,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t uvlhubtortilla/tortilla-hub:latest .
+          docker build -f docker/images/Dockerfile.dev -t uvlhubtortilla/tortilla-hub:latest .
           docker push uvlhubtortilla/tortilla-hub:latest
 
       - name: Set up and deploy containers
