@@ -24,11 +24,20 @@ class FakenodoService(BaseService):
         """
         Simula la creación de un depósito, subida de archivo y eliminación.
         """
-        deposition = self.create_new_deposition({"title": "Test Deposition", "description": "Mock description"})
+        deposition = self.create_new_deposition(
+            {"title": "Test Deposition", "description": "Mock description"}
+        )
         deposition_id = deposition["id"]
-        self.upload_file(deposition_id, {"filename": "test_file.txt", "content": "Fake file content"})
+        self.upload_file(
+            deposition_id, {"filename": "test_file.txt", "content": "Fake file content"}
+        )
         self.delete_deposition(deposition_id)
-        return jsonify({"success": True, "message": "Full connection test passed with Fakenodo mock API."})
+        return jsonify(
+            {
+                "success": True,
+                "message": "Full connection test passed with Fakenodo mock API.",
+            }
+        )
 
     def get_all_depositions(self) -> dict:
         """
@@ -46,7 +55,7 @@ class FakenodoService(BaseService):
             "id": deposition_id,
             "title": metadata.get("title", "Untitled"),
             "description": metadata.get("description", ""),
-            "status": "draft"
+            "status": "draft",
         }
         self.mock_data[deposition_id] = deposition
         logger.info(f"Created new mock deposition: {deposition}")
@@ -61,7 +70,7 @@ class FakenodoService(BaseService):
 
         file_info = {
             "filename": file_data.get("filename", "untitled.txt"),
-            "status": "uploaded"
+            "status": "uploaded",
         }
         self.mock_data[deposition_id].update({"file": file_info})
         logger.info(f"Uploaded mock file to deposition {deposition_id}")

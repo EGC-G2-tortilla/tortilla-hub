@@ -4,11 +4,14 @@ labels: ['bug']
 assignees: []
 
 body:
-  - type: markdown
+  - type: textarea
     attributes:
       value: |
         ## Descripción de la incidencia
         (Describir brevemente el problema)
+      validations:
+        required: true
+      
 
   - type: textarea
     id: steps-to-reproduce

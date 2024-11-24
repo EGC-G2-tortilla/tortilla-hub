@@ -13,5 +13,5 @@ class UserProfileService(BaseService):
 
         return None, form.errors
 
-    def get_by_user_id(self, user_id):
+    def get_by_user_id(self, user_id: str):
         return self.repository.get_by_user_id(user_id)

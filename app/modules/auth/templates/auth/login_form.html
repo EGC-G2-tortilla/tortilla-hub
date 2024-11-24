@@ -6,6 +6,12 @@
 
 <h1 class="h2 mb-3"><b>Login</b></h1>
 
+{% if request.args.get("error") %}
+    <div class="alert alert-danger">
+        {{ request.args.get("error") }}
+    </div>
+{% endif %}
+
 <div class="row">
     <div class="col-12">
 
@@ -75,8 +81,16 @@
                         </div>
                     </div>
 
-
                     <div class="row">
+                        <div class="col-12">
+                            <small class="text-muted">
+                                Note: If you sign in with an OAuth provider using an email that does not match an existing account, a new account will be created instead of linking to an existing one. To link an account, please use the same email address.
+                            </small>
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-3">
 
                         <div class="col-lg-6 col-12">
                             {{ form.submit(class="btn btn-primary") }}
