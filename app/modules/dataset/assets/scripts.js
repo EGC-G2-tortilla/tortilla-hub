@@ -5,15 +5,16 @@ var currentId = 0;
             const urlParams = new URLSearchParams(window.location.hash.slice(1));
             const tokenGithub = urlParams.get("githubToken");
             const tokenGitlab = urlParams.get("gitlabToken");
-        
+
             if (tokenGithub) {
                 sessionStorage.setItem("github_token", tokenGithub);
-                window.location.hash = ''; // Limpia el fragmento de la URL por seguridad
             }
             if (tokenGitlab) {
                 sessionStorage.setItem("gitlab_token", tokenGitlab);
-                window.location.hash = ''; // Limpia el fragmento de la URL por seguridad
             }
+
+            // Eliminar el fragmento de la URL sin recargar la página
+            window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
         });
 
         document.addEventListener("DOMContentLoaded", function () {

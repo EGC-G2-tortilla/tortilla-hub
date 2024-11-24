@@ -389,13 +389,6 @@ def login_google():
     return google.authorize_redirect(redirect_uri)
 
 
-@auth_bp.route("/login/github")
-def login_github():
-    session['origin_url'] = request.referrer
-    redirect_uri = url_for('auth.authorize_github', _external=True, flow='login')
-    return github.authorize_redirect(redirect_uri)
-
-
 @auth_bp.route("/authorize/login/google")
 def authorize_login_google():
     if current_user.is_authenticated:
@@ -446,9 +439,17 @@ def authorize_login_google():
 
 @auth_bp.route("/signup/github")
 def sign_up_github():
+    session['origin_url'] = request.referrer
     if session.get("signup_state") is None:
         return redirect(url_for("auth.show_signup_form"))
     redirect_uri = url_for("auth.authorize_github", _external=True, flow="signup")
+    return github.authorize_redirect(redirect_uri)
+
+
+@auth_bp.route("/login/github")
+def login_github():
+    session['origin_url'] = request.referrer
+    redirect_uri = url_for('auth.authorize_github', _external=True, flow='login')
     return github.authorize_redirect(redirect_uri)
 
 
@@ -513,7 +514,7 @@ def authorize_github():
         if "/dataset/upload" in origin_url:
             return redirect(f"{origin_url}#githubToken={token}")
         else:
-            redirect(f"url_for('public.index')#githubToken={token}")
+            return redirect(url_for('public.index') + f"#githubToken={token}")
     else:
         # Crear una nueva cuenta si el usuario no existe
         random_password = generate_random_password()
@@ -532,7 +533,7 @@ def authorize_github():
         if "/dataset/upload" in origin_url:
             return redirect(f"{origin_url}#githubToken={token}")
         else:
-            redirect(f"url_for('public.index')#githubToken={token}")
+            return redirect(url_for('public.index') + f"#githubToken={token}")
 
 
 @auth_bp.route("/github/repositories", methods=["GET"])
