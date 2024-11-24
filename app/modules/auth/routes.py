@@ -96,7 +96,7 @@ def show_signup_form():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("public.index"))
-    
+
     # Genera un estado único para la sesión
     state = secrets.token_urlsafe(16)
     session["login_state"] = state
@@ -403,7 +403,7 @@ def authorize_login_google():
             ),
             None,
         )
-        
+
         # Si el usuario ya existe pero no tiene Google vinculado, añadimos la conexión
         if not is_google_user:
             authentication_service.append_oauth_provider(user, "google", profile["sub"])
@@ -418,8 +418,6 @@ def authorize_login_google():
         # Si el usuario no existe, redirigir al login con un mensaje de error
         session.pop("login_state", None)
         return redirect(url_for("auth.login") + "?error=This account does not exist. Please sign up.")
-
-
 
 
 @auth_bp.route("/signup/github")
