@@ -253,14 +253,16 @@ def provide_email():
             random_password = generate_random_password()
             hashed_password = generate_password_hash(random_password)
 
-            user = authentication_service.create_with_profile_and_oauth_provider_appended(
-                email=email,
-                password=hashed_password,
-                name=given_name,
-                surname=family_name,
-                oauth_provider="orcid",
-                oauth_provider_user_id=orcid_id,
-                orcid=orcid_id,
+            user = (
+                authentication_service.create_with_profile_and_oauth_provider_appended(
+                    email=email,
+                    password=hashed_password,
+                    name=given_name,
+                    surname=family_name,
+                    oauth_provider="orcid",
+                    oauth_provider_user_id=orcid_id,
+                    orcid=orcid_id,
+                )
             )
             login_user(user, remember=True)
             return redirect(url_for("public.index"))
@@ -417,7 +419,10 @@ def authorize_login_google():
     else:
         # Si el usuario no existe, redirigir al login con un mensaje de error
         session.pop("login_state", None)
-        return redirect(url_for("auth.login") + "?error=This account does not exist. Please sign up.")
+        return redirect(
+            url_for("auth.login")
+            + "?error=This account does not exist. Please sign up."
+        )
 
 
 @auth_bp.route("/signup/github")
@@ -480,9 +485,7 @@ def authorize_github():
 
         if not is_github_user:
             # Si el usuario ya existe pero no tiene GitHub vinculado, vinculamos la cuenta
-            authentication_service.append_oauth_provider(
-                user, "github", profile["id"]
-            )
+            authentication_service.append_oauth_provider(user, "github", profile["id"])
 
         # En cualquier caso, si el usuario ya está registrado, hacemos login
         login_user(user, remember=True)
@@ -491,9 +494,7 @@ def authorize_github():
         # Crear una nueva cuenta si el usuario no existe
         random_password = generate_random_password()
         hashed_password = generate_password_hash(random_password)
-        name = profile.get(
-            "name", profile.get("login", "No name")
-        )
+        name = profile.get("name", profile.get("login", "No name"))
         surname = profile.get("family_name", "No Surname")
         user = authentication_service.create_with_profile_and_oauth_provider_appended(
             email=profile["email"],
