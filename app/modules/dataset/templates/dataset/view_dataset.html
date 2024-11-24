@@ -63,10 +63,6 @@
                 </span>
                 <input type="text" id="fileSearch" class="form-control search-input" placeholder="Go to file..." onkeyup="filterFiles()">
             </div>            
-            <a href="/dataset/download/{{ dataset.id }}" class="btn btn-primary" style="border-radius: 5px;">
-                <i data-feather="download" class="center-button-icon"></i>
-                Download all ({{ dataset.get_file_total_size_for_human() }})
-            </a>
         </div>
         <!-- UVL Models Section -->
         <div id="uvlModelsList" class="list-group mb-4">
@@ -178,13 +174,8 @@
                             <span class="badge bg-secondary">{{ dataset.get_cleaned_publication_type() }}</span>
                         </div>
                     </div>
-                </div>
-                <div class="row mb-2">
-                    <div class="row-md-4 col-12">
-                        <span class="text-secondary"><b>Uploaded by</b></span>
-                    </div>
-                    <div class="row-md-8 col-12">
-                        <a href="#">{{ dataset.user.profile.surname }}, {{ dataset.user.profile.name }}</a>
+                    <div class="col-md-8 col-12">
+                        <a href="/profile/summary/{{ dataset.user.id }}">{{ dataset.user.profile.surname }}, {{ dataset.user.profile.name }}</a>
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -253,42 +244,16 @@
                 <i data-feather="download" class="center-button-icon"></i>
                 Upload from Github
             </a>
-            
-                                    <!-- Botón visible -->
-                        <a href="#" id="uploadButton" class="btn btn-primary mt-3" style="border-radius: 5px;">
-                            <i data-feather="download" class="center-button-icon"></i>
-                            Upload from ZIP
-                        </a>
-                        
-                        <!-- Formulario oculto -->
-                        <form id="uploadForm" action="/dataset/upload_zip/{{ dataset.id }}" method="post" enctype="multipart/form-data" style="display: none;">
-                            <input type="file" id="zipFileInput" name="zipFile" accept=".zip">
-                        </form>
-                        
-                        <script>
-                        document.getElementById('uploadButton').addEventListener('click', function(event) {
-                            event.preventDefault();
-                            document.getElementById('zipFileInput').click();
-                        });
-                        
-                        document.getElementById('zipFileInput').addEventListener('change', function() {
-                            if (this.files.length > 0) {
-                                var formData = new FormData();
-                                formData.append('zipFile', this.files[0]);
-                        
-                                var xhr = new XMLHttpRequest();
-                                xhr.open('POST', document.getElementById('uploadForm').action, true);
-                                xhr.onload = function () {
-                                    if (xhr.status === 200) {
-                                        location.reload();  // Recargar la página
-                                    } else {
-                                        alert('Error uploading file: ' + xhr.responseText);
-                                    }
-                                };
-                                xhr.send(formData);
-                            }
-                        });
-                        </script>
+            <!-- Botón visible -->
+            <a href="#" id="uploadButton" class="btn btn-primary mt-3" style="border-radius: 5px;">
+                <i data-feather="download" class="center-button-icon"></i>
+                Upload from ZIP
+            </a>
+            <!-- Formulario oculto -->
+            <form id="uploadForm" action="/dataset/upload_zip/{{ dataset.id }}" method="post" enctype="multipart/form-data" style="display: none;">
+                <input type="file" id="zipFileInput" name="zipFile" accept=".zip">
+            </form>               
+                     
     </div>
 </div>
 
@@ -449,5 +414,29 @@
         }
         starCount.textContent = count;
     });
+
+    document.getElementById('uploadButton').addEventListener('click', function(event) {
+        event.preventDefault();
+        document.getElementById('zipFileInput').click();
+    });
+
+    document.getElementById('zipFileInput').addEventListener('change', function() {
+        if (this.files.length > 0) {
+            var formData = new FormData();
+            formData.append('zipFile', this.files[0]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', document.getElementById('uploadForm').action, true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    location.reload();  // Recargar la página
+                } else {
+                    alert('Error uploading file: ' + xhr.responseText);
+                }
+            };
+            xhr.send(formData);
+        }
+    });
+    
 </script>
 {% endblock %}
