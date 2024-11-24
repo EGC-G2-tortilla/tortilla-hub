@@ -1,6 +1,5 @@
 {% extends "base_template.html" %}
 
-
 {% block title %}User Profile{% endblock %}
 
 {% block content %}
@@ -23,7 +22,35 @@
                 <p class="card-text h5"><i class="fa fa-envelope"></i> <strong>Email:</strong> {{user.email}}</p>
                 <p class="card-text h5"><i class="fa fa-database"></i> <strong>Uploaded datasets:</strong> {{ total_datasets }} datasets</p>
             </div>
-            
+        </div>
+
+        <div class="card shadow-sm mt-4">
+            <div class="card-header card-dark">
+                <h5 class="card-title mb-0" style="color: white; font-size: 15px;">Linked Accounts</h5>
+            </div>
+            <div class="card-body">
+                {% if user.oauth_providers %}
+                    <ul class="list-group">
+                        {% for provider in user.oauth_providers %}
+                            <li class="list-group-item d-flex align-items-center">
+                                {% if provider.provider_name == 'google' %}
+                                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_64dp.png" alt="Google logo" style="width: 20px; height: 20px; margin-right: 10px;">
+                                    Google Account <i class="fa fa-check text-success ms-auto"></i>
+                                {% elif provider.provider_name == 'github' %}
+                                    <i class="fab fa-github" style="font-size: 20px; margin-right: 10px;"></i>
+                                    GitHub Account <i class="fa fa-check text-success ms-auto"></i>
+                                {% elif provider.provider_name == 'orcid' %}
+                                    <img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID logo" style="width: 20px; height: 20px; margin-right: 10px;">
+                                    ORCID Account <i class="fa fa-check text-success ms-auto"></i>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <p class="mt-3">If you want to link some more accounts, check the available providers in the sign up page.</p>
+                {% else %}
+                    <p class="card-text">No linked accounts. If you want to link an account, try signing up with a different provider.</p>
+                {% endif %}
+            </div>
         </div>
 
     </div>
@@ -60,7 +87,6 @@
                                         </a>                                    
                                     {% endif %}
 
-                                    
                                 </td>
                                 <td>{{ dataset.ds_meta_data.publication_type.name.replace('_', ' ').title() }}</td>
                             </tr>
@@ -121,3 +147,4 @@
 {% block scripts %}
     <script src="{{ url_for('profile.scripts') }}"></script>
 {% endblock %}
+
