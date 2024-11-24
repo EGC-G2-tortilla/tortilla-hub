@@ -2,6 +2,32 @@
 
 Todos los cambios notables en este proyecto se documentarán en este archivo.
 
+# [1.4.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.3.1...v1.4.0) (2024-11-16)
+
+
+### Features
+
+* Añadido workflow para creación automática de PRs ([3ef6558](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/3ef6558fb7718d7482bf4c6bc40b65651eddb438))
+
+## [1.3.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.3.0...v1.3.1) (2024-11-16)
+
+
+### Bug Fixes
+
+* Eliminados campos redundantes en la plantilla de issue ([e141c29](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e141c2996ba14d1912e278f16cfdc823ea76bd28))
+
+# [1.3.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.2.0...v1.3.0) (2024-11-14)
+
+
+### Bug Fixes
+
+* cambiada la descripción a textarea ([33a6b50](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/33a6b50eb3342e8b70e50840f001376ca00637ed))
+
+
+### Features
+
+* Añadida corrección de errores de linting detectados mediante workflow ([7c18b85](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7c18b85ac3de6accff21669ee6c66943fa217b49))
+
 # [1.2.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.1.1...v1.2.0) (2024-10-31)
 
 ### Features

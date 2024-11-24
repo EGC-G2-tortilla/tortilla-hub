@@ -68,6 +68,9 @@ class DataSetService(BaseService):
         dest_dir = os.path.join(
             working_dir, "uploads", f"user_{current_user.id}", f"dataset_{dataset.id}"
         )
+        dest_dir = os.path.join(
+            working_dir, "uploads", f"user_{current_user.id}", f"dataset_{dataset.id}"
+        )
 
         os.makedirs(dest_dir, exist_ok=True)
 

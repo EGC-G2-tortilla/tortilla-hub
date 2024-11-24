@@ -84,9 +84,13 @@ def show_signup_form():
             return render_template(
                 "auth/signup_form.html", form=form, error=f"Error creating user: {exc}"
             )
+            return render_template(
+                "auth/signup_form.html", form=form, error=f"Error creating user: {exc}"
+            )
 
         # Log user
         login_user(user, remember=True)
+        return redirect(url_for("public.index"))
         return redirect(url_for("public.index"))
 
     return render_template("auth/signup_form.html", form=form, state=state)
