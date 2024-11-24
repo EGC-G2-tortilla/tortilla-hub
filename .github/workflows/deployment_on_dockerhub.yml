@@ -34,15 +34,4 @@ jobs:
           docker push uvlhubtortilla/tortilla-hub:latest
 
       - name: Set up and deploy containers
-        env:
-          MYSQL_ROOT_PASSWORD: uvlhub_root_password
-          MYSQL_DATABASE: uvlhubdb
-        run: |
-          docker volume create flask_mysql_volume
-          docker network create flask_network || true
-          docker run -d --name mysql-container --network flask_network \
-            -v flask_mysql_volume:/var/lib/mysql \
-            -e MYSQL_ROOT_PASSWORD=${{ env.MYSQL_ROOT_PASSWORD }} \
-            -e MYSQL_DATABASE=${{ env.MYSQL_DATABASE }} \
-            mysql:latest
-          docker compose -f docker/docker-compose.dev.yml up -d
+        run: docker compose -f docker/docker-compose.dev.yml up -d
