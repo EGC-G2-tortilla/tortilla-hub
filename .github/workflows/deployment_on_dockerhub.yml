@@ -24,16 +24,17 @@ jobs:
 
       # Login usando usuario y contraseña
       - name: Log in to Docker Hub
-        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349
 
       - name: Build and push Docker image
-        env:
-          DOCKER_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          echo $DOCKER_TOKEN | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+          echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
           docker build -f docker/images/Dockerfile.dev -t uvlhubtortilla/tortilla-hub:latest .
           docker push uvlhubtortilla/tortilla-hub:latest
 
