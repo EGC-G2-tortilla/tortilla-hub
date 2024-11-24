@@ -135,7 +135,7 @@ class DataSetService(BaseService):
 
             headers = {
                 "Authorization": f"Bearer {token}",
-                "Accept": "application/vnd.github.v3+json"
+                "Accept": "application/vnd.github.v3+json",
             }
             sha = None
             response = requests.get(base_url, headers=headers, timeout=10)
@@ -149,17 +149,21 @@ class DataSetService(BaseService):
             data = {
                 "message": "Subiendo modelo uvl desde uvlhub",
                 "content": content_base64,
-                "branch": "main"
+                "branch": "main",
             }
             if sha:
                 data["sha"] = sha  # Agregar el SHA si el archivo ya existe
 
             # Subir el archivo
             response = requests.put(base_url, json=data, headers=headers, timeout=10)
-            return logger.info(f"Subida a GitHub del archivo {file_name}: {response.status_code} {response.reason}")
+            return logger.info(
+                f"Subida a GitHub del archivo {file_name}: {response.status_code} {response.reason}"
+            )
 
         elif hub == "gitlab":
-            base_url = f"https://gitlab.com/api/v4/projects/{owner_repo}/repository/commits"
+            base_url = (
+                f"https://gitlab.com/api/v4/projects/{owner_repo}/repository/commits"
+            )
             token = session["gitlab_token"]
 
             with open(file_path, "rb") as file:
@@ -174,21 +178,23 @@ class DataSetService(BaseService):
                         "action": "create",
                         "file_path": f"uvlmodels/{file_name}",
                         "content": content_base64,
-                        "encoding": "base64"
+                        "encoding": "base64",
                     }
-                ]
+                ],
             }
 
-            headers = {
-                "Authorization": f"Bearer {token}"
-            }
+            headers = {"Authorization": f"Bearer {token}"}
 
             response = requests.post(base_url, json=data, headers=headers, timeout=10)
             if response.status_code == 400:  # Error si el archivo ya existe
                 data["actions"][0]["action"] = "update"
-                response = requests.post(base_url, json=data, headers=headers, timeout=10)
+                response = requests.post(
+                    base_url, json=data, headers=headers, timeout=10
+                )
 
-            return logger.info(f"Subida a GitLab del archivo {file_name}: {response.status_code} {response.reason}")
+            return logger.info(
+                f"Subida a GitLab del archivo {file_name}: {response.status_code} {response.reason}"
+            )
 
     def create_from_form(self, form, current_user) -> DataSet:
         main_author = {
@@ -238,9 +244,9 @@ class DataSetService(BaseService):
                     feature_model_id=fm.id,
                 )
                 fm.files.append(file)
-                if (github_repo):
+                if github_repo:
                     self.upload_to_hub("github", github_repo, file_path)
-                if (gitlab_repo):
+                if gitlab_repo:
                     self.upload_to_hub("gitlab", gitlab_repo, file_path)
 
             self.repository.session.commit()
