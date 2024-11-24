@@ -7,37 +7,43 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: Publish image in Docker Hub
+name: CI/CD Docker Build
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - develop
 
 jobs:
-  push_to_registry:
-    name: Push Docker image to Docker Hub
+  build_and_deploy:
+    name: Build and Deploy Docker Containers
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repo
+      - name: Check out the repository
         uses: actions/checkout@v3
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build and push Docker image
-        run: docker build --build-arg VERSION_TAG=${{ github.event.release.tag_name }} -t uvlhubtortilla/tortilla-hub:${{ github.event.release.tag_name }} -f docker/images/Dockerfile.prod .
-        env:
-          DOCKER_CLI_EXPERIMENTAL: enabled
-
-      - name: Push Docker image to Docker Hub
-        run: docker push uvlhubtortilla/tortilla-hub:${{ github.event.release.tag_name }}
-
-      - name: Tag and push latest
         run: |
-          docker tag uvlhubtortilla/tortilla-hub:${{ github.event.release.tag_name }} uvlhubtortilla/tortilla-hub:latest
+          docker build -t uvlhubtortilla/tortilla-hub:latest .
           docker push uvlhubtortilla/tortilla-hub:latest
-        env:
-          DOCKER_CLI_EXPERIMENTAL: enabled
+
+      - name: Set up and deploy containers
+        run: |
+          docker volume create flask_mysql_volume
+          docker network create flask_network || true
+          docker run -d --name mysql-container --network flask_network \
+            -v flask_mysql_volume:/var/lib/mysql \
+            -e MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} \
+            -e MYSQL_DATABASE=flask_app \
+            mysql:latest
+          docker compose -f docker/docker-compose.dev.yml up -d 
+
