@@ -228,6 +228,22 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.hash.slice(1));
+            const tokenGithub = urlParams.get("githubToken");
+            const tokenGitlab = urlParams.get("gitlabToken");
+
+            if (tokenGithub) {
+                sessionStorage.setItem("github_token", tokenGithub);
+            }
+            if (tokenGitlab) {
+                sessionStorage.setItem("gitlab_token", tokenGitlab);
+            }
+
+            // Eliminar el fragmento de la URL sin recargar la página
+            window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             const most_downloaded = JSON.parse('{{ most_downloaded | tojson | safe }}');
             

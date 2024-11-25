@@ -1,9 +1,19 @@
 services:
   web:
     container_name: web_app_container
-    image: drorganvidez/uvlhub:dev
-    env_file:
-      - ../.env
+    image: uvlhubtortilla/tortilla-hub:dev
+    environment:
+      FLASK_APP_NAME: "UVLHUB.IO(dev)"
+      FLASK_ENV: development
+      DOMAIN: localhost
+      MARIADB_HOSTNAME: db
+      MARIADB_PORT: 3306
+      MARIADB_DATABASE: uvlhubdb
+      MARIADB_TEST_DATABASE: uvlhubdb_test
+      MARIADB_USER: $secrets.MARIADB_USER
+      MARIADB_PASSWORD: $secrets.MARIADB_PASSWORD
+      MARIADB_ROOT_PASSWORD: $secrets.MARIADB_ROOT_PASSWORD
+      WORKING_DIR: /app
     expose:
       - "5000"
     depends_on:
@@ -20,8 +30,12 @@ services:
 
   db:
     container_name: mariadb_container
-    env_file:
-      - ../.env
+    environment:
+      MARIADB_DATABASE: uvlhubdb
+      MARIADB_TEST_DATABASE: uvlhubdb_test
+      MARIADB_USER: $secrets.MARIADB_USER
+      MARIADB_PASSWORD: $secrets.MARIADB_PASSWORD
+      MARIADB_ROOT_PASSWORD: $secrets.MARIADB_ROOT_PASSWORD
     build:
       context: ../
       dockerfile: docker/images/Dockerfile.mariadb
