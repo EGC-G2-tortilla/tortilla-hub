@@ -6,7 +6,7 @@ from io import BytesIO
 class FlamapyBehavior(TaskSet):
     def on_start(self):
         self.validate_valid_uvl()
-                  
+                         
     @task
     def validate_valid_uvl(self):
         """
