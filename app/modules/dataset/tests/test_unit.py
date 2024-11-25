@@ -34,7 +34,7 @@ def test_client(test_client):
         ds_meta5 = DSMetaData(title="Dataset 5", dataset_doi="doi5", ds_metrics_id=ds_metrics5.id, description="description5...", publication_type=PublicationType.BOOK)
         db.session.add_all([ds_meta1, ds_meta2, ds_meta3, ds_meta4, ds_meta5])
         db.session.commit()
-        
+
         author1 = Author(name="Author 1", ds_meta_data_id=ds_meta1.id)
         author2 = Author(name="Author 2", ds_meta_data_id=ds_meta2.id)
         author3 = Author(name="Author 3", ds_meta_data_id=ds_meta3.id)
