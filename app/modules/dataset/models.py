@@ -49,15 +49,30 @@ class Author(db.Model):
         return {"name": self.name, "affiliation": self.affiliation, "orcid": self.orcid}
         return {"name": self.name, "affiliation": self.affiliation, "orcid": self.orcid}
 
-
 class DSMetrics(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    number_of_models = db.Column(db.String(120))
-    number_of_features = db.Column(db.String(120))
+    number_of_models = db.Column(db.String(120))  # Número de modelos en el dataset
+    number_of_features = db.Column(db.String(120))  # Número total de features en todos los modelos
+    average_features_per_model = db.Column(db.Float)  # Promedio de features por modelo
+    constraints_count = db.Column(db.Integer)  # Número de restricciones totales
+    max_depth = db.Column(db.Integer)  # Profundidad máxima del árbol en los modelos del dataset
 
     def __repr__(self):
-        return f"DSMetrics<models={self.number_of_models}, features={self.number_of_features}>"
-        return f"DSMetrics<models={self.number_of_models}, features={self.number_of_features}>"
+        return (
+            f"DSMetrics<models={self.number_of_models}, "
+            f"features={self.number_of_features}, "
+            f"average_features={self.average_features_per_model}, "
+            f"constraints={self.constraints_count}, "
+            f"max_depth={self.max_depth}>"
+        )
+    def to_dict(self):
+        return {
+            "number_of_models": self.number_of_models,
+            "number_of_features": self.number_of_features,
+            "average_features_per_model": self.average_features_per_model,
+            "constraints_count": self.constraints_count,
+            "max_depth": self.max_depth,
+        }
 
 
 class DSMetaData(db.Model):
@@ -79,6 +94,19 @@ class DSMetaData(db.Model):
     authors = db.relationship(
         "Author", backref="ds_meta_data", lazy=True, cascade="all, delete"
     )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "publication_type": self.publication_type.value,
+            "dataset_doi": self.dataset_doi,
+            "tags": self.tags.split(",") if self.tags else [],
+            "status": self.dataset_status.value,
+            "metrics": self.ds_metrics.to_dict() if self.ds_metrics else None,  # Añadido
+        }
+
 
 
 class DataSet(db.Model):
@@ -148,6 +176,25 @@ class DataSet(db.Model):
         from app.modules.dataset.services import DataSetService
 
         return DataSetService().get_uvlhub_doi(self)
+
+    def get_fact_labels(self):
+    fact_labels = {
+        "dataset": {
+            "title": self.name(),
+            "number_of_models": len(self.feature_models),
+            "total_features": sum(len(fm.features) for fm in self.feature_models),
+            "average_features_per_model": (
+                sum(len(fm.features) for fm in self.feature_models) / len(self.feature_models)
+                if self.feature_models else 0
+            ),
+            "constraints_count": sum(len(fm.constraints) for fm in self.feature_models),
+            "max_depth": max(fm.get_max_depth() for fm in self.feature_models),
+        },
+        "models": [
+            {"model_id": fm.id, **fm.get_fact_labels()} for fm in self.feature_models
+        ],
+    }
+    return fact_labels
 
     def to_dict(self):
         return {

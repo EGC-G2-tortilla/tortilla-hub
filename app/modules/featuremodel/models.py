@@ -18,6 +18,20 @@ class FeatureModel(db.Model):
     def __repr__(self):
         return f"FeatureModel<{self.id}>"
 
+    def get_fact_labels(self):
+        return {
+            "id": self.id,
+            "title": self.fm_meta_data.title,
+            "uvl_filename": self.fm_meta_data.uvl_filename,
+            "metrics": self.fm_meta_data.fm_metrics.to_dict() if self.fm_meta_data.fm_metrics else None,
+        }
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "fact_labels": self.get_fact_labels(),  # Añadido
+            "files": [file.to_dict() for file in self.files],
+        }
 
 class FMMetaData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -41,11 +55,44 @@ class FMMetaData(db.Model):
     def __repr__(self):
         return f"FMMetaData<{self.title}"
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "uvl_filename": self.uvl_filename,
+            "title": self.title,
+            "description": self.description,
+            "publication_type": self.publication_type.value,
+            "publication_doi": self.publication_doi,
+            "tags": self.tags.split(",") if self.tags else [],
+            "uvl_version": self.uvl_version,
+            "metrics": self.fm_metrics.to_dict() if self.fm_metrics else None,  # Añadido
+            "authors": [author.to_dict() for author in self.authors],
+        }
+
 
 class FMMetrics(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    solver = db.Column(db.Text)
-    not_solver = db.Column(db.Text)
+    solver = db.Column(db.Text)  # Información sobre el solver
+    not_solver = db.Column(db.Text)  # Información sobre restricciones no resueltas
+    number_of_features = db.Column(db.Integer)  # Número de características en el modelo
+    constraints_count = db.Column(db.Integer)  # Número de restricciones en el modelo
+    max_depth = db.Column(db.Integer)  # Profundidad máxima del árbol del modelo
+    variability = db.Column(db.Float)  # Porcentaje de variabilidad (si aplica)
 
     def __repr__(self):
-        return f"FMMetrics<solver={self.solver}, not_solver={self.not_solver}>"
+        return (
+            f"FMMetrics<solver={self.solver}, not_solver={self.not_solver}, "
+            f"features={self.number_of_features}, constraints={self.constraints_count}, "
+            f"max_depth={self.max_depth}, variability={self.variability}>"
+        )
+
+    def to_dict(self):
+        return {
+            "solver": self.solver,
+            "not_solver": self.not_solver,
+            "number_of_features": self.number_of_features,
+            "constraints_count": self.constraints_count,
+            "max_depth": self.max_depth,
+            "variability": self.variability,
+        }
+
