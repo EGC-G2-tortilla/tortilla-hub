@@ -2,8 +2,9 @@ import os
 import secrets
 import string
 from dotenv import load_dotenv
-from flask import render_template, redirect, url_for, session, request, Flask
+from flask import jsonify, render_template, redirect, url_for, session, request, Flask
 from flask_login import current_user, login_user, logout_user
+import requests
 from werkzeug.security import generate_password_hash
 
 from authlib.integrations.flask_client import OAuth
@@ -39,7 +40,7 @@ github = oauth.register(
     authorize_url="https://github.com/login/oauth/authorize",
     authorize_params=None,
     api_base_url="https://api.github.com/",
-    client_kwargs={"scope": "user:email read:user"},
+    client_kwargs={"scope": "repo user:email read:user"},
 )
 
 orcid = oauth.register(
@@ -52,6 +53,16 @@ orcid = oauth.register(
         "scope": "/authenticate",
         "token_endpoint_auth_method": "client_secret_post",
     },
+)
+
+gitlab = oauth.register(
+    name="gitlab",
+    client_id=os.getenv("GITLAB_CLIENT_ID"),
+    client_secret=os.getenv("GITLAB_CLIENT_SECRET"),
+    authorize_url="https://gitlab.com/oauth/authorize",
+    access_token_url="https://gitlab.com/oauth/token",
+    api_base_url="https://gitlab.com/api/v4/",
+    client_kwargs={"scope": "api"},
 )
 
 
@@ -336,6 +347,7 @@ def authorize_signup_google():
     # Comprueba si el usuario ya existe en la base de datos
     if user:
         is_google_user = next(
+            # Si el usuario ya existe en la base de datos y es OAuth, añadir una nueva conexión Google si esta no existe
             (
                 provider
                 for provider in user.oauth_providers
@@ -427,6 +439,7 @@ def authorize_login_google():
 
 @auth_bp.route("/signup/github")
 def sign_up_github():
+    session["origin_url"] = request.referrer
     if session.get("signup_state") is None:
         return redirect(url_for("auth.show_signup_form"))
     redirect_uri = url_for("auth.authorize_github", _external=True, flow="signup")
@@ -435,17 +448,30 @@ def sign_up_github():
 
 @auth_bp.route("/login/github")
 def login_github():
+    session["origin_url"] = request.referrer
     redirect_uri = url_for("auth.authorize_github", _external=True, flow="login")
     return github.authorize_redirect(redirect_uri)
 
 
 @auth_bp.route("/authorize/github")
 def authorize_github():
-    if current_user.is_authenticated:
-        return redirect(url_for("public.index"))
+    origin_url = session.pop("origin_url", None)
+    flow = request.args.get("flow")
+    if (
+        not flow
+        or (flow not in ["signup", "login"])
+        or (flow == "signup" and session.get("signup_state") is None)
+        or (flow == "login" and session.get("login_state") is None)
+    ):
+        if "/dataset/upload" in origin_url:
+            return redirect(origin_url)
+        else:
+            redirect(url_for("public.index"))
 
     # Autorizamos el token y obtenemos la información del usuario
     github.authorize_access_token()
+    token = github.token["access_token"]
+    session["github_token"] = token
     resp = github.get("user")
     profile = resp.json()
 
@@ -486,10 +512,12 @@ def authorize_github():
         if not is_github_user:
             # Si el usuario ya existe pero no tiene GitHub vinculado, vinculamos la cuenta
             authentication_service.append_oauth_provider(user, "github", profile["id"])
-
         # En cualquier caso, si el usuario ya está registrado, hacemos login
         login_user(user, remember=True)
-        return redirect(url_for("public.index"))
+        if "/dataset/upload" in origin_url:
+            return redirect(f"{origin_url}#githubToken={token}")
+        else:
+            return redirect(url_for("public.index") + f"#githubToken={token}")
     else:
         # Crear una nueva cuenta si el usuario no existe
         random_password = generate_random_password()
@@ -505,9 +533,185 @@ def authorize_github():
             oauth_provider_user_id=profile["id"],
         )
 
-        # Log user
-        login_user(user, remember=True)
+        if "/dataset/upload" in origin_url:
+            return redirect(f"{origin_url}#githubToken={token}")
+        else:
+            return redirect(url_for("public.index") + f"#githubToken={token}")
+
+
+@auth_bp.route("/github/repositories", methods=["GET"])
+def get_github_repositories():
+    token = session.get("github_token")
+    if not token:
+        return jsonify({"error": "No authentication token found"}), 401
+
+    headers = {"Authorization": f"token {token}"}
+    params = {"affiliation": "owner,collaborator,organization_member"}
+    response = requests.get(
+        "https://api.github.com/user/repos", headers=headers, params=params, timeout=10
+    )
+
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to fetch repositories"}), response.status_code
+
+    repos = response.json()
+    repo_list = [
+        {"id": repo["id"], "name": repo["name"], "full_name": repo["full_name"]}
+        for repo in repos
+    ]
+    return jsonify(repo_list)
+
+
+@auth_bp.route("/signup/gitlab")
+def sign_up_gitlab():
+    if session.get("signup_state") is None:
+        return redirect(url_for("auth.show_signup_form"))
+    redirect_uri = url_for("auth.authorize_gitlab", _external=True, flow="signup")
+    return gitlab.authorize_redirect(redirect_uri)
+
+
+@auth_bp.route("/login/gitlab")
+def login_gitlab():
+    session["origin_url"] = request.referrer
+    redirect_uri = url_for("auth.authorize_gitlab", _external=True, flow="login")
+    return gitlab.authorize_redirect(redirect_uri)
+
+
+@auth_bp.route("/authorize/gitlab")
+def authorize_gitlab():
+    origin_url = session.pop("origin_url", None)
+    flow = request.args.get("flow")
+    if (
+        not flow
+        or (flow not in ["signup", "login"])
+        or (flow == "signup" and session.get("signup_state") is None)
+        or (flow == "login" and session.get("login_state") is None)
+    ):
+        if "/dataset/upload" in origin_url:
+            return redirect(origin_url)
+        else:
+            return redirect(url_for("public.index"))
+
+    gitlab.authorize_access_token()
+    token = gitlab.token["access_token"]
+    session["gitlab_token"] = token
+    resp = gitlab.get("user")
+    profile = resp.json()
+
+    # Obtener email si no está en el perfil principal
+    if "email" not in profile or not profile["email"]:
+        emails_resp = gitlab.get("user/emails")
+        profile["email"] = next(
+            (
+                email_data["email"]
+                for email_data in emails_resp.json()
+                if email_data.get("primary") and email_data.get("confirmed")
+            ),
+            None,
+        )
+
+    if not profile.get("email"):
+        session.pop("signup_state", None)
+        session.pop("login_state", None)
+        return render_template(
+            (
+                "auth/show_signup_form.html"
+                if flow == "signup"
+                else "auth/login_form.html"
+            ),
+            form=SignupForm() if flow == "signup" else LoginForm(),
+            error="Email not available from GitLab",
+        )
+
+    user = authentication_service.get_by_email(profile["email"])
+
+    if user:
+        is_gitlab_user = next(
+            (
+                provider
+                for provider in user.oauth_providers
+                if provider.provider_name == "gitlab"
+            ),
+            None,
+        )
+        if user.is_oauth_user():
+            # Si el usuario ya existe en la base de datos y es OAuth, añadir una nueva conexión GitLab si esta no existe
+            if not is_gitlab_user and flow == "signup":
+                authentication_service.append_oauth_provider(
+                    user, "gitlab", profile["id"]
+                )
+
+            login_user(user, remember=True)
+            if "/dataset/upload" in origin_url:
+                return redirect(f"{origin_url}#gitlabToken={token}")
+            else:
+                return redirect(url_for("public.index"))
+
+        session.pop("signup_state", None)
+        session.pop("login_state", None)
+        return render_template(
+            (
+                "auth/show_signup_form.html"
+                if flow == "signup"
+                else "auth/login_form.html"
+            ),
+            form=SignupForm() if flow == "signup" else LoginForm(),
+            error="Email already in use",
+        )
+
+    # Crear usuario si no existe
+    random_password = generate_random_password()
+    hashed_password = generate_password_hash(random_password)
+    name = profile.get(
+        "name",
+        "No name" if profile.get("username") is None else profile.get("username"),
+    )
+    surname = profile.get("last_name", "No Surname")
+    user = authentication_service.create_with_profile_and_oauth_provider_appended(
+        email=profile["email"],
+        password=hashed_password,
+        name=name,
+        surname=surname,
+        oauth_provider="gitlab",
+        oauth_provider_user_id=profile["id"],
+    )
+
+    login_user(user, remember=True)
+    session.pop("signup_state", None)
+    session.pop("login_state", None)
+    if "/dataset/upload" in origin_url:
+        return redirect(f"{origin_url}#gitlabToken={token}")
+    else:
         return redirect(url_for("public.index"))
+
+
+@auth_bp.route("/gitlab/repositories", methods=["GET"])
+def get_gitlab_repositories():
+    token = session.get("gitlab_token")
+    if not token:
+        return jsonify({"error": "No authentication token found"}), 401
+
+    headers = {"Authorization": f"Bearer {token}"}
+    response = requests.get(
+        "https://gitlab.com/api/v4/projects",
+        headers=headers,
+        params={"membership": True},
+        timeout=10,
+    )
+
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to fetch repositories"}), response.status_code
+
+    repos = response.json()
+    repo_list = [
+        {
+            "id": repo["id"],
+            "name": repo["name"],
+            "full_name": repo["path_with_namespace"],
+        }
+        for repo in repos
+    ]
+    return jsonify(repo_list)
 
 
 @auth_bp.route("/logout")

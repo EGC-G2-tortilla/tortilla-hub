@@ -1,6 +1,87 @@
 var currentId = 0;
         var amount_authors = 0;
 
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.hash.slice(1));
+            const tokenGithub = urlParams.get("githubToken");
+            const tokenGitlab = urlParams.get("gitlabToken");
+
+            if (tokenGithub) {
+                sessionStorage.setItem("github_token", tokenGithub);
+            }
+            if (tokenGitlab) {
+                sessionStorage.setItem("gitlab_token", tokenGitlab);
+            }
+
+            // Eliminar el fragmento de la URL sin recargar la página
+            window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = sessionStorage.getItem("github_token") || sessionStorage.getItem("gitlab_token");
+        
+            if (token) {
+                document.getElementById("authButtons").style.display = "none";
+                document.getElementById("repo-form").style.display = "block";
+        
+                document.getElementById("uploadToRepo").checked = true;
+        
+                loadUserRepositories();
+            }
+        });
+        
+        function toggleAuthButtons() {
+            const isChecked = document.getElementById("uploadToRepo").checked;
+            const token = sessionStorage.getItem("github_token") || sessionStorage.getItem("gitlab_token");
+        
+            if (token) {
+                document.getElementById("authButtons").style.display = "none";
+                document.getElementById("repo-form").style.display = isChecked ? "block" : "none";
+                if (isChecked) {
+                    loadUserRepositories();
+                }
+            } else {
+                document.getElementById("authButtons").style.display = isChecked ? "flex" : "none";
+                document.getElementById("repo-form").style.display = "none";
+            }
+        }
+
+        window.toggleAuthButtons = toggleAuthButtons;
+        
+        // Función para cargar los repositorios del usuario desde el backend
+        function loadUserRepositories() {
+            if (sessionStorage.getItem("github_token")){
+                fetch('/github/repositories')
+                .then(response => response.json())
+                .then(repos => {
+                    const repoSelect = document.getElementById("repo-select");
+                    repoSelect.innerHTML = `<option value="">Seleccione un repositorio</option>`;
+                    repos.forEach(repo => {
+                        const option = document.createElement("option");
+                        option.value = repo.full_name;
+                        option.textContent = repo.name;
+                        repoSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error al cargar repositorios:", error));
+            } else if (sessionStorage.getItem("gitlab_token")){
+                fetch('/gitlab/repositories')
+                .then(response => response.json())
+                .then(repos => {
+                    const repoSelect = document.getElementById("repo-select");
+                    repoSelect.innerHTML = `<option value="">Seleccione un repositorio</option>`;
+                    repos.forEach(repo => {
+                        const option = document.createElement("option");
+                        option.value = repo.id;
+                        option.textContent = repo.name;
+                        repoSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error al cargar repositorios:", error));
+            }
+        }
+        
+
         function show_upload_dataset() {
             document.getElementById("upload_dataset").style.display = "block";
         }
@@ -144,6 +225,16 @@ var currentId = 0;
                     // process data form
                     const formData = {};
 
+                    const selectedRepo = document.getElementById("repo-select").value;
+                    const githubToken = sessionStorage.getItem("github_token");
+                    const gitlabToken = sessionStorage.getItem("gitlab_token");
+                    if (githubToken && selectedRepo) {
+                        formData['github_repo'] = selectedRepo;
+                    }
+                    if (gitlabToken && selectedRepo) {
+                        formData['gitlab_repo'] = selectedRepo;
+                    }
+
                     ["basic_info_form", "uploaded_models_form"].forEach((formId) => {
                         const form = document.getElementById(formId);
                         const inputs = form.querySelectorAll('input, select, textarea');
@@ -159,14 +250,14 @@ var currentId = 0;
                     console.log(formDataJson);
 
                     const csrfToken = document.getElementById('csrf_token').value;
+                    
                     const formUploadData = new FormData();
                     formUploadData.append('csrf_token', csrfToken);
-
                     for (let key in formData) {
                         if (formData.hasOwnProperty(key)) {
                             formUploadData.set(key, formData[key]);
                         }
-                    }
+                    }               
 
                     let checked_orcid = true;
                     if (Array.isArray(formData.author_orcid)) {

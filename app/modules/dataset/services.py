@@ -1,3 +1,4 @@
+import base64
 import logging
 import os
 import hashlib
@@ -5,8 +6,9 @@ import shutil
 from typing import Optional
 import uuid
 
-from flask import request
+from flask import request, session
 from sqlalchemy import func
+import requests
 
 from app.modules.auth.services import AuthenticationService
 from app.modules.dataset.models import (
@@ -124,12 +126,84 @@ class DataSetService(BaseService):
     def total_dataset_views(self) -> int:
         return self.dsviewrecord_repostory.total_dataset_views()
 
+    def upload_to_hub(self, hub, owner_repo, file_path):
+        file_name = file_path.split("/")[-1]
+
+        if hub == "github":
+            base_url = f"https://api.github.com/repos/{owner_repo}/contents/uvlmodels/{file_name}"
+            token = session["github_token"]
+
+            headers = {
+                "Authorization": f"Bearer {token}",
+                "Accept": "application/vnd.github.v3+json",
+            }
+            sha = None
+            response = requests.get(base_url, headers=headers, timeout=10)
+            if response.status_code == 200:
+                sha = response.json().get("sha")
+
+            with open(file_path, "rb") as file:
+                content = file.read()
+            content_base64 = base64.b64encode(content).decode("utf-8")
+
+            data = {
+                "message": "Subiendo modelo uvl desde uvlhub",
+                "content": content_base64,
+                "branch": "main",
+            }
+            if sha:
+                data["sha"] = sha  # Agregar el SHA si el archivo ya existe
+
+            # Subir el archivo
+            response = requests.put(base_url, json=data, headers=headers, timeout=10)
+            return logger.info(
+                f"Subida a GitHub del archivo {file_name}: {response.status_code} {response.reason}"
+            )
+
+        elif hub == "gitlab":
+            base_url = (
+                f"https://gitlab.com/api/v4/projects/{owner_repo}/repository/commits"
+            )
+            token = session["gitlab_token"]
+
+            with open(file_path, "rb") as file:
+                content = file.read()
+            content_base64 = base64.b64encode(content).decode("utf-8")
+
+            data = {
+                "branch": "main",
+                "commit_message": "Subiendo modelo uvl desde uvlhub",
+                "actions": [
+                    {
+                        "action": "create",
+                        "file_path": f"uvlmodels/{file_name}",
+                        "content": content_base64,
+                        "encoding": "base64",
+                    }
+                ],
+            }
+
+            headers = {"Authorization": f"Bearer {token}"}
+
+            response = requests.post(base_url, json=data, headers=headers, timeout=10)
+            if response.status_code == 400:  # Error si el archivo ya existe
+                data["actions"][0]["action"] = "update"
+                response = requests.post(
+                    base_url, json=data, headers=headers, timeout=10
+                )
+
+            return logger.info(
+                f"Subida a GitLab del archivo {file_name}: {response.status_code} {response.reason}"
+            )
+
     def create_from_form(self, form, current_user) -> DataSet:
         main_author = {
             "name": f"{current_user.profile.surname}, {current_user.profile.name}",
             "affiliation": current_user.profile.affiliation,
             "orcid": current_user.profile.orcid,
         }
+        github_repo = form.github_repo.data
+        gitlab_repo = form.gitlab_repo.data
         try:
             logger.info(f"Creating dsmetadata...: {form.get_dsmetadata()}")
             dsmetadata = self.dsmetadata_repository.create(**form.get_dsmetadata())
@@ -170,6 +244,11 @@ class DataSetService(BaseService):
                     feature_model_id=fm.id,
                 )
                 fm.files.append(file)
+                if github_repo:
+                    self.upload_to_hub("github", github_repo, file_path)
+                if gitlab_repo:
+                    self.upload_to_hub("gitlab", gitlab_repo, file_path)
+
             self.repository.session.commit()
         except Exception as exc:
             logger.info(f"Exception creating dataset from form...: {exc}")
