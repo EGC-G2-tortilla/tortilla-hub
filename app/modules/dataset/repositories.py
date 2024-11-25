@@ -46,6 +46,7 @@ class AuthorRepository(BaseRepository):
             .count()
         )
 
+
 class DSDownloadRecordRepository(BaseRepository):
     def __init__(self):
         super().__init__(DSDownloadRecord)

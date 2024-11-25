@@ -12,7 +12,6 @@ import requests
 
 from app.modules.auth.services import AuthenticationService
 from app.modules.dataset.models import (
-    Author,
     DSDownloadRecord,
     DSViewRecord,
     DataSet,
