@@ -27,8 +27,9 @@ class AuthorRepository(BaseRepository):
             self.model.query.join(
                 DSMetaData, self.model.ds_meta_data_id == DSMetaData.id
             )
+            .join(DSDownloadRecord, DSMetaData.id == DSDownloadRecord.dataset_id)
             .group_by(self.model.id)
-            .order_by(desc(func.count(DSMetaData.id)))
+            .order_by(desc(func.count(DSDownloadRecord.id)))
             .limit(4)
             .all()
         )
@@ -142,7 +143,7 @@ class DataSetRepository(BaseRepository):
             )
             .group_by(self.model.id)
             .order_by(desc(func.count(DSDownloadRecord.id)))
-            .limit(5)
+            .limit(4)
             .all()
         )
 
