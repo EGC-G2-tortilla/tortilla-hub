@@ -197,7 +197,8 @@ var currentId = 0;
 
 
                     if (checked_orcid && checked_name) {
-                        fetch('/dataset/upload', {
+                        const upload_url = window.location.pathname == "/dataset/upload" ? "/dataset/upload": "/dataset/"+window.location.pathname.split("/")[2]+"/upload" 
+                        fetch(upload_url, {
                             method: 'POST',
                             body: formUploadData
                         })
