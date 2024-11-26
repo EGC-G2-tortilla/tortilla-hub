@@ -24,7 +24,7 @@ from flask import (
     abort,
     url_for,
     send_file,
-    flash
+    flash,
 )
 from flask_login import login_required, current_user
 
@@ -625,7 +625,7 @@ def stage_dataset(dataset_id):
             return jsonify({"message": "You are not the owner of this dataset"}), 403
         dataset_service.set_dataset_to_staged(dataset_id)
         flash("Dataset staged successfully", "success")
-        return redirect(url_for('dataset.list_dataset')),302
+        return redirect(url_for("dataset.list_dataset")), 302
 
     except Exception as e:
         return jsonify({"message": str(e)}), 500
@@ -640,7 +640,7 @@ def unstage_dataset(dataset_id):
             return jsonify({"message": "You are not the owner of this dataset"}), 403
         dataset_service.set_dataset_to_unstaged(dataset_id)
         flash("Dataset unstaged successfully", "success")
-        return redirect(url_for('dataset.list_dataset'))
+        return redirect(url_for("dataset.list_dataset"))
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
@@ -650,7 +650,7 @@ def unstage_dataset(dataset_id):
 def publish_datasets():
     dataset_service.publish_datasets(current_user_id=current_user.id)
     flash("Datasets published successfully", "success")
-    return redirect(url_for('dataset.list_dataset'))
+    return redirect(url_for("dataset.list_dataset"))
 
 
 @dataset_bp.route("/dataset/stage/all", methods=["POST"])
@@ -658,7 +658,7 @@ def publish_datasets():
 def stage_all_datasets():
     dataset_service.stage_all_datasets(current_user.id)
     flash("Datasets staged successfully", "success")
-    return redirect(url_for('dataset.list_dataset'))
+    return redirect(url_for("dataset.list_dataset"))
 
 
 def to_glencoe(file_id, full_path):
