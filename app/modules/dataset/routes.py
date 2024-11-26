@@ -24,6 +24,7 @@ from flask import (
     abort,
     url_for,
     send_file,
+    flash
 )
 from flask_login import login_required, current_user
 
@@ -615,48 +616,49 @@ def add_files_to_dataset(dataset_id):
     shutil.rmtree(src_folder)
 
 
-@dataset_bp.route("/dataset/stage/<int:dataset_id>", methods=["GET"])
+@dataset_bp.route("/dataset/stage/<int:dataset_id>", methods=["POST"])
 @login_required
 def stage_dataset(dataset_id):
-    dataset_service.set_dataset_to_staged(dataset_id)
-    return render_template(
-        "dataset/list_datasets.html",
-        datasets=dataset_service.get_synchronized(current_user.id),
-        local_datasets=dataset_service.get_unsynchronized(current_user.id),
-    )
+    try:
+        dataset = dataset_service.get_by_id(dataset_id)
+        if dataset.user_id != current_user.id:
+            return jsonify({"message": "You are not the owner of this dataset"}), 403
+        dataset_service.set_dataset_to_staged(dataset_id)
+        flash("Dataset staged successfully", "success")
+        return redirect(url_for('dataset.list_dataset')),302
+
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
 
 
-@dataset_bp.route("/dataset/unstage/<int:dataset_id>", methods=["GET"])
+@dataset_bp.route("/dataset/unstage/<int:dataset_id>", methods=["POST"])
 @login_required
 def unstage_dataset(dataset_id):
-    dataset_service.set_dataset_to_unstaged(dataset_id)
-    return render_template(
-        "dataset/list_datasets.html",
-        datasets=dataset_service.get_synchronized(current_user.id),
-        local_datasets=dataset_service.get_unsynchronized(current_user.id),
-    )
+    try:
+        dataset = dataset_service.get_by_id(dataset_id)
+        if dataset.user_id != current_user.id:
+            return jsonify({"message": "You are not the owner of this dataset"}), 403
+        dataset_service.set_dataset_to_unstaged(dataset_id)
+        flash("Dataset unstaged successfully", "success")
+        return redirect(url_for('dataset.list_dataset'))
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
 
 
-@dataset_bp.route("/dataset/publish", methods=["GET"])
+@dataset_bp.route("/dataset/publish", methods=["POST"])
 @login_required
 def publish_datasets():
     dataset_service.publish_datasets(current_user_id=current_user.id)
-    return render_template(
-        "dataset/list_datasets.html",
-        datasets=dataset_service.get_synchronized(current_user.id),
-        local_datasets=dataset_service.get_unsynchronized(current_user.id),
-    )
+    flash("Datasets published successfully", "success")
+    return redirect(url_for('dataset.list_dataset'))
 
 
-@dataset_bp.route("/dataset/stage/all", methods=["GET"])
+@dataset_bp.route("/dataset/stage/all", methods=["POST"])
 @login_required
 def stage_all_datasets():
     dataset_service.stage_all_datasets(current_user.id)
-    return render_template(
-        "dataset/list_datasets.html",
-        datasets=dataset_service.get_synchronized(current_user.id),
-        local_datasets=dataset_service.get_unsynchronized(current_user.id),
-    )
+    flash("Datasets staged successfully", "success")
+    return redirect(url_for('dataset.list_dataset'))
 
 
 def to_glencoe(file_id, full_path):

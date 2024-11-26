@@ -5,6 +5,17 @@
 {% block content %}
 
 <h1 class="h3 mb-3">My datasets</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="alert-container">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
 
 {% if datasets %}
     <div class="col-12">
@@ -80,20 +91,23 @@
                                     <a href="{{ url_for('dataset.download_dataset', dataset_id=dataset.id) }}">
                                         <i data-feather="download"></i>
                                     </a>
-                                    <a href="{{ url_for('dataset.unstage_dataset', dataset_id=dataset.id) }}">
-                                        <i data-feather="file-minus"></i>
-                                    </a>
+                                    <form action="{{ url_for('dataset.unstage_dataset', dataset_id=dataset.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">
+                                            <i data-feather="file-minus" style="height: 18px; width: 18px;"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
             </div>
         </table>
-        <button type="button" class="btn btn-primary">
-            <a href="{{ url_for('dataset.publish_datasets', current_user_id=current_user.id) }}" class="text-white">
-                Publish all staged datasets <i data-feather="upload-cloud"></i>
-            </a>
-        </button>
+        <form action="{{ url_for('dataset.publish_datasets', current_user=current_user.id) }}" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-primary">
+                Publish all datasets
+                <i data-feather="upload-cloud"></i>
+            </button>
+        </form>
         </div>
     </div>
 
@@ -129,18 +143,22 @@
                                     <a href="{{ url_for('dataset.download_dataset', dataset_id=dataset.id) }}">
                                         <i data-feather="download"></i>
                                     </a>
-                                    <a href="{{ url_for('dataset.stage_dataset', dataset_id=dataset.id) }}">
-                                        <i data-feather="file-plus"></i>
-                                    </a>
+                                    <form action="{{ url_for('dataset.stage_dataset', dataset_id=dataset.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">
+                                            <i data-feather="file-plus" style="height: 18px; width: 18px;"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-                <button type="button" class="btn btn-primary">
-                    <a href="{{ url_for('dataset.stage_all_datasets', current_user_id=current_user.id) }}" class="text-white">
-                        Stage all datasets <i data-feather="file-plus"></i>
-                    </a>
+                    <form action="{{ url_for('dataset.stage_all_datasets', current_user_id=current_user.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-primary">
+                            Stage all datasets
+                            <i data-feather="file-plus"></i>
+                        </button>
+                    </form>
                 </button>
             </div>
         </div>

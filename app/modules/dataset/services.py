@@ -36,7 +36,9 @@ from app.modules.hubfile.repositories import (
     HubfileViewRecordRepository,
 )
 from core.services.BaseService import BaseService
+from app.modules.fakenodo.services import FakenodoService
 
+fakenodo = FakenodoService()
 logger = logging.getLogger(__name__)
 
 
@@ -278,6 +280,9 @@ class DataSetService(BaseService):
     def get_all_datasets(self):
         return self.repository.get_all_datasets()
 
+    def get_dataset_by_id(self, dataset_id):
+        return self.repository.get_or_404(dataset_id)
+
     def set_dataset_to_staged(self, dataset_id):
         try:
             dataset = self.repository.get_by_id(dataset_id)
@@ -311,6 +316,7 @@ class DataSetService(BaseService):
             datasets = self.repository.get_user_staged_datasets(current_user_id)
             for dataset in datasets:
                 if dataset.ds_meta_data.dataset_status == DatasetStatus.STAGED:
+                    fakenodo.test_full_connection()
                     dataset.ds_meta_data.dataset_status = DatasetStatus.PUBLISHED
                     self.repository.session.commit()
                 else:
