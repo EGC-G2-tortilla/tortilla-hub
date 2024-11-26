@@ -7,6 +7,7 @@ from core.selenium.common import initialize_driver, close_driver
 import os
 import time
 
+
 def wait_for_page_to_load(driver, timeout=4):
     WebDriverWait(driver, timeout).until(
         lambda driver: driver.execute_script("return document.readyState") == "complete"

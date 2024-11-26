@@ -225,7 +225,6 @@ class DataSetService(BaseService):
                 )
                 print("\n\tcommunity is none\n")
 
-
             for feature_model in form.feature_models:
                 uvl_filename = feature_model.uvl_filename.data
                 fmmetadata = self.fmmetadata_repository.create(
