@@ -195,7 +195,7 @@ class DataSetService(BaseService):
                 f"Subida a GitLab del archivo {file_name}: {response.status_code} {response.reason}"
             )
 
-    def create_from_form(self, form, current_user) -> DataSet:
+    def create_from_form(self, form, current_user, community=None) -> DataSet:
         main_author = {
             "name": f"{current_user.profile.surname}, {current_user.profile.name}",
             "affiliation": current_user.profile.affiliation,
@@ -212,9 +212,17 @@ class DataSetService(BaseService):
                 )
                 dsmetadata.authors.append(author)
 
-            dataset = self.create(
-                commit=False, user_id=current_user.id, ds_meta_data_id=dsmetadata.id
-            )
+            if community is not None:
+                dataset = self.create(
+                    commit=False, user_id=current_user.id, ds_meta_data_id=dsmetadata.id,
+                    community_id=community.id
+                )
+                print("\n\tcommunity is not none\n")
+            else:
+                dataset = self.create(
+                    commit=False, user_id=current_user.id, ds_meta_data_id=dsmetadata.id
+                )
+                print("\n\tcommunity is none\n")
 
             for feature_model in form.feature_models:
                 uvl_filename = feature_model.uvl_filename.data
