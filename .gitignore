@@ -2,7 +2,6 @@
 .venv
 __pycache__/
 .idea
-uploads/
 app.log
 .DS_Store
 rosemary.egg-info/
@@ -20,3 +19,4 @@ deployments.log
 test_file.txt
 venvm/
 start_project.sh
+file*.uvl

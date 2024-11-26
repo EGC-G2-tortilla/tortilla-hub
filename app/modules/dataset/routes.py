@@ -611,6 +611,8 @@ def add_files_to_dataset(dataset_id):
             continue
 
     logging.info("Archivos procesados e insertados en la base de datos correctamente.")
+    # eliminar la carpeta zip_files
+    shutil.rmtree(src_folder)
 
 
 @dataset_bp.route("/dataset/stage/<int:dataset_id>", methods=["GET"])
