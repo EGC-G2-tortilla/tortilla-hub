@@ -141,19 +141,29 @@ def test_data_display():
 
         # Check most popular datasets chart
         popular_datasets_chart = driver.find_element(By.ID, "popular-datasets-chart")
-        assert popular_datasets_chart.is_displayed(), "Popular datasets chart not displayed!"
+        assert (
+            popular_datasets_chart.is_displayed()
+        ), "Popular datasets chart not displayed!"
 
         # Check latest datasets
-        latest_datasets_container = driver.find_element(By.ID, "latest-datasets-container")
-        assert latest_datasets_container.is_displayed(), "Latest datasets container not displayed!"
+        latest_datasets_container = driver.find_element(
+            By.ID, "latest-datasets-container"
+        )
+        assert (
+            latest_datasets_container.is_displayed()
+        ), "Latest datasets container not displayed!"
 
         # Check hub statistics
         hub_statistics_card = driver.find_element(By.ID, "hub-statistics-card")
         assert hub_statistics_card.is_displayed(), "Hub statistics card not displayed!"
 
         # Check most popular authors
-        most_popular_authors_container = driver.find_element(By.ID, "most-popular-authors-container")
-        assert most_popular_authors_container.is_displayed(), "Most popular authors container not displayed!"
+        most_popular_authors_container = driver.find_element(
+            By.ID, "most-popular-authors-container"
+        )
+        assert (
+            most_popular_authors_container.is_displayed()
+        ), "Most popular authors container not displayed!"
 
         print("Data display test passed!")
 
