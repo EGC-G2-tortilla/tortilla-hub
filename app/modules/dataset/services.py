@@ -12,7 +12,6 @@ import requests
 
 from app.modules.auth.services import AuthenticationService
 from app.modules.dataset.models import (
-    Author,
     DSDownloadRecord,
     DSViewRecord,
     DataSet,
@@ -334,14 +333,8 @@ class AuthorService(BaseService):
         result = []
 
         for author in popular_authors:
-            dataset_count = (
-                self.repository.session.query(func.count(DataSet.id))
-                .join(DSMetaData, DSMetaData.id == DataSet.ds_meta_data_id)
-                .filter(Author.ds_meta_data_id == DSMetaData.id)
-                .filter(Author.id == author.id)
-                .scalar()
-            )
-            result.append({"name": author.name, "datasets": dataset_count})
+            download_count = self.repository.total_downloads_by_author(author.id)
+            result.append({"name": author.name, "downloads": download_count})
 
         return result
 
