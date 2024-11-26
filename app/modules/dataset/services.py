@@ -214,8 +214,10 @@ class DataSetService(BaseService):
 
             if community is not None:
                 dataset = self.create(
-                    commit=False, user_id=current_user.id, ds_meta_data_id=dsmetadata.id,
-                    community_id=community.id
+                    commit=False,
+                    user_id=current_user.id,
+                    ds_meta_data_id=dsmetadata.id,
+                    community_id=community.id,
                 )
                 print("\n\tcommunity is not none\n")
             else:

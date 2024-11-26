@@ -149,7 +149,7 @@ def test_upload_dataset_to_community():
 
         possible_urls = {
             f"{host}/dataset/Super Important Community/upload",
-            f"{host}/dataset/Super%20Important%20Community/upload"
+            f"{host}/dataset/Super%20Important%20Community/upload",
         }
         assert driver.current_url in possible_urls, "Test failed!"
 

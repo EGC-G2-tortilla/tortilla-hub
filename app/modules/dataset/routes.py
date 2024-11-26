@@ -159,8 +159,7 @@ def create_dataset_in_a_community(community_name):
         try:
             logger.info(f"Creating dataset from community: {community}...")
             dataset = dataset_service.create_from_form(
-                form=form, current_user=current_user,
-                community=community
+                form=form, current_user=current_user, community=community
             )
             logger.info(f"Created dataset: {dataset}")
             dataset_service.move_feature_models(dataset)
