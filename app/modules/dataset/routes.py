@@ -537,7 +537,6 @@ def stage_dataset(dataset_id):
         dataset = dataset_service.get_by_id(dataset_id)
         if dataset.user_id != current_user.id:
             return jsonify({"message": "You are not the owner of this dataset"}), 403
-        
         dataset_service.set_dataset_to_staged(dataset_id)
         flash("Dataset staged successfully", "success")
         return redirect(url_for('dataset.list_dataset')),302
