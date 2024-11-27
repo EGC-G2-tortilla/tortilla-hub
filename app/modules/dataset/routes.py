@@ -25,6 +25,8 @@ from flask import (
     url_for,
     send_file,
     session,
+    flash,
+  
 )
 from flask_login import login_required, current_user
 
@@ -49,6 +51,8 @@ from app.modules.featuremodel.models import FMMetaData, FeatureModel
 from app.modules.hubfile.models import Hubfile
 from app.modules.hubfile.services import HubfileService
 from app.modules.auth.models import OAuthProvider
+from app.modules.community.services import CommunityService
+
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +63,7 @@ dsmetadata_service = DSMetaDataService()
 fakenodo_service = FakenodoService()
 doi_mapping_service = DOIMappingService()
 ds_view_record_service = DSViewRecordService()
+community_service = CommunityService()
 
 
 @dataset_bp.route("/dataset/upload", methods=["GET", "POST"])
@@ -76,6 +81,90 @@ def create_dataset():
             logger.info("Creating dataset...")
             dataset = dataset_service.create_from_form(
                 form=form, current_user=current_user
+            )
+            logger.info(f"Created dataset: {dataset}")
+            dataset_service.move_feature_models(dataset)
+        except Exception as exc:
+            logger.exception(f"Exception while create dataset data in local {exc}")
+            return (
+                jsonify({"Exception while create dataset data in local: ": str(exc)}),
+                400,
+            )
+
+        # send dataset as deposition to Zenodo
+        data = {}
+        try:
+            fakenodo_response_json = fakenodo_service.create_new_deposition(dataset)
+            response_data = json.dumps(fakenodo_response_json)
+            data = json.loads(response_data)
+        except Exception as exc:
+            data = {}
+            fakenodo_response_json = {}
+            logger.exception(f"Exception while create dataset data in Zenodo {exc}")
+
+        if data.get("conceptrecid"):
+            deposition_id = data.get("id")
+
+            # update dataset with deposition id in Zenodo
+            dataset_service.update_dsmetadata(
+                dataset.ds_meta_data_id, deposition_id=deposition_id
+            )
+
+            try:
+                # iterate for each feature model (one feature model = one request to Zenodo)
+                for feature_model in dataset.feature_models:
+                    fakenodo_service.upload_file(dataset, deposition_id, feature_model)
+
+                # publish deposition
+                fakenodo_service.publish_deposition(deposition_id)
+
+                # update DOI
+                deposition_doi = fakenodo_service.get_doi(deposition_id)
+                dataset_service.update_dsmetadata(
+                    dataset.ds_meta_data_id, dataset_doi=deposition_doi
+                )
+            except Exception as e:
+                msg = f"it has not been possible upload feature models in Zenodo and update the DOI: {e}"
+                return jsonify({"message": msg}), 200
+
+        # Delete temp folder
+        file_path = current_user.temp_folder()
+        if os.path.exists(file_path) and os.path.isdir(file_path):
+            shutil.rmtree(file_path)
+
+        msg = "Everything works!"
+        return jsonify({"message": msg}), 200
+
+    return render_template("dataset/upload_dataset.html", form=form)
+
+
+@dataset_bp.route("/dataset/<string:community_name>/upload", methods=["GET", "POST"])
+@login_required
+def create_dataset_in_a_community(community_name):
+    community = community_service.get_community_by_name(community_name)
+
+    if not community:
+        abort(404)
+
+    is_user_in_community = community_service.is_user_in_community(
+        current_user, community
+    )
+
+    if not is_user_in_community:
+        abort(403)
+
+    form = DataSetForm()
+    if request.method == "POST":
+
+        dataset = None
+
+        if not form.validate_on_submit():
+            return jsonify({"message": form.errors}), 400
+
+        try:
+            logger.info(f"Creating dataset from community: {community}...")
+            dataset = dataset_service.create_from_form(
+                form=form, current_user=current_user, community=community
             )
             logger.info(f"Created dataset: {dataset}")
             dataset_service.move_feature_models(dataset)
@@ -538,48 +627,49 @@ def add_files_to_dataset(dataset_id, folder):
     shutil.rmtree(folder)
 
 
-@dataset_bp.route("/dataset/stage/<int:dataset_id>", methods=["GET"])
+@dataset_bp.route("/dataset/stage/<int:dataset_id>", methods=["POST"])
 @login_required
 def stage_dataset(dataset_id):
-    dataset_service.set_dataset_to_staged(dataset_id)
-    return render_template(
-        "dataset/list_datasets.html",
-        datasets=dataset_service.get_synchronized(current_user.id),
-        local_datasets=dataset_service.get_unsynchronized(current_user.id),
-    )
+    try:
+        dataset = dataset_service.get_by_id(dataset_id)
+        if dataset.user_id != current_user.id:
+            return jsonify({"message": "You are not the owner of this dataset"}), 403
+        dataset_service.set_dataset_to_staged(dataset_id)
+        flash("Dataset staged successfully", "success")
+        return redirect(url_for("dataset.list_dataset")), 302
+
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
 
 
-@dataset_bp.route("/dataset/unstage/<int:dataset_id>", methods=["GET"])
+@dataset_bp.route("/dataset/unstage/<int:dataset_id>", methods=["POST"])
 @login_required
 def unstage_dataset(dataset_id):
-    dataset_service.set_dataset_to_unstaged(dataset_id)
-    return render_template(
-        "dataset/list_datasets.html",
-        datasets=dataset_service.get_synchronized(current_user.id),
-        local_datasets=dataset_service.get_unsynchronized(current_user.id),
-    )
+    try:
+        dataset = dataset_service.get_by_id(dataset_id)
+        if dataset.user_id != current_user.id:
+            return jsonify({"message": "You are not the owner of this dataset"}), 403
+        dataset_service.set_dataset_to_unstaged(dataset_id)
+        flash("Dataset unstaged successfully", "success")
+        return redirect(url_for("dataset.list_dataset"))
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
 
 
-@dataset_bp.route("/dataset/publish", methods=["GET"])
+@dataset_bp.route("/dataset/publish", methods=["POST"])
 @login_required
 def publish_datasets():
     dataset_service.publish_datasets(current_user_id=current_user.id)
-    return render_template(
-        "dataset/list_datasets.html",
-        datasets=dataset_service.get_synchronized(current_user.id),
-        local_datasets=dataset_service.get_unsynchronized(current_user.id),
-    )
+    flash("Datasets published successfully", "success")
+    return redirect(url_for("dataset.list_dataset"))
 
 
-@dataset_bp.route("/dataset/stage/all", methods=["GET"])
+@dataset_bp.route("/dataset/stage/all", methods=["POST"])
 @login_required
 def stage_all_datasets():
     dataset_service.stage_all_datasets(current_user.id)
-    return render_template(
-        "dataset/list_datasets.html",
-        datasets=dataset_service.get_synchronized(current_user.id),
-        local_datasets=dataset_service.get_unsynchronized(current_user.id),
-    )
+    flash("Datasets staged successfully", "success")
+    return redirect(url_for("dataset.list_dataset"))
 
 
 def to_glencoe(file_id, full_path):

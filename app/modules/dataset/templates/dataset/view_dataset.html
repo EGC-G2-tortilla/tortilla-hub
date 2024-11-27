@@ -207,13 +207,8 @@
                             <span class="badge bg-secondary">{{ dataset.get_cleaned_publication_type() }}</span>
                         </div>
                     </div>
-                </div>
-                <div class="row mb-2">
-                    <div class="row-md-4 col-12">
-                        <span class="text-secondary"><b>Uploaded by</b></span>
-                    </div>
-                    <div class="row-md-8 col-12">
-                        <a href="#">{{ dataset.user.profile.surname }}, {{ dataset.user.profile.name }}</a>
+                    <div class="col-md-8 col-12">
+                        <a href="/profile/summary/{{ dataset.user.id }}">{{ dataset.user.profile.surname }}, {{ dataset.user.profile.name }}</a>
                     </div>
                 </div>
                 <div class="row mb-2">

@@ -1,11 +1,12 @@
 from app.modules.auth.services import AuthenticationService
 from app.modules.dataset.models import DataSet
-from flask import render_template, redirect, url_for, request
+from flask import abort, render_template, redirect, url_for, request
 from flask_login import login_required, current_user
 
 from app import db
 from app.modules.profile import profile_bp
 from app.modules.profile.forms import UserProfileForm
+from app.modules.profile.models import UserProfile
 from app.modules.profile.services import UserProfileService
 
 
@@ -56,6 +57,37 @@ def my_profile():
         "profile/summary.html",
         user_profile=current_user.profile,
         user=current_user,
+        datasets=user_datasets_pagination.items,
+        pagination=user_datasets_pagination,
+        total_datasets=total_datasets_count,
+    )
+
+
+@profile_bp.route("/profile/summary/<int:user_id>")
+def view_profile(user_id):
+    profile = UserProfile.query.filter_by(user_id=user_id).first()
+    if not profile:
+        return abort(404)
+
+    page = request.args.get("page", 1, type=int)
+    per_page = 5
+
+    # Paginación para los datasets del usuario especificado
+    user_datasets_pagination = (
+        db.session.query(DataSet)
+        .filter(DataSet.user_id == user_id)
+        .order_by(DataSet.created_at.desc())
+        .paginate(page=page, per_page=per_page, error_out=False)
+    )
+
+    total_datasets_count = (
+        db.session.query(DataSet).filter(DataSet.user_id == user_id).count()
+    )
+
+    return render_template(
+        "profile/summary.html",
+        user_profile=profile,
+        user=profile.user,
         datasets=user_datasets_pagination.items,
         pagination=user_datasets_pagination,
         total_datasets=total_datasets_count,

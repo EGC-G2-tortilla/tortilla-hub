@@ -23,6 +23,8 @@ chico sundermann">
 
     <link rel="stylesheet" href="{{ url_for("static", filename="css/app.css") }}">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
@@ -71,6 +73,17 @@ chico sundermann">
                     </a>
                 </li>
 
+                <li class="sidebar-header">
+                    Communities
+                </li>
+
+                <li class="sidebar-item {{ 'active' if request.endpoint == 'community.index' else '' }}">
+                    <a class="sidebar-link" href="{{ url_for('community.index') }}">
+                        <i class="align-middle" data-feather="list"></i> <span
+                            class="align-middle">Communities</span>
+                    </a>
+                </li>
+
                 {% if current_user.is_anonymous %}
 
                     <li class="sidebar-header">
@@ -107,17 +120,6 @@ chico sundermann">
                         <a class="sidebar-link" href="{{ url_for('dataset.list_dataset') }}">
                             <i class="align-middle" data-feather="list"></i> <span
                                 class="align-middle">My datasets</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-header">
-                        Communities
-                    </li>
-
-                    <li class="sidebar-item {{ 'active' if request.endpoint == 'community.index' else '' }}">
-                        <a class="sidebar-link" href="{{ url_for('community.index') }}">
-                            <i class="align-middle" data-feather="list"></i> <span
-                                class="align-middle">Communities</span>
                         </a>
                     </li>
 
