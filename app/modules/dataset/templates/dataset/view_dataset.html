@@ -156,6 +156,39 @@
                 </button>
             </div>
         </div>
+
+        <!-- Botón visible solo si el usuario está autenticado con GitHub -->
+        {% if current_user.is_authenticated %}
+        <div class="input-group mb-1 mt-3">
+            <input type="text" id="repoUrlInput" class="form-control" placeholder="Insert a GitHub repo URL">
+            <form id="downloadZipForm" action="/dataset/download_repo_zip" method="post" style="display: inline;">
+                <input type="hidden" name="repo_url" id="repoUrlHiddenInput">
+                <input type="hidden" name="dataset_id" value="{{ dataset.id }}">
+                <button class="btn btn-primary" id="downloadZipButton" type="button">
+                    <i data-feather="github"></i> Upload from Github
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Modal para mostrar los archivos seleccionados -->
+        <div class="modal fade" id="githubModal" tabindex="-1" aria-labelledby="githubModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="githubModalLabel">Select one or more models from the repo</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="selectFilesForm" action="/dataset/upload_github_files" method="post">
+                            <input type="hidden" name="dataset_id" value="{{ dataset.id }}">
+                            <ul id="uvlFileList"></ul>
+                            <button id="uploadFilesButton" class="btn btn-primary" type="submit">Upload selected models</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Right Column: Dataset Information -->
@@ -239,12 +272,7 @@
             <i data-feather="download" class="center-button-icon"></i>
                 Download all ({{ dataset.get_file_total_size_for_human() }})
             </a>
-            
-            <a href="/dataset/upload_repo/{{ dataset.id }}" class="btn btn-primary mt-3" style="border-radius: 5px; background-color: #333; color: white;">
-                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub logo" style="width: 20px; height: 20px; margin-right: 10px;">
-                <i data-feather="upload" class="center-button-icon"></i>
-                Upload from Github
-            </a>
+
             <!-- Botón visible -->
             <a href="#" id="uploadButton" class="btn btn-primary mt-3" style="border-radius: 5px;">
                 <i data-feather="upload" class="center-button-icon"></i>
@@ -284,6 +312,112 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
 
 <script>
+    document.getElementById('downloadZipButton').addEventListener('click', function() {
+        const repoUrl = document.getElementById('repoUrlInput').value;
+        document.getElementById('repoUrlHiddenInput').value = repoUrl;
+    
+        const form = document.getElementById('downloadZipForm');
+        const formData = new FormData(form);
+    
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', form.action, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                try {
+                    const contentType = xhr.getResponseHeader('Content-Type');
+                    if (contentType && contentType.indexOf('application/json') !== -1) {
+                        const uvlFiles = JSON.parse(xhr.responseText);
+                        const uvlFileList = document.getElementById('uvlFileList');
+                        uvlFileList.innerHTML = '';
+    
+                        // Ordenar los archivos alfabéticamente con orden natural
+                        uvlFiles.sort((a, b) => {
+                            const fileNameA = a.split('/').pop().toLowerCase();
+                            const fileNameB = b.split('/').pop().toLowerCase();
+                            return naturalSort(fileNameA, fileNameB);
+                        });
+    
+                        uvlFiles.forEach(file => {
+                            const fileItem = document.createElement('li');
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.name = 'files';
+                            checkbox.value = file;
+                            const fileName = file.split('/').pop(); // Extraer solo el nombre del archivo
+                            checkbox.value = file;
+                            fileItem.appendChild(checkbox);
+                            fileItem.appendChild(document.createTextNode(' ')); // Añadir espacio
+                            fileItem.appendChild(document.createTextNode(fileName));
+                            uvlFileList.appendChild(fileItem);
+                        });
+                        new bootstrap.Modal(document.getElementById('githubModal')).show();
+                    } else {
+                        console.error('Error: La respuesta no es JSON.');
+                        alert('Error al procesar la solicitud.');
+                    }
+                } catch (e) {
+                    console.error('Error al analizar la respuesta JSON:', e);
+                    alert('Error al analizar la respuesta del servidor.');
+                }
+            } else {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    alert(response.error);
+                } catch (e) {
+                    console.error('Error al analizar la respuesta JSON:', e);
+                    alert('Error al procesar la solicitud.');
+                }
+            }
+        };
+        xhr.onerror = function() {
+            alert('Error al descargar el archivo ZIP.');
+        };
+        xhr.send(formData);
+    });
+    
+    function naturalSort(a, b) {
+        const ax = [], bx = [];
+    
+        a.replace(/(\d+)|(\D+)/g, (_, $1, $2) => {
+            ax.push([$1 || Infinity, $2 || ""]);
+        });
+        b.replace(/(\d+)|(\D+)/g, (_, $1, $2) => {
+            bx.push([$1 || Infinity, $2 || ""]);
+        });
+    
+        while (ax.length && bx.length) {
+            const an = ax.shift();
+            const bn = bx.shift();
+            const nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
+            if (nn) return nn;
+        }
+    
+        return ax.length - bx.length;
+    }
+    
+    document.getElementById('uploadFilesButton').addEventListener('click', function(event) {
+        event.preventDefault();
+        const form = document.getElementById('selectFilesForm');
+        const formData = new FormData(form);
+    
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', document.getElementById('selectFilesForm').action, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Recargar la página actual
+                window.location.reload();
+            } else {
+                console.log(xhr.status);
+                console.error('Error al analizar la respuesta JSON');
+                alert('Error al procesar la solicitud.');
+            }
+        };
+        xhr.onerror = function() {
+            alert('Error al subir los archivos seleccionados.');
+        };
+        xhr.send(formData);
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         feather.replace();
     });
