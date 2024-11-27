@@ -24,7 +24,6 @@ from flask import (
     abort,
     url_for,
     send_file,
-    session,
     flash,
 )
 from flask_login import login_required, current_user
@@ -836,7 +835,7 @@ def download_repo_zip():
     if not repo_url.startswith("https://github.com/") or not repo_url.endswith(".git"):
         return jsonify({"error": "URL del repositorio no válida"}), 400
 
-    parts = repo_url[len("https://github.com/") : -len(".git")].split("/")
+    parts = repo_url[len("https://github.com/"): -len(".git")].split("/")
     if len(parts) != 2:
         return jsonify({"error": "URL del repositorio no válida"}), 400
 
@@ -846,7 +845,7 @@ def download_repo_zip():
 
     zip_url = f"https://github.com/{owner}/{repo_name}/archive/refs/heads/{branch}.zip"
 
-    response = requests.get(zip_url)
+    response = requests.get(zip_url, timeout=30)
 
     temp_folder = current_user.temp_folder()
     if not os.path.exists(temp_folder):
@@ -866,6 +865,7 @@ def download_repo_zip():
         for file in files:
             if file.endswith(".uvl"):
                 uvl_files.append(os.path.join(root, file))
+        print(dirs)
 
     # Devolver la lista de archivos .uvl encontrados
     return jsonify(uvl_files)
