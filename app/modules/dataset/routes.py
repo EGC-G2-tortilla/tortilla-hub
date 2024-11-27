@@ -26,7 +26,6 @@ from flask import (
     send_file,
     session,
     flash,
-  
 )
 from flask_login import login_required, current_user
 
@@ -397,7 +396,9 @@ def subdomain_index(doi):
 
     # Save the cookie to the user's browser
     user_cookie = ds_view_record_service.create_cookie(dataset=dataset)
-    resp = make_response(render_template("dataset/view_dataset.html", dataset=dataset, auth=auth))
+    resp = make_response(
+        render_template("dataset/view_dataset.html", dataset=dataset, auth=auth)
+    )
     resp.set_cookie("view_cookie", user_cookie)
 
     return resp
@@ -563,9 +564,7 @@ def upload_from_zip(dataset_id):
 
 def add_files_to_dataset(dataset_id, folder):
     files = [
-        f
-        for f in os.listdir(folder)
-        if f.endswith(".uvl") and not f.startswith("._")
+        f for f in os.listdir(folder) if f.endswith(".uvl") and not f.startswith("._")
     ]
 
     for file in files:
@@ -829,7 +828,7 @@ def download_all_datasets():
 @dataset_bp.route("/dataset/download_repo_zip", methods=["POST"])
 @login_required
 def download_repo_zip():
-    repo_url = request.form.get('repo_url')
+    repo_url = request.form.get("repo_url")
     if not repo_url:
         return jsonify({"error": "No se proporcionó la URL del repositorio"}), 400
 
@@ -837,35 +836,35 @@ def download_repo_zip():
     if not repo_url.startswith("https://github.com/") or not repo_url.endswith(".git"):
         return jsonify({"error": "URL del repositorio no válida"}), 400
 
-    parts = repo_url[len("https://github.com/"):-len(".git")].split('/')
+    parts = repo_url[len("https://github.com/") : -len(".git")].split("/")
     if len(parts) != 2:
         return jsonify({"error": "URL del repositorio no válida"}), 400
 
     owner, repo_name = parts
 
-    branch = 'main'  # Puedes cambiar esto si necesitas una rama específica
+    branch = "main"  # Puedes cambiar esto si necesitas una rama específica
 
-    zip_url = f'https://github.com/{owner}/{repo_name}/archive/refs/heads/{branch}.zip'
-    
+    zip_url = f"https://github.com/{owner}/{repo_name}/archive/refs/heads/{branch}.zip"
+
     response = requests.get(zip_url)
 
     temp_folder = current_user.temp_folder()
     if not os.path.exists(temp_folder):
         os.makedirs(temp_folder)
 
-    zip_path = os.path.join(temp_folder, f'{repo_name}.zip')
-    with open(zip_path, 'wb') as f:
+    zip_path = os.path.join(temp_folder, f"{repo_name}.zip")
+    with open(zip_path, "wb") as f:
         f.write(response.content)
 
     # Descomprimir el archivo ZIP
-    with ZipFile(zip_path, 'r') as zip_ref:
+    with ZipFile(zip_path, "r") as zip_ref:
         zip_ref.extractall(temp_folder)
 
     # Encontrar todos los archivos .uvl
     uvl_files = []
     for root, dirs, files in os.walk(temp_folder):
         for file in files:
-            if file.endswith('.uvl'):
+            if file.endswith(".uvl"):
                 uvl_files.append(os.path.join(root, file))
 
     # Devolver la lista de archivos .uvl encontrados
@@ -875,8 +874,8 @@ def download_repo_zip():
 @dataset_bp.route("/dataset/upload_github_files", methods=["POST"])
 @login_required
 def upload_from_github():
-    dataset_id = request.form.get('dataset_id')
-    selected_files = request.form.getlist('files')
+    dataset_id = request.form.get("dataset_id")
+    selected_files = request.form.getlist("files")
     dataset = dataset_service.get_or_404(dataset_id)
 
     if not selected_files:
@@ -938,7 +937,7 @@ def upload_from_github():
             jsonify({"message": f"Error al guardar archivos en uploads: {str(e)}"}),
             500,
         )
-        
+
     # Añadir los archivos al dataset utilizando add_files_to_dataset
     add_files_to_dataset(dataset_id, temp_folder)
 
