@@ -24,6 +24,7 @@ from flask import (
     abort,
     url_for,
     send_file,
+    session,
 )
 from flask_login import login_required, current_user
 
@@ -47,6 +48,7 @@ from app.modules.fakenodo.services import FakenodoService
 from app.modules.featuremodel.models import FMMetaData, FeatureModel
 from app.modules.hubfile.models import Hubfile
 from app.modules.hubfile.services import HubfileService
+from app.modules.auth.models import OAuthProvider
 
 logger = logging.getLogger(__name__)
 
@@ -296,10 +298,17 @@ def subdomain_index(doi):
 
     # Get dataset
     dataset = ds_meta_data.data_set
+    # Check if the user id is also in the table o_auth_provider
+    auth = False
+    if current_user.is_authenticated:
+        provider = OAuthProvider.query.filter_by(user_id=current_user.id).first()
+        is_github = provider.provider_name == "github" if provider else False
+        if is_github:
+            auth = True
 
     # Save the cookie to the user's browser
     user_cookie = ds_view_record_service.create_cookie(dataset=dataset)
-    resp = make_response(render_template("dataset/view_dataset.html", dataset=dataset))
+    resp = make_response(render_template("dataset/view_dataset.html", dataset=dataset, auth=auth))
     resp.set_cookie("view_cookie", user_cookie)
 
     return resp
@@ -446,7 +455,8 @@ def upload_from_zip(dataset_id):
             )
 
         # Paso 6: Limpieza y confirmación
-        add_files_to_dataset(dataset_id)
+        folder = os.path.join(ZIP_FOLDER, "zip_files")
+        add_files_to_dataset(dataset_id, folder)
         try:
             shutil.rmtree(temp_folder)
             return jsonify({"message": "Files uploaded successfully"}), 200
@@ -462,11 +472,10 @@ def upload_from_zip(dataset_id):
         return jsonify({"message": f"Unexpected server error: {str(e)}"}), 500
 
 
-def add_files_to_dataset(dataset_id):
-    src_folder = os.path.join(ZIP_FOLDER, "zip_files")
+def add_files_to_dataset(dataset_id, folder):
     files = [
         f
-        for f in os.listdir(src_folder)
+        for f in os.listdir(folder)
         if f.endswith(".uvl") and not f.startswith("._")
     ]
 
@@ -505,7 +514,7 @@ def add_files_to_dataset(dataset_id):
             seeder.seed([feature_model])  # Pasar como lista
 
             # Crear el archivo asociado
-            file_path = os.path.join(src_folder, file)
+            file_path = os.path.join(folder, file)
             uvl_file = Hubfile(
                 name=file,
                 checksum=f"checksum{i}",
@@ -526,7 +535,7 @@ def add_files_to_dataset(dataset_id):
 
     logging.info("Archivos procesados e insertados en la base de datos correctamente.")
     # eliminar la carpeta zip_files
-    shutil.rmtree(src_folder)
+    shutil.rmtree(folder)
 
 
 @dataset_bp.route("/dataset/stage/<int:dataset_id>", methods=["GET"])
@@ -725,3 +734,122 @@ def download_all_datasets():
     finally:
         # Eliminar el directorio temporal después de su uso
         shutil.rmtree(temp_dir)
+
+
+@dataset_bp.route("/dataset/download_repo_zip", methods=["POST"])
+@login_required
+def download_repo_zip():
+    repo_url = request.form.get('repo_url')
+    if not repo_url:
+        return jsonify({"error": "No se proporcionó la URL del repositorio"}), 400
+
+    # Validar y extraer el nombre del repositorio y el propietario de la URL
+    if not repo_url.startswith("https://github.com/") or not repo_url.endswith(".git"):
+        return jsonify({"error": "URL del repositorio no válida"}), 400
+
+    parts = repo_url[len("https://github.com/"):-len(".git")].split('/')
+    if len(parts) != 2:
+        return jsonify({"error": "URL del repositorio no válida"}), 400
+
+    owner, repo_name = parts
+
+    branch = 'main'  # Puedes cambiar esto si necesitas una rama específica
+
+    zip_url = f'https://github.com/{owner}/{repo_name}/archive/refs/heads/{branch}.zip'
+    
+    response = requests.get(zip_url)
+
+    temp_folder = current_user.temp_folder()
+    if not os.path.exists(temp_folder):
+        os.makedirs(temp_folder)
+
+    zip_path = os.path.join(temp_folder, f'{repo_name}.zip')
+    with open(zip_path, 'wb') as f:
+        f.write(response.content)
+
+    # Descomprimir el archivo ZIP
+    with ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(temp_folder)
+
+    # Encontrar todos los archivos .uvl
+    uvl_files = []
+    for root, dirs, files in os.walk(temp_folder):
+        for file in files:
+            if file.endswith('.uvl'):
+                uvl_files.append(os.path.join(root, file))
+
+    # Devolver la lista de archivos .uvl encontrados
+    return jsonify(uvl_files)
+
+
+@dataset_bp.route("/dataset/upload_github_files", methods=["POST"])
+@login_required
+def upload_from_github():
+    dataset_id = request.form.get('dataset_id')
+    selected_files = request.form.getlist('files')
+    dataset = dataset_service.get_or_404(dataset_id)
+
+    if not selected_files:
+        return jsonify({"error": "No se seleccionaron archivos"}), 400
+
+    temp_folder = current_user.temp_folder()
+    if not os.path.exists(temp_folder):
+        os.makedirs(temp_folder)
+
+    # Copiar los archivos seleccionados a la carpeta temporal
+    for file_path in selected_files:
+        if not os.path.exists(file_path):
+            return jsonify({"error": f"El archivo {file_path} no existe"}), 400
+
+        file_name = os.path.basename(file_path)
+        dest_path = os.path.join(temp_folder, file_name)
+        shutil.copy(file_path, dest_path)
+
+    # Crear la carpeta del dataset si no existe
+    try:
+        upload_folder = os.path.join(
+            UPLOAD_FOLDER, f"user_{dataset.user_id}/dataset_{dataset_id}/"
+        )
+        if not os.path.exists(upload_folder):
+            os.makedirs(upload_folder, exist_ok=True)
+
+        existing_files = set(os.listdir(upload_folder))
+        renamed_files = []  # Para almacenar los nombres finales de los archivos
+
+        for file in selected_files:
+            # Ignorar directorios
+            file_name = os.path.basename(file)
+            if file_name.endswith("/"):
+                continue
+
+            # Ruta completa del archivo extraído
+            full_path = os.path.join(temp_folder, file_name)
+            print(full_path)
+
+            if os.path.isfile(full_path):
+                # Generar un nombre único si el archivo ya existe
+                base_name, extension = os.path.splitext(os.path.basename(file))
+                new_filename = base_name + extension
+                counter = 1
+
+                while new_filename in existing_files:
+                    new_filename = f"{base_name}_{counter}{extension}"
+                    counter += 1
+
+                # Mover el archivo al upload_folder con el nombre único
+                new_path = os.path.join(upload_folder, new_filename)
+                shutil.copy(full_path, new_path)
+                renamed_files.append(new_filename)
+                existing_files.add(new_filename)
+
+    except Exception as e:
+        logging.error(f"Error al guardar archivos en uploads: {e}")
+        return (
+            jsonify({"message": f"Error al guardar archivos en uploads: {str(e)}"}),
+            500,
+        )
+        
+    # Añadir los archivos al dataset utilizando add_files_to_dataset
+    add_files_to_dataset(dataset_id, temp_folder)
+
+    return jsonify({"message": "Archivos subidos exitosamente"})
