@@ -12,7 +12,6 @@ import requests
 
 from app.modules.auth.services import AuthenticationService
 from app.modules.dataset.models import (
-    Author,
     DSDownloadRecord,
     DSViewRecord,
     DataSet,
@@ -37,7 +36,9 @@ from app.modules.hubfile.repositories import (
     HubfileViewRecordRepository,
 )
 from core.services.BaseService import BaseService
+from app.modules.fakenodo.services import FakenodoService
 
+fakenodo = FakenodoService()
 logger = logging.getLogger(__name__)
 
 
@@ -196,7 +197,7 @@ class DataSetService(BaseService):
                 f"Subida a GitLab del archivo {file_name}: {response.status_code} {response.reason}"
             )
 
-    def create_from_form(self, form, current_user) -> DataSet:
+    def create_from_form(self, form, current_user, community=None) -> DataSet:
         main_author = {
             "name": f"{current_user.profile.surname}, {current_user.profile.name}",
             "affiliation": current_user.profile.affiliation,
@@ -213,9 +214,19 @@ class DataSetService(BaseService):
                 )
                 dsmetadata.authors.append(author)
 
-            dataset = self.create(
-                commit=False, user_id=current_user.id, ds_meta_data_id=dsmetadata.id
-            )
+            if community is not None:
+                dataset = self.create(
+                    commit=False,
+                    user_id=current_user.id,
+                    ds_meta_data_id=dsmetadata.id,
+                    community_id=community.id,
+                )
+                print("\n\tcommunity is not none\n")
+            else:
+                dataset = self.create(
+                    commit=False, user_id=current_user.id, ds_meta_data_id=dsmetadata.id
+                )
+                print("\n\tcommunity is none\n")
 
             for feature_model in form.feature_models:
                 uvl_filename = feature_model.uvl_filename.data
@@ -269,6 +280,9 @@ class DataSetService(BaseService):
     def get_all_datasets(self):
         return self.repository.get_all_datasets()
 
+    def get_dataset_by_id(self, dataset_id):
+        return self.repository.get_or_404(dataset_id)
+
     def set_dataset_to_staged(self, dataset_id):
         try:
             dataset = self.repository.get_by_id(dataset_id)
@@ -302,6 +316,7 @@ class DataSetService(BaseService):
             datasets = self.repository.get_user_staged_datasets(current_user_id)
             for dataset in datasets:
                 if dataset.ds_meta_data.dataset_status == DatasetStatus.STAGED:
+                    fakenodo.test_full_connection()
                     dataset.ds_meta_data.dataset_status = DatasetStatus.PUBLISHED
                     self.repository.session.commit()
                 else:
@@ -334,14 +349,8 @@ class AuthorService(BaseService):
         result = []
 
         for author in popular_authors:
-            dataset_count = (
-                self.repository.session.query(func.count(DataSet.id))
-                .join(DSMetaData, DSMetaData.id == DataSet.ds_meta_data_id)
-                .filter(Author.ds_meta_data_id == DSMetaData.id)
-                .filter(Author.id == author.id)
-                .scalar()
-            )
-            result.append({"name": author.name, "datasets": dataset_count})
+            download_count = self.repository.total_downloads_by_author(author.id)
+            result.append({"name": author.name, "downloads": download_count})
 
         return result
 
