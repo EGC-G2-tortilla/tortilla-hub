@@ -1,32 +1,3 @@
-# [1.7.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.6.0...v1.7.0) (2024-11-25)
-
-
-### Bug Fixes
-
-* a ve si es posible ([1416b1e](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/1416b1e34249ea01d05c57e1de7a3126b5e1b8ec))
-* Arreglar vinculación de cuentas sobre usuarios "tradicionales" ([c395a73](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/c395a73c76660b46e9db1e3cc91c7459966ed3e8)), closes [#110](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/110)
-* Arreglos de redirección y URLs ([5617af5](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/5617af5f09066618d240e56a49304967af0383e4))
-* Arreglos funcionalidad y estilos Closes [#113](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/113), Closes [#43](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/43), Closes [#40](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/40) ([9f93919](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/9f939197967f2f69fec46727b38abf2b9ce8e3b7))
-* Arreglos para codacy ([425867c](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/425867c9b6008f14e31965823ed939c1b1756640))
-* Eliminar lineas en blanco innecesarias ([f03be86](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/f03be8645bf7d09c8ff8ed4d529f7a93e0dff831))
-* mas arreglos para codacy ([69f7082](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/69f70829f5d9e7740bedab5cf7a6558f8511ea1a))
-* mas codacy ([47bcc82](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/47bcc82fef905a65615ca134c0959dbce62a034c))
-* Problemas del merge ([01a8bd3](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/01a8bd344587b2258ff54a7621ed75466d9708a0))
-
-
-### Features
-
-* Subida de modelos uvl a repositorios ([68ff1dc](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/68ff1dc817932ab28cf9fd1790e7cfaca30b36e2))
-* Terminado login con Github y añadido login con GitLab ([0a84566](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/0a845669a82dbef30e3aa3aaab08f94f8c45429f))
-
-# [1.6.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.5.0...v1.6.0) (2024-11-22)
-
-
-### Features
-
-* Añadir carpeta faltante y eliminar carpeta temporal ([b0a58f0](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b0a58f06548838568e85c63894cb0c43e3118824))
-* Ver datasets de usuarios ([7382f5a](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7382f5a38395e0f2a4f29bebdeeaff65bb9d3686))
-
 # [1.5.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.4.0...v1.5.0) (2024-11-19)
 
 
