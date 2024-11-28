@@ -6,7 +6,7 @@ from io import BytesIO
 class FlamapyBehavior(TaskSet):
     def on_start(self):
         self.validate_valid_uvl()
-                         
+
     @task
     def validate_valid_uvl(self):
         """
@@ -38,7 +38,7 @@ constraints
         if response.status_code != 200:
             print(f"Validation of valid UVL failed: {response.status_code}")
 
- 
+
 class FlamapyUser(HttpUser):
     tasks = [FlamapyBehavior]
     min_wait = 5000
