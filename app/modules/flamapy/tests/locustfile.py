@@ -32,7 +32,9 @@ constraints
     Server => "Data Storage"
     Video | Audio => "Media Player"
 """
-        files = {"file": ("valid_model.uvl", BytesIO(valid_uvl_content.encode("utf-8")))}
+        files = {
+            "file": ("valid_model.uvl", BytesIO(valid_uvl_content.encode("utf-8")))
+        }
         response = self.client.post("/flamapy/validate_uvl", files=files)
 
         if response.status_code != 200:

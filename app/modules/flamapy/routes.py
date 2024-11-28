@@ -101,7 +101,10 @@ def validate_uvl_file():
         # Validar si el archivo está vacío
         file.seek(0, 2)  # Mover el cursor al final del archivo
         if file.tell() == 0:  # Si el tamaño es 0, el archivo está vacío
-            return jsonify({"errors": ["The UVL file is empty and cannot be processed."]}), 400
+            return (
+                jsonify({"errors": ["The UVL file is empty and cannot be processed."]}),
+                400,
+            )
         file.seek(0)  # Volver al inicio del archivo para el procesamiento
 
         # Guardar el archivo temporalmente
