@@ -1,3 +1,25 @@
+# [1.8.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.7.0...v1.8.0) (2024-11-28)
+
+
+### Bug Fixes
+
+* ahora la url cuando subes un dataset a una comunidad está bien puesta. ([f262eaa](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/f262eaa117ac340e3265904d257104feeba1c563))
+* Añadida validación para UVLs vacíos. Closes [#94](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/94) ([77dcd95](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/77dcd953178be7d7b8b34bb9be1b0c933a77750b))
+* Arreglar errores codacy ([df8cad0](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/df8cad02c5ea6ba415d4af19d1165aac5b6c49b5))
+* solucionado el error de que no se vea el link para acceder a las comunidades si no estas logueado. Close [#86](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/86) ([3e3594f](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/3e3594ff20777b7fb1fa96d6ab3335e1f7d1af47))
+* solucionados errores de linter. Close [#69](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/69) ([afd5d20](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/afd5d20f47d7ce4bc91bd473d89a2651477f8a24))
+
+
+### Features
+
+* añadido boton para subir datasets a una comunidad ([db032f9](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/db032f92d433d90a0254cced97174b5b3e26c0e5))
+* Añadido test de rendimiento con locust ([5243e13](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/5243e13cbaeefc68f5d8921a0fe32e0a097a0c0d))
+* Añadido test de rendimiento con locust ([28f0813](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/28f0813440311a028dada1c8d5d494a83ceff8be))
+* Añadidos más tests unitarios para la validación de UVLs ([4c60615](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/4c6061561376e7c1d7111e2881f81f44bb1bef41))
+* Añadir funcionalidad para subir archivos desde GitHub ([475be15](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/475be158ca00e1aea08f9823242b0e25f9b20d64))
+* funcionalidad añadida para subir datasets a una comunidad ([ecc9519](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ecc9519f2eb4c29221f298baa2a969cbbb24459a))
+* Implementar vista de subida de archivo de github ([85fbb2c](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/85fbb2c16fbde2d0ab0b3cfc46cd319837a484a9))
+
 # [1.5.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.4.0...v1.5.0) (2024-11-19)
 
 
