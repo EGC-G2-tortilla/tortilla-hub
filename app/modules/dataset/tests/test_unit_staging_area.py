@@ -1,8 +1,7 @@
 from app.modules.dataset.models import DataSet, DatasetStatus, DSMetaData, PublicationType
-from app.modules.dataset.services import DataSetService
 from app.modules.auth.models import User
 from app.modules.conftest import login, logout
-import pytest 
+import pytest
 from app import db
 
 @pytest.fixture(scope="module")
@@ -19,7 +18,7 @@ def test_client(test_client):
         publication_type=PublicationType.JOURNAL_ARTICLE,
         dataset_status=DatasetStatus.UNSTAGED
     )
-        ds_meta_data2 = DSMetaData(title= "Sample staged dataset", description="Sample staged dataset description", 
+        ds_meta_data2 = DSMetaData(title= "Sample staged dataset", description="Sample staged dataset description",
         publication_type=PublicationType.JOURNAL_ARTICLE, dataset_status=DatasetStatus.STAGED)
         db.session.add(ds_meta_data)
         db.session.add(ds_meta_data2)
@@ -39,7 +38,7 @@ def test_fail_to_stage_dataset(test_client):
     assert user.email == 'user2@example.com'
     assert login_response.status_code == 200
     dataset = db.session.get(DataSet,1)
-    assert dataset.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED    
+    assert dataset.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED 
     response = test_client.post(f"/dataset/stage/{dataset.id}")
     # Check that the response is a 403 error
     assert response.status_code == 403
