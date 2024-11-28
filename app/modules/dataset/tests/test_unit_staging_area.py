@@ -38,7 +38,7 @@ def test_fail_to_stage_dataset(test_client):
     assert user.email == 'user2@example.com'
     assert login_response.status_code == 200
     dataset = db.session.get(DataSet,1)
-    assert dataset.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED 
+    assert dataset.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED
     response = test_client.post(f"/dataset/stage/{dataset.id}")
     # Check that the response is a 403 error
     assert response.status_code == 403
