@@ -11,3 +11,6 @@ class CommunityRepository(BaseRepository):
 
     def get_community_by_name(self, community_name: str) -> Community:
         return self.model.query.filter_by(name=community_name).first()
+    
+    def get_community_by_id(self, community_id: int) -> Community:
+        return self.model.query.filter_by(id=community_id).first()
