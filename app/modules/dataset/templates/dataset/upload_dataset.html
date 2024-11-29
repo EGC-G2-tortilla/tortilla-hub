@@ -3,7 +3,12 @@
 {% block title %}Upload dataset{% endblock %}
 
 {% block content %}
+    <style>
+        #alerts {
+    margin-top: 15px; 
+}
 
+    </style>
     <h1 class="h2 mb-3"><b>Upload</b> dataset</h1>
 
     <div class="row">
@@ -402,12 +407,10 @@
                             });
                 
                             this.on('error', function (file, response) {
-                                console.error("Error uploading file: ", response);
-                                let alert = document.createElement('p');
-                                alert.textContent = 'UVL not valid: ' + file.name;
-                                alerts.appendChild(alert);
-                                alerts.style.display = 'block';
-                            });
+                            console.error("Error uploading file: ", response);
+                            let errorMessage = 'UVL not valid: ' + file.name;
+                            displayValidationErrors([errorMessage]);
+                        });
                         }
                     };
                 
@@ -442,15 +445,36 @@
                     }
                 
                     function displayValidationErrors(errors) {
-                        alerts.innerHTML = '';
-                        errors.forEach(error => {
-                            let errorElement = document.createElement('p');
-                            errorElement.className = 'text-danger';
-                            errorElement.textContent = error;
-                            alerts.appendChild(errorElement);
-                        });
-                        alerts.style.display = 'block';
-                    }
+      
+                alerts.style.display = 'block';
+
+                let alertBox = document.createElement('div');
+                alertBox.className = 'alert alert-danger alert-dismissible fade show';
+                alertBox.setAttribute('role', 'alert');
+
+
+                // Agregar mensajes de error
+                let errorList = document.createElement('ul');
+                errorList.style.margin = '0';
+                errors.forEach(error => {
+                    let errorItem = document.createElement('li');
+                    errorItem.textContent = error;
+                    errorList.appendChild(errorItem);
+                });
+                alertBox.appendChild(errorList);
+
+                // Agregar botón de cierre
+                let closeButton = document.createElement('button');
+                closeButton.className = 'btn-close';
+                closeButton.setAttribute('data-bs-dismiss', 'alert');
+                closeButton.setAttribute('aria-label', 'Close');
+                closeButton.style.float = 'right';
+                alertBox.appendChild(closeButton);
+
+                // Añadir el cuadro de alerta al contenedor
+                alerts.appendChild(alertBox);
+            }
+
                 </script>
                 
 
