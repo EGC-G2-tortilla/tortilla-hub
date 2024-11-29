@@ -2,10 +2,12 @@ from flask import abort, redirect
 from flask_login import login_required, current_user
 from app.modules.community.services import CommunityService
 from app.modules.community_join_request.services import CommunityJoinRequestService
+from app.modules.auth.services import AuthenticationService
 from app.modules.community_join_request import community_join_request_bp
 
 community_service = CommunityService()
 community_join_request_service = CommunityJoinRequestService()
+user_service = AuthenticationService()
 
 
 @community_join_request_bp.route("/community/<string:community_name>/join", methods=["POST"])
@@ -36,9 +38,14 @@ def accept_request(request_id):
     if community.admin != current_user.id:
         abort(503)
 
-    community_join_request_service.accept_request(current_user, community, request_join)
+    user = user_service.get_by_id(request_join.user_who_wants_to_join_id)
 
-    return redirect("/community/"+community.name)
+    if not user:
+        abort(404)
+
+    community_join_request_service.accept_request(user, community, request_join)
+
+    return redirect("/community/"+community.name+"/members")
 
 
 @community_join_request_bp.route("/community-join-request/<int:request_id>/decline", methods=["POST"])
@@ -59,4 +66,4 @@ def decline_request(request_id):
 
     community_join_request_service.decline_request(request_join)
 
-    return redirect("/community/"+community.name)
+    return redirect("/community/"+community.name+"/members")

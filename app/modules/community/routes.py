@@ -67,6 +67,7 @@ def get_community_info_by_name(community_name):
 
 
 @community_bp.route("/community/<string:community_name>/members", methods=["GET"])
+@login_required
 def get_community_members_by_name(community_name):
     community = community_service.get_community_by_name(community_name)
 
@@ -81,8 +82,11 @@ def get_community_members_by_name(community_name):
     if current_user.id == community.admin:
         resquests_to_join = community_join_request_service.get_all_request_by_community_id(community.id)
 
-        join_requests = [profile_service.get_by_user_id(req.user_who_wants_to_join_id).name
+        join_requests = [profile_service.get_by_user_id(req.user_who_wants_to_join_id)
                          for req in resquests_to_join]
+
+        for x in range(len(join_requests)):
+            join_requests[x].id = resquests_to_join[x].id
 
     return render_template(
         "community/community_members.html",
