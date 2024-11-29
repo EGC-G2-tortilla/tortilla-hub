@@ -91,10 +91,8 @@
     <div class="row">
 
         <div class="col-md-6" id="most_popular_datasets">
-            <h1 class="h2 mb-3">Most popular <b>datasets</b></h1>
-            <div class="rounded-chart">
-                <div id="popular-datasets-chart"></div>
-            </div>
+            <h1 class="h2 mb-3">Most downloaded <b>datasets</b></h1>
+            <div class="rounded-chart" id="popular-datasets-chart"></div>
         </div>
 
 
@@ -102,7 +100,7 @@
             <h1 class="h2 mb-3">
                 Latest datasets
             </h1>
-            <div class="container">
+            <div class="container" id="latest-datasets-container">
                 <div class="row">
                     {% for dataset in datasets[-4:] %}
                         <div class="col-md-6 mb-4">
@@ -134,15 +132,17 @@
 
             <br>
 
-            <a href="/explore" class="btn btn-primary">
+            <div class="row justify-content-center gap-2">
+                <a href="/explore" class="btn btn-primary col">
                 <i data-feather="search" class="center-button-icon"></i>
                 Explore more datasets
             </a>
-          
-            <a href="/dataset/download_all" class="btn btn-primary">
+            <br></br>
+            <a href="/dataset/download_all" class="btn btn-primary col">
                 <i data-feather="download" class="center-button-icon"></i>
                 Download all datasets ({{ total_dataset_size }})
             </a>
+            </div>
 
         </div>
 
@@ -156,7 +156,7 @@
             <h1 class="h2 mb-3">
                 Hub statistics
             </h1>
-            <div class="card">
+            <div class="card" id="hub-statistics-card">
                 <div class="card-body">
                     <h1 class="h2 mb-3">
                     
@@ -194,7 +194,7 @@
             <h1 class="h2 mb-3">
                 Most popular <b>autors</b>
             </h1>
-            <div class="container">
+            <div class="container" id="most-popular-authors-container">
                 <div class="row">
                     {% for author in most_popular_authors %}
                         <div class="col-md-6 mb-4">
@@ -204,7 +204,7 @@
                                         {{ author.name }}
                                     </h5>
                                     <p class="card-text">
-                                        <strong>Downloads:</strong> {{ author.datasets }}
+                                        <strong>Downloads:</strong> {{ author.downloads }}
                                     </p>
                                 </div>
                             </div>
@@ -228,6 +228,22 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.hash.slice(1));
+            const tokenGithub = urlParams.get("githubToken");
+            const tokenGitlab = urlParams.get("gitlabToken");
+
+            if (tokenGithub) {
+                sessionStorage.setItem("github_token", tokenGithub);
+            }
+            if (tokenGitlab) {
+                sessionStorage.setItem("gitlab_token", tokenGitlab);
+            }
+
+            // Eliminar el fragmento de la URL sin recargar la página
+            window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             const most_downloaded = JSON.parse('{{ most_downloaded | tojson | safe }}');
             

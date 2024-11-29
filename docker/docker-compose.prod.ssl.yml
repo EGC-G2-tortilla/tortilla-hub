@@ -2,7 +2,7 @@ services:
 
   web:
     container_name: web_app_container
-    image: drorganvidez/uvlhub:latest
+    image: uvlhubtortilla/tortilla-hub:latest
     env_file:
       - ../.env
     ports:
@@ -34,13 +34,10 @@ services:
     container_name: nginx_web_server_container
     image: nginx:latest
     volumes:
-      - ./nginx/nginx.prod.ssl.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf
       - ./nginx/html:/usr/share/nginx/html
-      - ./letsencrypt:/etc/letsencrypt:ro
-      - ./public:/var/www:rw
     ports:
       - "80:80"
-      - "443:443"
     depends_on:
       - web
     restart: always
@@ -52,13 +49,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --cleanup --interval 120 web_app_container
     restart: always
-
-  certbot:
-    image: certbot/certbot
-    container_name: certbot_container
-    volumes:
-      - ./public:/var/www:rw
-      - ./letsencrypt:/etc/letsencrypt
 
 volumes:
   db_data:
