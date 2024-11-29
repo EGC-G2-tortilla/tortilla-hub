@@ -28,7 +28,7 @@ def accept_request(request_id):
     if not request_join:
         abort(404)
 
-    community = community_service.get_community_by_id(request.community_id)
+    community = community_service.get_community_by_id(request_join.community_id)
 
     if not community:
         abort(404)
