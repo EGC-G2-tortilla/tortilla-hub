@@ -42,7 +42,6 @@ class Author(db.Model):
     orcid = db.Column(db.String(120))
     ds_meta_data_id = db.Column(db.Integer, db.ForeignKey("ds_meta_data.id"))
     fm_meta_data_id = db.Column(db.Integer, db.ForeignKey("fm_meta_data.id"))
-    ds_meta_data_id = db.Column(db.Integer, db.ForeignKey("ds_meta_data.id"))
     fm_meta_data_id = db.Column(db.Integer, db.ForeignKey("fm_meta_data.id"))
 
     def to_dict(self):

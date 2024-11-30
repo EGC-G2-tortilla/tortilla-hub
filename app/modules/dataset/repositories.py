@@ -27,10 +27,23 @@ class AuthorRepository(BaseRepository):
             self.model.query.join(
                 DSMetaData, self.model.ds_meta_data_id == DSMetaData.id
             )
+            .join(DataSet, DSMetaData.id == DataSet.ds_meta_data_id)
+            .join(DSDownloadRecord, DataSet.id == DSDownloadRecord.dataset_id)
             .group_by(self.model.id)
-            .order_by(desc(func.count(DSMetaData.id)))
+            .order_by(desc(func.count(DSDownloadRecord.id)))
             .limit(4)
             .all()
+        )
+
+    def total_downloads_by_author(self, author_id: int):
+        return (
+            self.model.query.join(
+                DSMetaData, self.model.ds_meta_data_id == DSMetaData.id
+            )
+            .join(DataSet, DSMetaData.id == DataSet.ds_meta_data_id)
+            .join(DSDownloadRecord, DataSet.id == DSDownloadRecord.dataset_id)
+            .filter(self.model.id == author_id)
+            .count()
         )
 
 
@@ -142,7 +155,7 @@ class DataSetRepository(BaseRepository):
             )
             .group_by(self.model.id)
             .order_by(desc(func.count(DSDownloadRecord.id)))
-            .limit(5)
+            .limit(4)
             .all()
         )
 

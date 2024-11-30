@@ -83,7 +83,6 @@ def validate_uvl_file():
                     f"The UVL has the following warning that prevents reading it: "
                     f"Line {line}:{column} - {msg}"
                 )
-                print(warning_message)
                 self.errors.append(warning_message)
             else:
                 error_message = (
@@ -98,6 +97,15 @@ def validate_uvl_file():
         file = request.files["file"]
         if file.filename == "":
             return jsonify({"error": "No selected file"}), 400
+
+        # Validar si el archivo está vacío
+        file.seek(0, 2)  # Mover el cursor al final del archivo
+        if file.tell() == 0:  # Si el tamaño es 0, el archivo está vacío
+            return (
+                jsonify({"errors": ["The UVL file is empty and cannot be processed."]}),
+                400,
+            )
+        file.seek(0)  # Volver al inicio del archivo para el procesamiento
 
         # Guardar el archivo temporalmente
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
@@ -122,7 +130,6 @@ def validate_uvl_file():
 
         # Eliminar el archivo temporal
         os.remove(temp_path)
-        print("Errores capturados:", error_listener.errors)
 
         if error_listener.errors:
             return jsonify({"errors": error_listener.errors}), 400
