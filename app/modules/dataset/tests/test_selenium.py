@@ -337,6 +337,60 @@ def test_stage_all_datasets():
         # Always close the browser
         close_driver(driver)
 
+def test_unstage_all_datasets():
+    driver = initialize_driver()
+
+    try:
+        # Dynamically get the host if applicable
+        host = "http://localhost:5000"
+
+        # Navigate to the login page
+        driver.get(f"{host}/login")
+        wait_for_page_to_load(driver)
+
+        # Login
+        username_input = driver.find_element(By.NAME, "email")
+        password_input = driver.find_element(By.NAME, "password")
+        username_input.send_keys("user1@example.com")
+        password_input.send_keys("1234")
+        password_input.send_keys(Keys.RETURN)
+        wait_for_page_to_load(driver)
+
+        # Navigate to the datasets page
+        driver.get(f"{host}/dataset/list")
+        wait_for_page_to_load(driver)
+
+        # Verify that all datasets are in the "Staged" section
+        staged_table = driver.find_element(By.XPATH, "//h5[contains(text(), 'Staged Datasets')]/following-sibling::table")
+        staged_rows = staged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
+        num_staged_before = len(staged_rows)
+        assert num_staged_before == 3, f"Expected 3 staged datasets, but found {num_staged_before}."
+
+        # Wait for the "Unstage all datasets" form to be visible
+        unstage_all_form = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, "form[action*='/dataset/unstage/all']"))
+        )
+
+        # Locate the button within the form
+        unstage_all_button = unstage_all_form.find_element(By.CSS_SELECTOR, "button[type='submit']")
+        unstage_all_button.click()
+
+        # Wait for the page to reload or datasets to change state
+        WebDriverWait(driver, 10).until(EC.staleness_of(staged_rows[0]))  # Wait for the first dataset to become stale
+        wait_for_page_to_load(driver)
+
+        # Verify that now all datasets are back in the "Unstaged" section
+        unstaged_table = driver.find_element(By.XPATH, "//h5[contains(text(), 'Unstaged Datasets')]/following-sibling::table")
+        unstaged_rows = unstaged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
+        num_unstaged_after = len(unstaged_rows)
+        assert num_unstaged_after == 3, f"Expected 3 unstaged datasets, but found {num_unstaged_after}."
+
+        print("All datasets have been unstaged correctly.")
+
+    finally:
+        # Always close the browser
+        close_driver(driver)
+
 
 def test_publish_datasets():
     driver = initialize_driver()
@@ -400,5 +454,8 @@ def test_publish_datasets():
 #test_data_display()
 test_stage_dataset()
 test_unstage_dataset() 
-test_stage_all_datasets()  
+test_stage_all_datasets() 
+test_unstage_all_datasets()
+test_stage_all_datasets()
 test_publish_datasets()
+
