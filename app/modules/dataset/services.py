@@ -338,7 +338,7 @@ class DataSetService(BaseService):
         except Exception as exc:
             logger.error(f"Exception setting dataset to staged: {exc}")
             self.repository.session.rollback()
-    
+
     def unstage_all_datasets(self, current_user_id):
         try:
             datasets = self.repository.get_user_staged_datasets(current_user_id)

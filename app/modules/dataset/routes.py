@@ -677,7 +677,7 @@ def unstage_all_datasets():
         flash("Datasets unstaged successfully", "success")
     except Exception as e:
         flash(f"Error unstaging datasets: {str(e)}", "danger")
-    return redirect(url_for('dataset.list_dataset'))
+    return redirect(url_for("dataset.list_dataset"))
 
 
 def to_glencoe(file_id, full_path):
