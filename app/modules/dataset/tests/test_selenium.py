@@ -227,9 +227,65 @@ def test_stage_dataset():
         # Always close the browser
         close_driver(driver)
 
+def test_unstage_dataset():
+    driver = initialize_driver()
+
+    try:
+        # Dynamically get the host if applicable (adjust if unnecessary)
+        host = "http://localhost:5000"
+
+        # Navigate to the login page
+        driver.get(f"{host}/login")
+        wait_for_page_to_load(driver)
+
+        # Login
+        username_input = driver.find_element(By.NAME, "email")
+        password_input = driver.find_element(By.NAME, "password")
+        username_input.send_keys("user1@example.com")
+        password_input.send_keys("1234")
+        password_input.send_keys(Keys.RETURN)
+        wait_for_page_to_load(driver)
+
+        # Navigate to the datasets page
+        driver.get(f"{host}/dataset/list")
+        wait_for_page_to_load(driver)
+
+        # Find the "Staged Datasets" table
+        staged_table = driver.find_element(By.XPATH, "//h5[contains(text(), 'Staged Datasets')]/following-sibling::table")
+
+        # Count the staged datasets
+        staged_rows = staged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
+        num_staged = len(staged_rows)
+
+        # Verify that there is at least one staged dataset
+        assert num_staged > 0, "There are no datasets to unstage."
+
+        # Find the unstage button of the first staged dataset
+        unstage_button = staged_rows[0].find_element(By.CSS_SELECTOR, "form[action*='/dataset/unstage/'] button")
+        unstage_button.click()
+
+        # Wait for the table to update
+        WebDriverWait(driver, 5).until(
+            EC.staleness_of(staged_rows[0])  # Wait for the first element to change
+        )
+        wait_for_page_to_load(driver)
+
+        # Re-locate the table after the action
+        staged_table = driver.find_element(By.XPATH, "//h5[contains(text(), 'Staged Datasets')]/following-sibling::table")
+        staged_rows_after = staged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
+
+        # Verify that the dataset has been removed from the "Staged Datasets" table
+        assert len(staged_rows_after) == num_staged - 1, "The dataset was not unstaged correctly."
+
+        print("Dataset unstaged correctly.")
+
+    finally:
+        # Always close the browser
+        close_driver(driver)
 
 
 # Call the test functions
 # test_upload_dataset()
 #test_data_display()
 test_stage_dataset()
+test_unstage_dataset()  
