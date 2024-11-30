@@ -11,12 +11,12 @@ class DatasetBehavior(TaskSet):
     def dataset(self):
         response = self.client.get("/dataset/upload")
         get_csrf_token(response)
-    
+
     @task
     def dataset_stage(self):
         response = self.client.post("/dataset/stage/246")
         get_csrf_token(response)
-    
+
     @task
     def dataset_unstage(self):
         response = self.client.post("/dataset/unstage/246")
@@ -26,7 +26,7 @@ class DatasetBehavior(TaskSet):
     def stage_all(self):
         response = self.client.post("/dataset/stage/all")
         get_csrf_token(response)
-    
+
     @task
     def unstage_all(self):
         response = self.client.post("/dataset/unstage/all")
@@ -36,6 +36,8 @@ class DatasetBehavior(TaskSet):
     def publish_dataset(self):
         response = self.client.post("/dataset/publish")
         get_csrf_token(response)
+
+
 class DatasetUser(HttpUser):
     tasks = [DatasetBehavior]
     min_wait = 5000

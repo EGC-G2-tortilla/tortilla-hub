@@ -165,6 +165,7 @@ def test_fail_to_unstage_dataset_unstaged(test_client):
     assert dataset.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED
     logout(test_client)
 
+
 def test_unstage_all_datasets(test_client):
     """
     Test that all datasets can be staged simultaneously
@@ -196,6 +197,7 @@ def test_unstage_all_datasets(test_client):
     assert dataset2.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED
     logout(test_client)
 
+
 def test_stage_all_datasets(test_client):
     """
     Test that all datasets can be staged simultaneously
@@ -223,6 +225,7 @@ def test_stage_all_datasets(test_client):
     assert dataset1.ds_meta_data.dataset_status == DatasetStatus.STAGED
     assert dataset2.ds_meta_data.dataset_status == DatasetStatus.STAGED
     logout(test_client)
+
 
 def test_publish_all_datasets(test_client):
     """
