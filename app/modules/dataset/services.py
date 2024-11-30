@@ -250,6 +250,19 @@ class DataSetService(BaseService):
         except Exception as exc:
             logger.error(f"Exception setting dataset to staged: {exc}")
             self.repository.session.rollback()
+    
+    def unstage_all_datasets(self, current_user_id):
+        try:
+            datasets = self.repository.get_user_staged_datasets(current_user_id)
+            if len(datasets) > 0:
+                for dataset in datasets:
+                    dataset.ds_meta_data.dataset_status = DatasetStatus.UNSTAGED
+                self.repository.session.commit()
+            else:
+                raise ValueError("There's no datasets available to unstage")
+        except Exception as exc:
+            logger.error(f"Exception setting dataset to unstaged: {exc}")
+            self.repository.session.rollback()
 
 
 class AuthorService(BaseService):
