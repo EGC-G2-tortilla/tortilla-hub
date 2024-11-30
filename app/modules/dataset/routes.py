@@ -669,6 +669,7 @@ def stage_all_datasets():
     flash("Datasets staged successfully", "success")
     return redirect(url_for("dataset.list_dataset"))
 
+
 @dataset_bp.route("/dataset/unstage/all", methods=["POST"])
 @login_required
 def unstage_all_datasets():
