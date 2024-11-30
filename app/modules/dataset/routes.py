@@ -829,25 +829,45 @@ def download_all_datasets():
 @dataset_bp.route("/datasets/<int:dataset_id>/rate", methods=["POST"])
 @login_required
 def rate_dataset(dataset_id):
-    """Permite a un usuario calificar un dataset."""
     data = request.get_json()
-    rating = data.get("rating")
+    rating_value = data.get('rating')
+
+    if not rating_value:
+        return jsonify({'status': 'error', 'message': 'Rating value is required'}), 400
 
     try:
-        result = dataset_rating_service.rate_dataset(
-            user_id=current_user.id, dataset_id=dataset_id, rating_value=rating
-        )
-        return jsonify(result), 200
+        # Register or update the rating
+        dataset_rating_service.rate_dataset(current_user.id, dataset_id, rating_value)
+        
+        # Get updated rating summary
+        summary = dataset_rating_service.get_dataset_rating_summary(dataset_id)
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Rating submitted successfully',
+            'average_rating': summary['average_rating'],
+            'total_ratings': summary['total_ratings']
+        }), 200
+
     except ValueError as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({'status': 'error', 'message': str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error rating dataset: {e}")
+        return jsonify({'status': 'error', 'message': 'An error occurred'}), 500
 
 
 @dataset_bp.route("/datasets/<int:dataset_id>/ratings", methods=["GET"])
 def get_dataset_ratings(dataset_id):
-    """Devuelve el promedio y la cantidad total de calificaciones de un dataset."""
+    """Returns the average rating and total number of ratings for a dataset, along with the user's rating."""
     result = dataset_rating_service.get_dataset_rating_summary(dataset_id)
-    return jsonify(result), 200
-
+    user_rating = None
+    if current_user.is_authenticated:
+        user_rating = dataset_rating_service.get_user_rating(current_user.id, dataset_id)
+    return jsonify({
+        "average_rating": result["average_rating"],
+        "total_ratings": result["total_ratings"],
+        "user_rating": user_rating
+    }), 200
 
 @dataset_bp.route("/dataset/download_repo_zip", methods=["POST"])
 @login_required

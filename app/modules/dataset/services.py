@@ -431,28 +431,32 @@ class DatasetRatingService(BaseService):
         super().__init__(DatasetRatingRepository())
 
     def rate_dataset(self, user_id: int, dataset_id: int, rating_value: int):
-        """Creates a rating for a dataset if it does not exist; avoids updates."""
-        if not (1 <= rating_value <= 5):
-            raise ValueError("The rating must be between 1 and 5.")
+        """Allows registering or updating a rating for a dataset."""
+        try:
+            rating_value = int(rating_value)
+        except ValueError:
+            raise ValueError("Rating value must be an integer")
 
-        # Check if the user has already rated this dataset
+        if not (1 <= rating_value <= 5):
+            raise ValueError("Rating value must be between 1 and 5")
+
+        # Check if a previous rating exists
         existing_rating = self.repository.get_rating_by_user_and_dataset(user_id, dataset_id)
         if existing_rating:
-            # If a rating already exists, reject the operation
-            return {
-                "message": "You have already rated this dataset. You cannot rate it again.",
-                "status": "error",
-            }
+            # Update the existing rating
+            existing_rating.rating = rating_value
+            self.repository.save(existing_rating)
         else:
-            # Create new rating
-            new_rating = self.repository.create(
-                user_id=user_id, dataset_id=dataset_id, rating=rating_value
-            )
-            self.repository.session.commit()
-            return {"message": "Rating successfully recorded.", "status": "success"}
+            # Create a new rating
+            self.repository.create(user_id=user_id, dataset_id=dataset_id, rating=rating_value)
 
     def get_dataset_rating_summary(self, dataset_id: int):
-        """Gets the average and number of ratings for a dataset."""
+        """Gets the average and total number of ratings for a dataset."""
         average_rating = self.repository.get_average_rating(dataset_id)
-        ratings_count = self.repository.get_ratings_count(dataset_id)
-        return {"average_rating": average_rating, "ratings_count": ratings_count}
+        total_ratings = self.repository.get_ratings_count(dataset_id)
+        return {"average_rating": average_rating, "total_ratings": total_ratings}
+
+    def get_user_rating(self, user_id: int, dataset_id: int) -> Optional[int]:
+        """Gets the rating given by a user for a specific dataset."""
+        rating = self.repository.get_rating_by_user_and_dataset(user_id, dataset_id)
+        return rating.rating if rating else None
