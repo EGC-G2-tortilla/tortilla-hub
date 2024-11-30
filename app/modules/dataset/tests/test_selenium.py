@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-
+from selenium.webdriver.support import expected_conditions as EC
 from core.environment.host import get_host_for_selenium_testing
 from core.selenium.common import initialize_driver, close_driver
 
@@ -9,7 +10,6 @@ def wait_for_page_to_load(driver, timeout=4):
     WebDriverWait(driver, timeout).until(
         lambda driver: driver.execute_script("return document.readyState") == "complete"
     )
-
 
 def count_datasets(driver, host):
     driver.get(f"{host}/dataset/list")
@@ -171,7 +171,65 @@ def test_data_display():
         # Close the browser
         close_driver(driver)
 
+def test_stage_dataset():
+    driver = initialize_driver()
+
+    try:
+        # Dynamically get the host if applicable (adjust if unnecessary)
+        host = "http://localhost:5000"
+
+        # Navigate to the login page
+        driver.get(f"{host}/login")
+        wait_for_page_to_load(driver)
+
+        # Login
+        username_input = driver.find_element(By.NAME, "email")
+        password_input = driver.find_element(By.NAME, "password")
+        username_input.send_keys("user1@example.com")
+        password_input.send_keys("1234")
+        password_input.send_keys(Keys.RETURN)
+        wait_for_page_to_load(driver)
+
+        # Navigate to the datasets page
+        driver.get(f"{host}/dataset/list")
+        wait_for_page_to_load(driver)
+
+        # Find the "Unstaged Datasets" table
+        unstaged_table = driver.find_element(By.XPATH, "//h5[contains(text(), 'Unstaged Datasets')]/following-sibling::table")
+
+        # Count the unstaged datasets
+        unstaged_rows = unstaged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
+        num_unstaged = len(unstaged_rows)
+
+        # Verify that there is at least one unstaged dataset
+        assert num_unstaged > 0, "There are no datasets to stage."
+
+        # Find the stage button of the first unstaged dataset
+        stage_button = unstaged_rows[0].find_element(By.CSS_SELECTOR, "form[action*='/dataset/stage/'] button")
+        stage_button.click()
+
+        # Wait for the table to update
+        WebDriverWait(driver, 5).until(
+            EC.staleness_of(unstaged_rows[0])  # Wait for the first element to change
+        )
+        wait_for_page_to_load(driver)
+
+        # Re-locate the table after the action
+        unstaged_table = driver.find_element(By.XPATH, "//h5[contains(text(), 'Unstaged Datasets')]/following-sibling::table")
+        unstaged_rows_after = unstaged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
+
+        # Verify that the dataset has been removed from the "Unstaged Datasets" table
+        assert len(unstaged_rows_after) == num_unstaged - 1, "The dataset was not staged correctly."
+
+        print("Dataset staged correctly.")
+
+    finally:
+        # Always close the browser
+        close_driver(driver)
+
+
 
 # Call the test functions
 # test_upload_dataset()
-test_data_display()
+#test_data_display()
+test_stage_dataset()
