@@ -103,10 +103,8 @@ class DataSet(db.Model):
     feature_models = db.relationship(
         "FeatureModel", backref="data_set", lazy=True, cascade="all, delete"
     )
-    
-    ratings = db.relationship("DatasetRating", backref="dataset", lazy=True
-    )
 
+    ratings = db.relationship("DatasetRating", backref="dataset", lazy=True)
 
     def name(self):
         return self.ds_meta_data.title
@@ -150,7 +148,6 @@ class DataSet(db.Model):
             return 0
         total = sum(rating.rating for rating in self.ratings)
         return round(total / len(self.ratings), 2)
-
 
     def to_dict(self):
         return {
@@ -211,7 +208,8 @@ class DOIMapping(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     dataset_doi_old = db.Column(db.String(120))
     dataset_doi_new = db.Column(db.String(120))
-    
+
+
 class DatasetRating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     dataset_id = db.Column(db.Integer, db.ForeignKey("data_set.id"), nullable=False)
@@ -219,7 +217,8 @@ class DatasetRating(db.Model):
     rating = db.Column(db.Integer, nullable=False)
     rated_at = db.Column(db.DateTime, server_default=db.func.now())
 
-    __table_args__ = (db.UniqueConstraint('dataset_id', 'user_id', name='unique_dataset_user'),
+    __table_args__ = (
+        db.UniqueConstraint("dataset_id", "user_id", name="unique_dataset_user"),
     )
 
     def __repr__(self):

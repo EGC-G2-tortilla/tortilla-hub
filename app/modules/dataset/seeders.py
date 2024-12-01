@@ -11,7 +11,7 @@ from app.modules.dataset.models import (
     DatasetStatus,
     DSMetrics,
     Author,
-    DatasetRating
+    DatasetRating,
 )
 from datetime import datetime, timezone
 from dotenv import load_dotenv
@@ -125,7 +125,7 @@ class DataSetSeeder(BaseSeeder):
             )
         )
         seeded_datasets = self.seed(datasets)
-        
+
         # Create DatasetRating for the datasets
         ratings = [
             DatasetRating(dataset_id=seeded_datasets[0].id, user_id=user1.id, rating=4),
@@ -138,7 +138,6 @@ class DataSetSeeder(BaseSeeder):
             DatasetRating(dataset_id=seeded_datasets[3].id, user_id=user3.id, rating=3),
         ]
         self.seed(ratings)
-
 
         # Assume there are 12 UVL files, create corresponding FMMetaData and FeatureModel
         fm_meta_data_list = [

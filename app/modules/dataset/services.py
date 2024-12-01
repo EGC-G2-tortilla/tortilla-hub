@@ -25,7 +25,7 @@ from app.modules.dataset.repositories import (
     DSMetaDataRepository,
     DSViewRecordRepository,
     DataSetRepository,
-    DatasetRatingRepository
+    DatasetRatingRepository,
 )
 from app.modules.featuremodel.repositories import (
     FMMetaDataRepository,
@@ -441,14 +441,18 @@ class DatasetRatingService(BaseService):
             raise ValueError("Rating value must be between 1 and 5")
 
         # Check if a previous rating exists
-        existing_rating = self.repository.get_rating_by_user_and_dataset(user_id, dataset_id)
+        existing_rating = self.repository.get_rating_by_user_and_dataset(
+            user_id, dataset_id
+        )
         if existing_rating:
             # Update the existing rating
             existing_rating.rating = rating_value
             self.repository.save(existing_rating)
         else:
             # Create a new rating
-            self.repository.create(user_id=user_id, dataset_id=dataset_id, rating=rating_value)
+            self.repository.create(
+                user_id=user_id, dataset_id=dataset_id, rating=rating_value
+            )
 
     def get_dataset_rating_summary(self, dataset_id: int):
         """Gets the average and total number of ratings for a dataset."""

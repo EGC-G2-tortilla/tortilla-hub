@@ -208,19 +208,33 @@ class DOIMappingRepository(BaseRepository):
 class DatasetRatingRepository(BaseRepository):
     def __init__(self):
         super().__init__(DatasetRating)
-        
-    def get_rating_by_user_and_dataset(self, user_id: int, dataset_id: int) -> Optional[DatasetRating]:
+
+    def get_rating_by_user_and_dataset(
+        self, user_id: int, dataset_id: int
+    ) -> Optional[DatasetRating]:
         """Gets the rating given by a user for a specific dataset."""
-        return self.session.query(DatasetRating).filter_by(user_id=user_id, dataset_id=dataset_id).first()
+        return (
+            self.session.query(DatasetRating)
+            .filter_by(user_id=user_id, dataset_id=dataset_id)
+            .first()
+        )
 
     def get_average_rating(self, dataset_id: int) -> float:
         """Calculates the average rating for a dataset."""
-        result = self.session.query(func.avg(DatasetRating.rating)).filter_by(dataset_id=dataset_id).scalar()
+        result = (
+            self.session.query(func.avg(DatasetRating.rating))
+            .filter_by(dataset_id=dataset_id)
+            .scalar()
+        )
         return round(result, 2) if result else 0.0
 
     def get_ratings_count(self, dataset_id: int) -> int:
         """Gets the total number of ratings for a dataset."""
-        return self.session.query(func.count(DatasetRating.id)).filter_by(dataset_id=dataset_id).scalar()
+        return (
+            self.session.query(func.count(DatasetRating.id))
+            .filter_by(dataset_id=dataset_id)
+            .scalar()
+        )
 
     def save(self, instance):
         """Saves an object to the database."""
