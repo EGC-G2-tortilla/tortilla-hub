@@ -40,8 +40,11 @@ def get_community_by_name(community_name):
 
     has_user_send_a_request_to_join = False
     if not is_user_in_community:
-        has_user_send_a_request_to_join = community_join_request_service.has_user_sent_a_request(
-            current_user, community)
+        has_user_send_a_request_to_join = (
+            community_join_request_service.has_user_sent_a_request(
+                current_user, community
+            )
+        )
 
     datasets = dataset_service.get_by_community_id(community.id)
 
@@ -50,7 +53,7 @@ def get_community_by_name(community_name):
         community=community,
         user_in_community=is_user_in_community,
         datasets=datasets,
-        has_user_send_a_request_to_join=has_user_send_a_request_to_join
+        has_user_send_a_request_to_join=has_user_send_a_request_to_join,
     )
 
 
@@ -67,14 +70,17 @@ def get_community_info_by_name(community_name):
 
     has_user_send_a_request_to_join = False
     if not is_user_in_community:
-        has_user_send_a_request_to_join = community_join_request_service.has_user_sent_a_request(
-            current_user, community)
+        has_user_send_a_request_to_join = (
+            community_join_request_service.has_user_sent_a_request(
+                current_user, community
+            )
+        )
 
     return render_template(
         "community/community_info.html",
         user_in_community=is_user_in_community,
         community=community,
-        has_user_send_a_request_to_join=has_user_send_a_request_to_join
+        has_user_send_a_request_to_join=has_user_send_a_request_to_join,
     )
 
 
@@ -89,18 +95,25 @@ def get_community_members_by_name(community_name):
     is_user_in_community = community_service.is_user_in_community(
         current_user, community
     )
-    
+
     has_user_send_a_request_to_join = False
     if not is_user_in_community:
-        has_user_send_a_request_to_join = community_join_request_service.has_user_sent_a_request(
-            current_user, community)
+        has_user_send_a_request_to_join = (
+            community_join_request_service.has_user_sent_a_request(
+                current_user, community
+            )
+        )
 
     join_requests = []
     if current_user.id == community.admin:
-        resquests_to_join = community_join_request_service.get_all_request_by_community_id(community.id)
+        resquests_to_join = (
+            community_join_request_service.get_all_request_by_community_id(community.id)
+        )
 
-        join_requests = [profile_service.get_by_user_id(req.user_who_wants_to_join_id)
-                         for req in resquests_to_join]
+        join_requests = [
+            profile_service.get_by_user_id(req.user_who_wants_to_join_id)
+            for req in resquests_to_join
+        ]
 
         for x in range(len(join_requests)):
             join_requests[x].id = resquests_to_join[x].id
@@ -110,7 +123,7 @@ def get_community_members_by_name(community_name):
         user_in_community=is_user_in_community,
         community=community,
         join_requests=join_requests,
-        has_user_send_a_request_to_join=has_user_send_a_request_to_join
+        has_user_send_a_request_to_join=has_user_send_a_request_to_join,
     )
 
 
