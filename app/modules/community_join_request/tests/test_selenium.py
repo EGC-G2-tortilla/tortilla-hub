@@ -13,7 +13,7 @@ def test_community_join_request_index():
         host = get_host_for_selenium_testing()
 
         # Open the index page
-        driver.get(f'{host}/community_join_request')
+        driver.get(f"{host}/community_join_request")
 
         # Wait a little while to make sure the page has loaded completely
         time.sleep(4)
@@ -23,7 +23,7 @@ def test_community_join_request_index():
             pass
 
         except NoSuchElementException:
-            raise AssertionError('Test failed!')
+            raise AssertionError("Test failed!")
 
     finally:
 

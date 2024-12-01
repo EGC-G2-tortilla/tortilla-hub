@@ -3,4 +3,4 @@ from wtforms import SubmitField
 
 
 class CommunityJoinRequestForm(FlaskForm):
-    submit = SubmitField('Save community_join_request')
+    submit = SubmitField("Save community_join_request")
