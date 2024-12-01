@@ -18,7 +18,9 @@ class DashboardBehavior(TaskSet):
     @task(2)
     def view_dashboard(self):
         """Simula la carga del dashboard principal."""
-        with self.client.get("/", name="View Dashboard", catch_response=True) as response:
+        with self.client.get(
+            "/", name="View Dashboard", catch_response=True
+        ) as response:
             if response.status_code == 200 and "Welcome to UVLHub.io!" in response.text:
                 response.success()
             else:
@@ -27,7 +29,9 @@ class DashboardBehavior(TaskSet):
     @task(1)
     def download_dataset(self):
         """Simula la descarga de un dataset."""
-        with self.client.get("/dataset/download/1", name="Download Dataset", catch_response=True) as response:
+        with self.client.get(
+            "/dataset/download/1", name="Download Dataset", catch_response=True
+        ) as response:
             if response.status_code == 200:
                 response.success()
             else:
@@ -36,7 +40,9 @@ class DashboardBehavior(TaskSet):
     @task(1)
     def explore_datasets(self):
         """Simula la navegación a la sección de exploración de datasets."""
-        with self.client.get("/explore", name="Explore Datasets", catch_response=True) as response:
+        with self.client.get(
+            "/explore", name="Explore Datasets", catch_response=True
+        ) as response:
             if response.status_code == 200:
                 response.success()
             else:
