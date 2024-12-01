@@ -66,7 +66,9 @@ class ViewDatasetBehavior(TaskSet):
     def view_dataset(self):
         """Simula la visualización de un dataset."""
         dataset_doi = "10.1234/dataset1"
-        with self.client.get(f"/dataset/{dataset_doi}", name="View Dataset", catch_response=True) as response:
+        with self.client.get(
+            f"/dataset/{dataset_doi}", name="View Dataset", catch_response=True
+        ) as response:
             if response.status_code == 200:
                 response.success()
             else:
@@ -74,15 +76,19 @@ class ViewDatasetBehavior(TaskSet):
 
     def login(self):
         """Simula el inicio de sesión."""
-        with self.client.get("/login", name="Login Page", catch_response=True) as response:
+        with self.client.get(
+            "/login", name="Login Page", catch_response=True
+        ) as response:
             csrf_token = get_csrf_token(response)
             if csrf_token:
                 login_data = {
                     "username": "user1@example.com",
                     "password": "1234",
-                    "csrf_token": csrf_token
+                    "csrf_token": csrf_token,
                 }
-                with self.client.post("/login", data=login_data, name="Login", catch_response=True) as response:
+                with self.client.post(
+                    "/login", data=login_data, name="Login", catch_response=True
+                ) as response:
                     if response.status_code == 200 and "Welcome" in response.text:
                         response.success()
                     else:
@@ -101,8 +107,11 @@ class DownloadDatasetBehavior(TaskSet):
     def download_dataset(self):
         """Simula la descarga de un dataset."""
         dataset_id = 1
-        with self.client.get(f"/dataset/download/{dataset_id}", name="Download Dataset", catch_response=True) \
-                as response:
+        with self.client.get(
+            f"/dataset/download/{dataset_id}",
+            name="Download Dataset",
+            catch_response=True,
+        ) as response:
             if response.status_code == 200:
                 response.success()
             else:
@@ -110,15 +119,19 @@ class DownloadDatasetBehavior(TaskSet):
 
     def login(self):
         """Simula el inicio de sesión."""
-        with self.client.get("/login", name="Login Page", catch_response=True) as response:
+        with self.client.get(
+            "/login", name="Login Page", catch_response=True
+        ) as response:
             csrf_token = get_csrf_token(response)
             if csrf_token:
                 login_data = {
                     "username": "user1@example.com",
                     "password": "1234",
-                    "csrf_token": csrf_token
+                    "csrf_token": csrf_token,
                 }
-                with self.client.post("/login", data=login_data, name="Login", catch_response=True) as response:
+                with self.client.post(
+                    "/login", data=login_data, name="Login", catch_response=True
+                ) as response:
                     if response.status_code == 200 and "Welcome" in response.text:
                         response.success()
                     else:
@@ -129,6 +142,7 @@ class DownloadDatasetBehavior(TaskSet):
 
 class ViewDatasetUser(HttpUser):
     """Simula usuarios que visualizan datasets."""
+
     tasks = [ViewDatasetBehavior]
     wait_time = between(5, 9)
     host = get_host_for_locust_testing()
@@ -136,6 +150,7 @@ class ViewDatasetUser(HttpUser):
 
 class DownloadDatasetUser(HttpUser):
     """Simula usuarios que descargan datasets."""
+
     tasks = [DownloadDatasetBehavior]
     wait_time = between(5, 9)
     host = get_host_for_locust_testing()
