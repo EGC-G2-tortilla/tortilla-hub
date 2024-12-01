@@ -49,13 +49,13 @@ def test_join_community():
         wait_for_page_to_load(driver)
 
         try:
-            you_are_already_a_member = driver.find_element(
-                By.CLASS_NAME, "you_are_already_a_member"
+            waiting_to_be_acepted = driver.find_element(
+                By.CLASS_NAME, "waiting_to_be_acepted"
             )
         except Exception:
-            you_are_already_a_member = None
+            waiting_to_be_acepted = None
 
-        assert you_are_already_a_member, "Test failed!"
+        assert waiting_to_be_acepted, "Test failed!"
 
         print("Test passed!")
 

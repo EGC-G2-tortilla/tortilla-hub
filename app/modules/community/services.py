@@ -9,6 +9,9 @@ class CommunityService(BaseService):
     def get_all_communities(self):
         return self.repository.get_all_communities()
 
+    def get_community_by_id(self, community_id: id):
+        return self.repository.get_community_by_id(community_id)
+
     def get_community_by_name(self, community_name: str):
         return self.repository.get_community_by_name(community_name)
 
