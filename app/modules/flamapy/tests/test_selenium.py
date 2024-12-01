@@ -45,7 +45,9 @@ def test_upload_uvl_files():
         wait_for_page_to_load(driver)
 
         # Paso 3: Subir un archivo UVL inválido
-        invalid_file_path = os.path.abspath("app/modules/dataset/uvl_examples/invalid.uvl")
+        invalid_file_path = os.path.abspath(
+            "app/modules/dataset/uvl_examples/invalid.uvl"
+        )
         dropzone = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CLASS_NAME, "dz-hidden-input"))
         )
