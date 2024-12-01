@@ -1,3 +1,16 @@
+# [1.9.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.8.0...v1.9.0) (2024-12-01)
+
+
+### Bug Fixes
+
+* Agregar archivos faltantes en la carptea upload ([c6d057b](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/c6d057b153427a822bf187efa95dcf4ece088208))
+* workflow es lanzado correctamente en PRs closes [#50](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/50) ([d23ae14](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/d23ae143fc93d16e793f8701ccbb83d412043d34))
+
+
+### Features
+
+* Añadidos los tests unitarios closes [#104](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/104) ([080e992](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/080e9923966c9b4a1d1d78cb14e3c0a56332a657))
+
 # [1.8.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.7.0...v1.8.0) (2024-11-28)
 
 
