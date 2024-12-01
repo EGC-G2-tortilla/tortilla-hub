@@ -57,8 +57,9 @@ def resolve_user(commit):
                     return None
                 user_cache[key] = user_login
                 return user_login
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"Error al buscar usuario '{name}': {e}")
+            user_cache[key] = None
         # Como último recurso, usar el nombre del autor si no está en la lista de excluidos
         if any(excluded_user.lower() in name.lower() for excluded_user in EXCLUDED_USERS):
             user_cache[key] = None
