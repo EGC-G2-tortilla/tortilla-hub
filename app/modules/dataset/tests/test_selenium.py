@@ -403,6 +403,59 @@ def test_explore_more_datasets():
 
     finally:
         close_driver(driver)
+
+
+def test_check_button_functionality():
+    """Test the 'Check' button functionality."""
+    driver = initialize_driver()
+
+    try:
+        host = get_host_for_selenium_testing()
+        driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")
+        wait_for_page_to_load(driver)
+
+        # Find the first file item
+        file_items = driver.find_elements(By.CSS_SELECTOR, ".file-item")
+        assert len(file_items) > 0, "No file items found!"
+
+        first_file_item = file_items[0]
+
+        # Get the file ID from the 'check_<file.id>' div
+        output_div = first_file_item.find_element(By.XPATH, ".//div[starts-with(@id, 'check_')]")
+        output_div_id = output_div.get_attribute("id")
+        file_id = output_div_id.replace('check_', '')
+
+        # Click on the 'Check' button to expand the dropdown
+        check_button = first_file_item.find_element(By.XPATH, f".//button[@id='btnGroupDrop{file_id}']")
+        check_button.click()
+        time.sleep(1)  # Wait for dropdown to expand
+
+        # Click on the 'Syntax check' option
+        syntax_check_option = first_file_item.find_element(By.XPATH, f".//ul[@aria-labelledby='btnGroupDrop{file_id}'] \
+            //a[contains(., 'Syntax check')]")
+        syntax_check_option.click()
+        # Wait for the result to appear in the output div
+        output_div = driver.find_element(By.ID, f"check_{file_id}")
+        WebDriverWait(driver, 10).until(
+            lambda d: output_div.text.strip() != ''
+        )
+
+        # Wait for the result to appear in the output div
+        output_div = driver.find_element(By.ID, f"check_{file_id}")
+        WebDriverWait(driver, 10).until(
+            lambda d: output_div.text.strip() != ''
+        )
+
+        # Verify the result
+        result_text = output_div.text.strip()
+        assert 'Valid Model' in result_text or 'Errors' \
+            in result_text or 'Error' in result_text, f"Unexpected result text: {result_text}"
+
+        print("Check button functionality test passed!")
+
+    finally:
+        close_driver(driver)
+
 # Call the test functions
 # test_upload_dataset()
 
@@ -426,3 +479,6 @@ test_file_search_functionality()
 
 
 test_explore_more_datasets()
+
+
+test_check_button_functionality()
