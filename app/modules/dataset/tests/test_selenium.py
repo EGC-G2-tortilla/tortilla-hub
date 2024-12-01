@@ -440,12 +440,6 @@ def test_check_button_functionality():
             lambda d: output_div.text.strip() != ''
         )
 
-        # Wait for the result to appear in the output div
-        output_div = driver.find_element(By.ID, f"check_{file_id}")
-        WebDriverWait(driver, 10).until(
-            lambda d: output_div.text.strip() != ''
-        )
-
         # Verify the result
         result_text = output_div.text.strip()
         assert 'Valid Model' in result_text or 'Errors' \
