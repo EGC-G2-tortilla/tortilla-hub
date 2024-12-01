@@ -1,0 +1,38 @@
+name: Repository Statistics
+
+on:
+  workflow_dispatch:  # Permite ejecutar el flujo de trabajo manualmente
+  schedule:
+    - cron: '0 0 * * *'  # Ejecuta el flujo de trabajo diariamente
+
+jobs:
+  gather-stats:
+    runs-on: ubuntu-latest
+    env:
+      STATISTICS: ${{ secrets.STATISTICS || '' }}  # Token de acceso desde los secretos
+      GITHUB_REPOSITORY: ${{ github.repository }}  # Nombre del repositorio actual
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install gitpython pyyaml requests python-dotenv PyGithub tqdm matplotlib seaborn
+
+      - name: Gather repository statistics
+        run: python stats.py
+        env:
+          STATISTICS: ${{ secrets.STATISTICS }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: repository-statistics
+          path: output/

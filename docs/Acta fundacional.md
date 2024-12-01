@@ -7,21 +7,21 @@
 
 # Miembros <!--{#miembros}-->
 
-| Miembro | Grupo | Implicación |
-| :---- | :---- | :---- |
-| Fernández Pérez, Pablo | tortilla-hub-1 | \[1-10\] |
-| Iborra Conejo, José Miguel | tortilla-hub-1 | \[1-10\] |
-| Macías Ferrera, Antonio | tortilla-hub-1 | \[1-10\] |
-| Maureira Flores, Benjamín Ignacio | tortilla-hub-1 | \[1-10\] |
-| Ridruejo Pineda, Guadalupe | tortilla-hub-1 | \[1-10\] |
-| Santana Rubio, Delfín | tortilla-hub-1 | \[1-10\] |
-| Vela Camacho, Daniel | tortilla-hub-1 | \[1-10\] |
-| Barcia Jiménez, Manuel Francisco | tortilla-hub-2 | \[1-10\] |
-| Carmona Sicre, Alberto | tortilla-hub-2 | \[1-10\] |
-| Fernández Caballero, Daniel | tortilla-hub-2 | \[1-10\] |
-| Gavira Sánchez, Ramón | tortilla-hub-2 | \[1-10\] |
-| Pulido Cifuentes, Rafael | tortilla-hub-2 | \[1-10\] |
-| Ruíz López, Daniel | tortilla-hub-2 | \[1-10\] |
+| Miembro | Grupo |
+| :---- | :---- |
+| Fernández Pérez, Pablo | tortilla-hub-1 |
+| Iborra Conejo, José Miguel | tortilla-hub-1 |
+| Macías Ferrera, Antonio | tortilla-hub-1 |
+| Maureira Flores, Benjamín Ignacio | tortilla-hub-1 |
+| Ridruejo Pineda, Guadalupe | tortilla-hub-1 |
+| Santana Rubio, Delfín | tortilla-hub-1 |
+| Vela Camacho, Daniel | tortilla-hub-1 |
+| Barcia Jiménez, Manuel Francisco | tortilla-hub-2 |
+| Carmona Sicre, Alberto | tortilla-hub-2 |
+| Fernández Caballero, Daniel | tortilla-hub-2 |
+| Gavira Sánchez, Ramón | tortilla-hub-2 |
+| Pulido Cifuentes, Rafael | tortilla-hub-2 |
+| Ruíz López, Daniel | tortilla-hub-2 |
 
 
 ## Índice
