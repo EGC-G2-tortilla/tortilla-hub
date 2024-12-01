@@ -38,6 +38,11 @@ def get_community_by_name(community_name):
         current_user, community
     )
 
+    has_user_send_a_request_to_join = False
+    if not is_user_in_community:
+        has_user_send_a_request_to_join = community_join_request_service.has_user_sent_a_request(
+            current_user, community)
+
     datasets = dataset_service.get_by_community_id(community.id)
 
     return render_template(
@@ -45,6 +50,7 @@ def get_community_by_name(community_name):
         community=community,
         user_in_community=is_user_in_community,
         datasets=datasets,
+        has_user_send_a_request_to_join=has_user_send_a_request_to_join
     )
 
 
@@ -59,10 +65,16 @@ def get_community_info_by_name(community_name):
         current_user, community
     )
 
+    has_user_send_a_request_to_join = False
+    if not is_user_in_community:
+        has_user_send_a_request_to_join = community_join_request_service.has_user_sent_a_request(
+            current_user, community)
+
     return render_template(
         "community/community_info.html",
         user_in_community=is_user_in_community,
         community=community,
+        has_user_send_a_request_to_join=has_user_send_a_request_to_join
     )
 
 
@@ -77,6 +89,11 @@ def get_community_members_by_name(community_name):
     is_user_in_community = community_service.is_user_in_community(
         current_user, community
     )
+    
+    has_user_send_a_request_to_join = False
+    if not is_user_in_community:
+        has_user_send_a_request_to_join = community_join_request_service.has_user_sent_a_request(
+            current_user, community)
 
     join_requests = []
     if current_user.id == community.admin:
@@ -92,7 +109,8 @@ def get_community_members_by_name(community_name):
         "community/community_members.html",
         user_in_community=is_user_in_community,
         community=community,
-        join_requests=join_requests
+        join_requests=join_requests,
+        has_user_send_a_request_to_join=has_user_send_a_request_to_join
     )
 
 

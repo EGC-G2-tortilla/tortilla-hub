@@ -17,6 +17,28 @@ class CommunityJoinRequestService(BaseService):
     def get_request_by_id(self, request_id: int) -> CommunityJoinRequest:
         return self.repository.get_request_by_id(request_id)
 
+    def has_user_sent_a_request(self,
+                                user_who_wants_to_join,
+                                community) -> bool:
+        # check if user and community has id
+        try:
+            user_who_wants_to_join_id = user_who_wants_to_join.id
+            community_id = community.id
+            if (not user_who_wants_to_join_id) and (not community_id):
+                return False
+        except Exception:
+            return False
+
+        request = self.repository.get_request_by_user_id_and_community_id(
+            user_who_wants_to_join_id, community_id)
+
+        print(request)
+
+        if request:
+            return True
+        else:
+            return False
+
     def get_all_request_by_community_id(self, community_id: int) -> CommunityJoinRequest:
         return self.repository.get_all_request_by_community_id(community_id)
 
