@@ -189,15 +189,23 @@ def test_buttons_upload_and_download():
         wait_for_page_to_load(driver)
 
         # Verify the "Download all" button
-        download_button = driver.find_element(By.XPATH, "//a[contains(., 'Download all')]")
+        download_button = driver.find_element(
+            By.XPATH, "//a[contains(., 'Download all')]"
+        )
         assert download_button.is_displayed(), "Download all button is not displayed!"
 
         # Verify the "Upload from Github" button
-        github_button = driver.find_element(By.XPATH, "//a[contains(., 'Upload from Github')]")
-        assert github_button.is_displayed(), "Upload from Github button is not displayed!"
+        github_button = driver.find_element(
+            By.XPATH, "//a[contains(., 'Upload from Github')]"
+        )
+        assert (
+            github_button.is_displayed()
+        ), "Upload from Github button is not displayed!"
 
         # Verify the "Upload from ZIP" button
-        zip_button = driver.find_element(By.XPATH, "//a[contains(., 'Upload from ZIP')]")
+        zip_button = driver.find_element(
+            By.XPATH, "//a[contains(., 'Upload from ZIP')]"
+        )
         assert zip_button.is_displayed(), "Upload from ZIP button is not displayed!"
 
         print("Button layout test passed!")
@@ -218,7 +226,9 @@ def test_file_table():
         wait_for_page_to_load(driver)
 
         # Verify the table rows
-        rows = driver.find_elements(By.XPATH, "//div[@class='list-group-item file-item']")
+        rows = driver.find_elements(
+            By.XPATH, "//div[@class='list-group-item file-item']"
+        )
         assert len(rows) > 0, "No files are displayed in the table!"
 
         for row in rows:
@@ -235,7 +245,9 @@ def test_file_table():
             assert check_button.is_displayed(), "Check button is not displayed!"
 
             # Verify "Export" button
-            export_button = row.find_element(By.XPATH, ".//button[contains(., 'Export')]")
+            export_button = row.find_element(
+                By.XPATH, ".//button[contains(., 'Export')]"
+            )
             assert export_button.is_displayed(), "Export button is not displayed!"
 
         print("File table test passed!")
@@ -252,7 +264,9 @@ def test_metadata_display():
         host = get_host_for_selenium_testing()
 
         # Open the dataset view page
-        driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")  # Ensure that this dataset exists and has correct data
+        driver.get(
+            f"{host}{SAMPLE_DATASET_ROUTE}"
+        )  # Ensure that this dataset exists and has correct data
         wait_for_page_to_load(driver)
 
         # Verify the title
@@ -265,30 +279,33 @@ def test_metadata_display():
 
         # Find the <p> element containing the description
         description = about_section.find_element(
-            By.XPATH,
-            "./ancestor::div[contains(@class, 'row')]//p[@class='card-text']"
+            By.XPATH, "./ancestor::div[contains(@class, 'row')]//p[@class='card-text']"
         )
         assert description.is_displayed(), "Dataset description is not displayed!"
 
         # Locate the authors section
-        authors_section = driver.find_element(By.XPATH, "//span[contains(., 'Authors')]")
+        authors_section = driver.find_element(
+            By.XPATH, "//span[contains(., 'Authors')]"
+        )
         assert authors_section.is_displayed(), "'Authors' heading is not displayed!"
 
         # Find the <p> elements containing the authors' names
         authors = authors_section.find_elements(
-            By.XPATH,
-            "./ancestor::div[contains(@class, 'row')]//p"
+            By.XPATH, "./ancestor::div[contains(@class, 'row')]//p"
         )
         assert len(authors) > 0, "Authors are not displayed!"
 
         # Verify the publication DOI
         try:
-            doi_section = driver.find_element(By.XPATH, "//span[contains(., 'Publication DOI')]")
-            assert doi_section.is_displayed(), "'Publication DOI' heading is not displayed!"
+            doi_section = driver.find_element(
+                By.XPATH, "//span[contains(., 'Publication DOI')]"
+            )
+            assert (
+                doi_section.is_displayed()
+            ), "'Publication DOI' heading is not displayed!"
 
             doi = doi_section.find_element(
-                By.XPATH,
-                "./ancestor::div[contains(@class, 'row')]//p"
+                By.XPATH, "./ancestor::div[contains(@class, 'row')]//p"
             )
             assert doi.is_displayed(), "Publication DOI is not displayed!"
 
@@ -314,7 +331,9 @@ def test_interactive_elements():
         wait_for_page_to_load(driver)
 
         # Click on the "View" button for the first file
-        view_button = driver.find_element(By.XPATH, "(//button[contains(., 'View')])[1]")
+        view_button = driver.find_element(
+            By.XPATH, "(//button[contains(., 'View')])[1]"
+        )
         view_button.click()
         time.sleep(1)  # Wait for modal to appear
 
@@ -359,8 +378,9 @@ def test_file_search_functionality():
         # Verify that only the matching file is displayed
         visible_files = [file for file in files if file.is_displayed()]
         assert len(visible_files) == 1, "Search did not filter files correctly!"
-        assert visible_files[0].get_attribute("data-file-name") == file_to_search, \
-            "Displayed file does not match search query!"
+        assert (
+            visible_files[0].get_attribute("data-file-name") == file_to_search
+        ), "Displayed file does not match search query!"
 
         # Clear the search input
         search_input.clear()
@@ -387,8 +407,12 @@ def test_explore_more_datasets():
         wait_for_page_to_load(driver)
 
         # Locate the 'Explore more datasets' button
-        explore_button = driver.find_element(By.XPATH, "//a[contains(., 'Explore more datasets')]")
-        assert explore_button.is_displayed(), "'Explore more datasets' button is not displayed!"
+        explore_button = driver.find_element(
+            By.XPATH, "//a[contains(., 'Explore more datasets')]"
+        )
+        assert (
+            explore_button.is_displayed()
+        ), "'Explore more datasets' button is not displayed!"
 
         # Click the button
         explore_button.click()
@@ -397,7 +421,9 @@ def test_explore_more_datasets():
         # Verify that the URL has changed to the expected page
         expected_url = f"{host}/explore"
         current_url = driver.current_url
-        assert current_url == expected_url, f"Did not navigate to the explore page! Current URL: {current_url}"
+        assert (
+            current_url == expected_url
+        ), f"Did not navigate to the explore page! Current URL: {current_url}"
 
         print("Explore more datasets test passed!")
 
@@ -421,34 +447,43 @@ def test_check_button_functionality():
         first_file_item = file_items[0]
 
         # Get the file ID from the 'check_<file.id>' div
-        output_div = first_file_item.find_element(By.XPATH, ".//div[starts-with(@id, 'check_')]")
+        output_div = first_file_item.find_element(
+            By.XPATH, ".//div[starts-with(@id, 'check_')]"
+        )
         output_div_id = output_div.get_attribute("id")
-        file_id = output_div_id.replace('check_', '')
+        file_id = output_div_id.replace("check_", "")
 
         # Click on the 'Check' button to expand the dropdown
-        check_button = first_file_item.find_element(By.XPATH, f".//button[@id='btnGroupDrop{file_id}']")
+        check_button = first_file_item.find_element(
+            By.XPATH, f".//button[@id='btnGroupDrop{file_id}']"
+        )
         check_button.click()
         time.sleep(1)  # Wait for dropdown to expand
 
         # Click on the 'Syntax check' option
-        syntax_check_option = first_file_item.find_element(By.XPATH, f".//ul[@aria-labelledby='btnGroupDrop{file_id}'] \
-            //a[contains(., 'Syntax check')]")
+        syntax_check_option = first_file_item.find_element(
+            By.XPATH,
+            f".//ul[@aria-labelledby='btnGroupDrop{file_id}'] \
+            //a[contains(., 'Syntax check')]",
+        )
         syntax_check_option.click()
         # Wait for the result to appear in the output div
         output_div = driver.find_element(By.ID, f"check_{file_id}")
-        WebDriverWait(driver, 10).until(
-            lambda d: output_div.text.strip() != ''
-        )
+        WebDriverWait(driver, 10).until(lambda d: output_div.text.strip() != "")
 
         # Verify the result
         result_text = output_div.text.strip()
-        assert 'Valid Model' in result_text or 'Errors' \
-            in result_text or 'Error' in result_text, f"Unexpected result text: {result_text}"
+        assert (
+            "Valid Model" in result_text
+            or "Errors" in result_text
+            or "Error" in result_text
+        ), f"Unexpected result text: {result_text}"
 
         print("Check button functionality test passed!")
 
     finally:
         close_driver(driver)
+
 
 # Call the test functions
 # test_upload_dataset()
