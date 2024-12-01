@@ -835,7 +835,7 @@ def download_repo_zip():
     if not repo_url.startswith("https://github.com/") or not repo_url.endswith(".git"):
         return jsonify({"error": "URL del repositorio no válida"}), 400
 
-    parts = repo_url[len("https://github.com/") : -len(".git")].split("/")
+    parts = repo_url[len("https://github.com/"): -len(".git")].split("/")
     if len(parts) != 2:
         return jsonify({"error": "URL del repositorio no válida"}), 400
 

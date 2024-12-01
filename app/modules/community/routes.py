@@ -89,7 +89,7 @@ def get_community_members_by_name(community_name):
     is_user_in_community = community_service.is_user_in_community(
         current_user, community
     )
-    
+
     has_user_send_a_request_to_join = False
     if not is_user_in_community:
         has_user_send_a_request_to_join = community_join_request_service.has_user_sent_a_request(
@@ -102,8 +102,8 @@ def get_community_members_by_name(community_name):
         join_requests = [profile_service.get_by_user_id(req.user_who_wants_to_join_id)
                          for req in resquests_to_join]
 
-        for x in range(len(join_requests)):
-            join_requests[x].id = resquests_to_join[x].id
+        for index, _ in enumerate(join_requests):
+            join_requests[index, _].id = resquests_to_join[index, _].id
 
     return render_template(
         "community/community_members.html",
