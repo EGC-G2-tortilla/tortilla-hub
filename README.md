@@ -1,27 +1,22 @@
-<div style="text-align: center;">
+<div align="center">
   <img src="https://www.uvlhub.io/static/img/logos/logo-light.svg" alt="Logo">
 </div>
 
-<p style="text-align: center;">
-  <h1 align="center">TORTILLA-HUB</h1>
-</p>
-<p style="text-align: center;">
-  <em><code>❯ A fork of the UVLHub project by DiversoLab: tortilla-hub is a repository of feature models in UVL format integrated with Zenodo and flamapy following Open Science principles. </code></em>
-</p>
-<p style="align: center;">
 
-  <a href="">[![Pytest Testing Suite](https://github.com/diverso-lab/uvlhub/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/diverso-lab/uvlhub/actions/workflows/tests.yml)</a>
+<div align="center">
+  <h1>TORTILLA-HUB</h1>
+  <h3 style="font-style: italic; font-weight: normal;">
+    A fork of the UVLHub project by DiversoLab: tortilla-hub is a repository of feature models in UVL format integrated with Zenodo and flamapy following Open Science principles.
+  </h3>
+  <br><br>
+  <a href="">
+    <img src="https://github.com/diverso-lab/uvlhub/actions/workflows/tests.yml/badge.svg?branch=main" alt="Pytest Testing Suite">
+  </a>
+  <a href="">
+    <img src="https://github.com/diverso-lab/uvlhub/actions/workflows/commits.yml/badge.svg?branch=main" alt="Commits Syntax Checker">
+  </a>
+</div>
 
-  <a href="">[![Commits Syntax Checker](https://github.com/diverso-lab/uvlhub/actions/workflows/commits.yml/badge.svg?branch=main)](https://github.com/diverso-lab/uvlhub/actions/workflows/commits.yml)</a>
-
-</p>
-
-<p align="center"><!-- default option, no dependency badges. -->
-</p>
-<p align="center">
-  <!-- default option, no dependency badges. -->
-</p>
-<br>
 
 ##  Table of Contents
 
@@ -452,6 +447,7 @@ There you may find our commmon working policy checking ``/docs/Acta fundacional.
           </table>
           <details>
             <summary><b>webhook</b></summary>
+            <a>This folder contains the logic related to handling webhooks (HTTP callbacks triggered by external services to notify your of certain events).</a>
             <blockquote>
               <table>
               <tr>
@@ -547,6 +543,7 @@ There you may find our commmon working policy checking ``/docs/Acta fundacional.
           <details>
             <summary><b>auth</b></summary>
             <blockquote>
+              <a>The auth folder is dedicated to handling authentication and authorization functionalities. It contains code that manages user login, registration, password management, and permissions.</a>
               <table>
               <tr>
                 <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/app/modules/auth/services.py'>services.py</a></b></td>
@@ -649,6 +646,7 @@ There you may find our commmon working policy checking ``/docs/Acta fundacional.
           <details>
             <summary><b>dataset</b></summary>
             <blockquote>
+              <a>This folder contains all the object modelling and business logic related to the datasets, which are one of the core elements of the uvl repository. </a>
               <table>
               <tr>
                 <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/app/modules/dataset/services.py'>services.py</a></b></td>
@@ -763,6 +761,7 @@ There you may find our commmon working policy checking ``/docs/Acta fundacional.
           <details>
             <summary><b>featuremodel</b></summary>
             <blockquote>
+              <a>This folder contains all the data modelling and business logic behind the FeatureModel objects. </a>
               <table>
               <tr>
                 <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/app/modules/featuremodel/services.py'>services.py</a></b></td>
@@ -876,6 +875,7 @@ There you may find our commmon working policy checking ``/docs/Acta fundacional.
           <details>
             <summary><b>profile</b></summary>
             <blockquote>
+              <a> The profile folder handles user-related functionalities that allow users to view, update, and manage their personal data. </a>
               <table>
               <tr>
                 <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/app/modules/profile/services.py'>services.py</a></b></td>
@@ -950,6 +950,7 @@ There you may find our commmon working policy checking ``/docs/Acta fundacional.
           <details>
             <summary><b>community</b></summary>
             <blockquote>
+              <a>The comunnity folder contains all the data modelling, route, business logic and views of the communities. </a>
               <table>
               <tr>
                 <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/app/modules/community/services.py'>services.py</a></b></td>
@@ -1013,6 +1014,7 @@ There you may find our commmon working policy checking ``/docs/Acta fundacional.
           <details>
             <summary><b>fakenodo</b></summary>
             <blockquote>
+              <a> The fakenodo folder contains all the services and models necessary to works with a mocked version of Zenodo. this will help to simulate as many calls to the Zenodyo API as they are necessary to test the application. </a>
               <table>
               <tr>
                 <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/app/modules/fakenodo/services.py'>services.py</a></b></td>
@@ -1219,25 +1221,30 @@ If you want to run specific test modules:
 
 ##  Acknowledgments
 
+In this section you can find all the contributors of each team:
+
+
+**Tortilla Hub 1:**
+
 <table>
     <tr>
         <td align="center">
             <a href="https://github.com/DelfinSR">
-                <img src="https://avatars.githubusercontent.com/u/62075385?v=4" width="100px;" alt="Delfín Santana Rubio"/>
+                <img src="https://avatars.githubusercontent.com/u/91948384?v=4" width="100px;" alt="Delfín Santana Rubio"/>
                 <br />
                 <sub><b>Delfín Santana Rubio</b></sub>
             </a>
         </td>
                <td align="center">
             <a href="https://github.com/antoniommff">
-                <img src="https://avatars.githubusercontent.com/u/62075385?v=4" width="100px;" alt="Antonio Macías Ferrera"/>
+                <img src="https://avatars.githubusercontent.com/u/91947070?v=4" width="100px;" alt="Antonio Macías Ferrera"/>
                 <br />
                 <sub><b>Antonio Macías Ferrera</b></sub>
             </a>
         </td>
                 <td align="center">
             <a href="https://github.com/guaridpin">
-                <img src="https://avatars.githubusercontent.com/u/62075385?v=4" width="100px;" alt="Guadalupe Ridruejo Pineda"/>
+                <img src="https://avatars.githubusercontent.com/u/114622587?v=4" width="100px;" alt="Guadalupe Ridruejo Pineda"/>
                 <br />
                 <sub><b>Guadalupe Ridruejo Pineda</b></sub>
             </a>
@@ -1251,67 +1258,74 @@ If you want to run specific test modules:
         </td>
                 <td align="center">
             <a href="https://github.com/danvelcam">
-                <img src="https://avatars.githubusercontent.com/u/62075385?v=4" width="100px;" alt="Daniel Vela Camacho"/>
+                <img src="https://avatars.githubusercontent.com/u/93273683?v=4" width="100px;" alt="Daniel Vela Camacho"/>
                 <br />
                 <sub><b>Daniel Vela Camacho</b></sub>
             </a>
         </td>
+                      <td align="center">
+            <a href="https://github.com/Letee2">
+                <img src="https://avatars.githubusercontent.com/u/91889823?v=4" width="100px;" alt="Pablo Fernández Pérez"/>
+                <br />
+                <sub><b>Pablo Fernández Pérez</b></sub>
+            </a>
+        </td>
+                      <td align="center">
+            <a href="https://github.com/benjimrfl">
+                <img src="https://avatars.githubusercontent.com/u/91946757?v=4" width="100px;" alt="Benjamín Ignacio Maureira Flores"/>
+                <br />
+                <sub><b>Benjamín Ignacio Maureira Flores</b></sub>
+            </a>
+        </td>
+</table>
+
+
+**Tortilla Hub 2:**
+
+<table>
                 <td align="center">
             <a href="https://github.com/DaniFdezCab">
-                <img src="https://avatars.githubusercontent.com/u/62075385?v=4" width="100px;" alt="Daniel Fernández Caballero"/>
+                <img src="https://avatars.githubusercontent.com/u/92794081?v=4" width="100px;" alt="Daniel Fernández Caballero"/>
                 <br />
                 <sub><b>Daniel Fernández Caballero</b></sub>
             </a>
         </td>
                 <td align="center">
-            <a href="https://github.com/Letee2">
-                <img src="https://avatars.githubusercontent.com/u/62075385?v=4" width="100px;" alt="Pablo Fernández Pérez"/>
-                <br />
-                <sub><b>Pablo Fernández Pérez</b></sub>
-            </a>
-        </td>
-                <td align="center">
             <a href="https://github.com/manbarjim2">
-                <img src="https://avatars.githubusercontent.com/u/62075385?v=4" width="100px;" alt="Manuel Francisco Barcia Jiménez"/>
+                <img src="https://avatars.githubusercontent.com/u/80253313?v=4" width="100px;" alt="Manuel Francisco Barcia Jiménez"/>
                 <br />
                 <sub><b>Manuel Francisco Barcia Jiménez</b></sub>
             </a>
         </td>
                 <td align="center">
             <a href="https://github.com/rgavira123">
-                <img src="https://avatars.githubusercontent.com/u/62075385?v=4" width="100px;" alt="Ramón Gavira Sánchez"/>
+                <img src="https://avatars.githubusercontent.com/u/91947011?v=4" width="100px;" alt="Ramón Gavira Sánchez"/>
                 <br />
                 <sub><b>Ramón Gavira Sánchez</b></sub>
             </a>
         </td>
                 <td align="center">
-            <a href="https://github.com/benjimrfl">
-                <img src="https://avatars.githubusercontent.com/u/62075385?v=4" width="100px;" alt="Benjamín Ignacio Maureira Flores"/>
-                <br />
-                <sub><b>Benjamín Ignacio Maureira Flores</b></sub>
-            </a>
-        </td>
-                <td align="center">
             <a href="https://github.com/rafpulcif">
-                <img src="https://avatars.githubusercontent.com/u/62075385?v=4" width="100px;" alt="Rafael Pulido Cifuentes"/>
+                <img src="https://avatars.githubusercontent.com/u/91948036?v=4" width="100px;" alt="Rafael Pulido Cifuentes"/>
                 <br />
                 <sub><b>Rafael Pulido Cifuentes</b></sub>
             </a>
         </td>
                 <td align="center">
             <a href="https://github.com/Danielruizlopezcc">
-                <img src="https://avatars.githubusercontent.com/u/62075385?v=4" width="100px;" alt="Daniel Ruiz López"/>
+                <img src="https://avatars.githubusercontent.com/u/91948447?v=4" width="100px;" alt="Daniel Ruiz López"/>
                 <br />
                 <sub><b>Daniel Ruiz López</b></sub>
             </a>
         </td>
                 <td align="center">
             <a href="https://github.com/albcarsic">
-                <img src="https://avatars.githubusercontent.com/u/62075385?v=4" width="100px;" alt="Alberto Carmona Sicre"/>
+                <img src="https://avatars.githubusercontent.com/u/91947046?v=4" width="100px;" alt="Alberto Carmona Sicre"/>
                 <br />
                 <sub><b>Alberto Carmona Sicre</b></sub>
             </a>
         </td>
     </tr>
 </table>
+
 ---
