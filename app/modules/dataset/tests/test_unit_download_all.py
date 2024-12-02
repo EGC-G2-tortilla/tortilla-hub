@@ -55,6 +55,7 @@ def create_user(email, password):
     db.session.commit()
     return user
 
+
 def create_dataset(user_id):
     ds_meta_data = DSMetaData(
         title="Test Dataset",
@@ -69,11 +70,13 @@ def create_dataset(user_id):
     db.session.commit()
     return dataset
 
+
 def create_feature_model(dataset_id):
     feature_model = FeatureModel(data_set_id=dataset_id)
     db.session.add(feature_model)
     db.session.commit()
     return feature_model
+
 
 def create_hubfile(name, feature_model_id, user_id, dataset_id):
     # Crear la carpeta y archivo para el hubfile
@@ -109,6 +112,7 @@ def create_hubfile(name, feature_model_id, user_id, dataset_id):
     db.session.commit()
     return hubfile
 
+
 def delete_folder(user):
     shutil.rmtree(f"uploads/user_{user.id}", ignore_errors=True)
 
@@ -139,10 +143,10 @@ def test_to_glencoe(test_client):
         # Crear un usuario y dataset para el test
         user = create_user(email="test_user_glencoe@example.com", password="password123")
         dataset = create_dataset(user_id=user.id)
-        
+       
         # Crear un FeatureModel y asociarlo al dataset
         feature_model = create_feature_model(dataset_id=dataset.id)
-        
+      
         # Crear un Hubfile y asociarlo al dataset
         hubfile = create_hubfile(name="mock_dataset", feature_model_id=feature_model.id, user_id=user.id, dataset_id=dataset.id)
 
@@ -156,6 +160,61 @@ def test_to_glencoe(test_client):
         # Eliminar los datos de prueba
         delete_folder(user)
         db.session.delete(hubfile)
+        db.session.delete(dataset)
+        db.session.delete(user)
+        db.session.commit()
+     
+
+def test_to_splot(test_client):
+    with test_client.application.app_context():
+        # Crear un usuario y dataset para el test
+        user = create_user(email="test_user_splot@example.com", password="password123")
+        dataset = create_dataset(user_id=user.id)
+
+        # Crear un FeatureModel y asociarlo al dataset
+        feature_model = create_feature_model(dataset_id=dataset.id)
+
+        # Crear un Hubfile y asociarlo al dataset
+        hubfile = create_hubfile(name="mock_dataset", feature_model_id=feature_model.id, user_id=user.id, dataset_id=dataset.id)
+
+        # Llamar a la función to_splot para transformar el archivo
+        with tempfile.TemporaryDirectory() as temp_dir:
+            result = to_splot(file_id=hubfile.id, full_path=temp_dir)
+            expected_path = os.path.join(temp_dir, f"{hubfile.name}_splot.txt")
+            assert os.path.exists(result), "El archivo transformado no se creó correctamente."
+            assert result == expected_path, "La ruta del archivo transformado no es la esperada."
+
+        # Eliminar los datos de prueba
+        delete_folder(user)
+        db.session.delete(hubfile)
+        db.session.delete(dataset)
+        db.session.delete(user)
+        db.session.commit()
+
+
+def test_to_cnf(test_client):
+    with test_client.application.app_context():
+        # Crear un usuario y dataset para el test
+        user = create_user(email="test_user_cnf@example.com", password="password123")
+        dataset = create_dataset(user_id=user.id)
+        
+        # Crear un FeatureModel y asociarlo al dataset
+        feature_model = create_feature_model(dataset_id=dataset.id)
+
+        # Crear un Hubfile y asociarlo al dataset
+        hubfile = create_hubfile(name="mock_dataset", feature_model_id=feature_model.id, user_id=user.id, dataset_id=dataset.id)
+        
+        # Llamar a la función to_cnf para transformar el archivo
+        with tempfile.TemporaryDirectory() as temp_dir:
+            result = to_cnf(file_id=hubfile.id, full_path=temp_dir)
+            expected_path = os.path.join(temp_dir, f"{hubfile.name}_cnf.txt")
+            assert os.path.exists(result), "El archivo transformado no se creó correctamente."
+            assert result == expected_path, "La ruta del archivo transformado no es la esperada."
+
+        # Eliminar los datos de prueba
+        delete_folder(user)
+        db.session.delete(hubfile)
+        db.session.delete(feature_model)
         db.session.delete(dataset)
         db.session.delete(user)
         db.session.commit()
