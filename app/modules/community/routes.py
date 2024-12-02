@@ -29,7 +29,7 @@ def index():
 
 @community_bp.route("/my_communities/", methods=["GET"])
 @login_required
-def get_my_community_by_name():
+def get_my_communities():
     communities = current_user.communities
 
     return render_template("community/my_communities.html", communities=communities)
