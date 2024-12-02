@@ -1,3 +1,24 @@
+# [1.10.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.9.0...v1.10.0) (2024-12-02)
+
+
+### Bug Fixes
+
+* errores de estilos solucionados para que pase el test de codacy ([b40e240](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b40e2403b701e400b47557fbc82ee0c5b175a743))
+
+
+### Features
+
+*  vista para funcionalidad para poder ver si tu solicitud de acceso a una comunidad se ha enviado y está siendo revisada o no y así que el usuario tenga feedback añadida ([6d43179](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/6d431795a7c847293886cce2d11efa9debd0ef5c))
+* actualizadas rutas de CommunityJoinRequestService para que se pueda crear, aceptar y eliminar una solicitud para unirse a una comunidad ([e923ad4](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e923ad4cd0c5e2580f866ecd63a75794bbffb52d))
+* añadida funcionalidad al servicio de comunidades para poder buscar por id ([5ff5db2](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/5ff5db2925d08d3288307521e18b8a2b38b627e7))
+* añadido cambio para poder recibir solicitudes de unirse a comunidad desde el frontend ([b747088](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b747088f0745450bbbfe8087077af4ee8eae358d))
+* conseguida funcionalidad de aceptar y denegar solicitud para unirse a comunidad. ([d15d895](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/d15d8952f97dd665df0e49d2316a1606ac72bb68))
+* creado modelo para la solicitud de unirse a una comunidad ([103df8b](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/103df8b852e3c5040f1324ec7be94b285f202f4f))
+* funcionalidad para poder ver si tu solicitud de acceso a una comunidad se ha enviado y está siendo revisada o no y así que el usuario tenga feedback añadida ([77b380c](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/77b380c3bddae8a00ddf9043c2d48a168917cbf2))
+* inicializado modulo con rosemary para enviar solicitud de unirse a una comunidad ([1225972](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/1225972eac600b091d96b2d09c95a2e6a621485c))
+* migración de CommunityJoinRequestService creado ([0713888](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/071388843f04ab443457aae25fb2a1fe297d9d9b))
+* repositorio de CommunityJoinRequest actualizado ([914abb8](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/914abb85d1611e34dafe11647f4724461003949c))
+
 # [1.9.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.8.0...v1.9.0) (2024-12-01)
 
 
