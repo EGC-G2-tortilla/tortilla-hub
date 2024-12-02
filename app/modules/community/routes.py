@@ -27,7 +27,7 @@ def index():
     return render_template("community/index.html", communities=communities)
 
 
-@community_bp.route("/my_communities/", methods=["GET"])
+@community_bp.route("/my_communities", methods=["GET"])
 @login_required
 def get_my_communities():
     communities = current_user.communities
@@ -124,7 +124,7 @@ def get_community_members_by_name(community_name):
         ]
 
         for index, _ in enumerate(join_requests):
-            join_requests[index, _].id = resquests_to_join[index, _].id
+            join_requests[index].id = resquests_to_join[index].id
 
     return render_template(
         "community/community_members.html",
