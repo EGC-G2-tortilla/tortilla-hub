@@ -160,9 +160,7 @@ def test_download_all_datasets(test_client):
 
 def test_to_glencoe(test_client):
     # Crear un usuario y dataset para el test
-    user = create_user(
-        email="test_user_glencoe@example.com", password="password123"
-    )
+    user = create_user(email="test_user_glencoe@example.com", password="password123")
     dataset = create_dataset(user_id=user.id)
 
     # Crear un FeatureModel y asociarlo al dataset
