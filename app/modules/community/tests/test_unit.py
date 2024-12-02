@@ -49,7 +49,9 @@ def test_sample_assertion(test_client):
     It does not communicate with the Flask application; it only performs a simple assertion to
     confirm that the tests in this module can be executed.
     """
-    test_user = db.session.get(User, 2)  # User.query.filter_by(email="user@example.com").first()
+    test_user = db.session.get(
+        User, 2
+    )  # User.query.filter_by(email="user@example.com").first()
     assert test_user.email == "user@example.com"
     test_community = Community.query.filter_by(name="sample community").first()
 
@@ -108,8 +110,9 @@ def test_create_request(test_client):
 
     assert not check_if_is_null
 
-    expected_request1 = CommunityJoinRequest.query.filter_by(user_who_wants_to_join_id=test_user1.id,
-                                                             community_id=test_community.id).first()
+    expected_request1 = CommunityJoinRequest.query.filter_by(
+        user_who_wants_to_join_id=test_user1.id, community_id=test_community.id
+    ).first()
 
     assert expected_request1
 
@@ -162,7 +165,9 @@ def test_accept_request(test_client):
     all_requests = join_service.get_all_request_by_community_id(test_community.id)
 
     expected_to_be_accepted_request = all_requests[0]
-    join_service.accept_request(test_user1, test_community, expected_to_be_accepted_request)
+    join_service.accept_request(
+        test_user1, test_community, expected_to_be_accepted_request
+    )
 
     test_community = Community.query.filter_by(name="sample community").first()
     all_requests = join_service.get_all_request_by_community_id(test_community.id)
@@ -181,7 +186,9 @@ def test_accept_request_bad(test_client):
     all_requests = join_service.get_all_request_by_community_id(test_community.id)
 
     expected_to_be_accepted_request = all_requests[0]
-    expected_to_be_false = join_service.accept_request(test_user1, test_community, expected_to_be_accepted_request)
+    expected_to_be_false = join_service.accept_request(
+        test_user1, test_community, expected_to_be_accepted_request
+    )
 
     test_community = Community.query.filter_by(name="sample community").first()
     all_requests = join_service.get_all_request_by_community_id(test_community.id)

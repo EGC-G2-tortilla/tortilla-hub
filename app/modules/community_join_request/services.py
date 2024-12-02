@@ -29,7 +29,9 @@ class CommunityJoinRequestService(BaseService):
         # check if user and community has id
 
         try:
-            if community_service.is_user_in_community(user_who_wants_to_join, community):
+            if community_service.is_user_in_community(
+                user_who_wants_to_join, community
+            ):
                 return False
 
             user_who_wants_to_join_id = user_who_wants_to_join.id
@@ -56,7 +58,10 @@ class CommunityJoinRequestService(BaseService):
         return self.repository.get_all_request_by_community_id(community_id)
 
     def accept_request(self, current_user, community, request: CommunityJoinRequest):
-        if request.user_who_wants_to_join_id != current_user.id or request.community_id != community.id:
+        if (
+            request.user_who_wants_to_join_id != current_user.id
+            or request.community_id != community.id
+        ):
             print("FAILING")
             return False
 
