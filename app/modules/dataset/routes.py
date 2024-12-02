@@ -670,6 +670,17 @@ def stage_all_datasets():
     return redirect(url_for("dataset.list_dataset"))
 
 
+@dataset_bp.route("/dataset/unstage/all", methods=["POST"])
+@login_required
+def unstage_all_datasets():
+    try:
+        dataset_service.unstage_all_datasets(current_user.id)
+        flash("Datasets unstaged successfully", "success")
+    except Exception as e:
+        flash(f"Error unstaging datasets: {str(e)}", "danger")
+    return redirect(url_for("dataset.list_dataset"))
+
+
 def to_glencoe(file_id, full_path):
     try:
         # Obtener el archivo original usando el file_id

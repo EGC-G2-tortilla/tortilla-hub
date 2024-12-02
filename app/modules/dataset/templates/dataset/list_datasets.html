@@ -108,6 +108,12 @@
                 <i data-feather="upload-cloud"></i>
             </button>
         </form>
+        <form action="{{ url_for('dataset.unstage_all_datasets', current_user=current_user.id) }}" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-primary">
+                Unstage all datasets
+                <i data-feather="file-minus"></i>
+            </button>
+        </form>
         </div>
     </div>
 
