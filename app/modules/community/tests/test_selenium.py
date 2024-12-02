@@ -40,7 +40,9 @@ def test_check_my_communities():
         wait_for_page_to_load(driver)
 
         # Find basic info and UVL model and fill values
-        community_expected = driver.find_element(By.LINK_TEXT, "Super Important Community")
+        community_expected = driver.find_element(
+            By.LINK_TEXT, "Super Important Community"
+        )
 
         assert community_expected, "Test failed!"
 
