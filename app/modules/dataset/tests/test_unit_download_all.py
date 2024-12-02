@@ -6,7 +6,12 @@ from app import create_app, db
 from app.modules.auth.models import User
 from app.modules.featuremodel.models import FeatureModel
 from app.modules.hubfile.models import Hubfile
-from app.modules.dataset.models import DSMetaData, DatasetStatus, PublicationType, DataSet
+from app.modules.dataset.models import (
+    DSMetaData,
+    DatasetStatus,
+    PublicationType,
+    DataSet,
+)
 from app.modules.dataset.routes import to_glencoe, to_splot, to_cnf
 
 
@@ -17,30 +22,41 @@ def test_client():
     and sets up the database with specific testing data.
     """
     app = create_app()
-    app.config['SERVER_NAME'] = 'localhost'
-    app.config['TESTING'] = True  # Activar modo de pruebas
+    app.config["SERVER_NAME"] = "localhost"
+    app.config["TESTING"] = True  # Activar modo de pruebas
     with app.test_client() as client:
         with app.app_context():
             # Crear usuario y dataset para pruebas
             user_test = User(email="user100@example.com", password="test1234")
             db.session.add(user_test)
             db.session.commit()
-            
-            dataset_test = DataSet(user_id=user_test.id, ds_meta_data=DSMetaData(
-                title="Test",
-                description="Test",
-                publication_type=PublicationType.JOURNAL_ARTICLE,
-                dataset_status=DatasetStatus.UNSTAGED))
+
+            dataset_test = DataSet(
+                user_id=user_test.id,
+                ds_meta_data=DSMetaData(
+                    title="Test",
+                    description="Test",
+                    publication_type=PublicationType.JOURNAL_ARTICLE,
+                    dataset_status=DatasetStatus.UNSTAGED,
+                ),
+            )
             db.session.add(dataset_test)
             db.session.commit()
-            
+
             # Crear carpeta de dataset y archivo
-            os.makedirs(f"uploads/user_{user_test.id}/dataset_{dataset_test.id}", exist_ok=True)
-            with open(f"uploads/user_{user_test.id}/dataset_{dataset_test.id}/file100.uvl", "w") as f:
-                f.write("features\n    Chat\n        mandatory\n            Connection\n                alternative\n                    \"Peer 2 Peer\"\n                    Server\n            Messages\n                or\n                    Text\n                    Video\n                    Audio\n        optional\n            \"Data Storage\"\n            \"Media Player\"\n\nconstraints\n    Server => \"Data Storage\"\n    Video | Audio => \"Media Player\"\n")
-        
+            os.makedirs(
+                f"uploads/user_{user_test.id}/dataset_{dataset_test.id}", exist_ok=True
+            )
+            with open(
+                f"uploads/user_{user_test.id}/dataset_{dataset_test.id}/file100.uvl",
+                "w",
+            ) as f:
+                f.write(
+                    'features\n    Chat\n        mandatory\n            Connection\n                alternative\n                    "Peer 2 Peer"\n                    Server\n            Messages\n                or\n                    Text\n                    Video\n                    Audio\n        optional\n            "Data Storage"\n            "Media Player"\n\nconstraints\n    Server => "Data Storage"\n    Video | Audio => "Media Player"\n'
+                )
+
         yield client
-        
+
         # Cleanup después de las pruebas
         with app.app_context():
             db.session.delete(dataset_test)
@@ -90,7 +106,7 @@ def create_hubfile(name, feature_model_id, user_id, dataset_id):
             "        mandatory\n"
             "            Connection\n"
             "                alternative\n"
-            "                    \"Peer 2 Peer\"\n"
+            '                    "Peer 2 Peer"\n'
             "                    Server\n"
             "            Messages\n"
             "                or\n"
@@ -98,16 +114,18 @@ def create_hubfile(name, feature_model_id, user_id, dataset_id):
             "                    Video\n"
             "                    Audio\n"
             "        optional\n"
-            "            \"Data Storage\"\n"
-            "            \"Media Player\"\n"
+            '            "Data Storage"\n'
+            '            "Media Player"\n'
             "\n"
             "constraints\n"
-            "    Server => \"Data Storage\"\n"
-            "    Video | Audio => \"Media Player\"\n"
+            '    Server => "Data Storage"\n'
+            '    Video | Audio => "Media Player"\n'
         )
-    
+
     # Crear el hubfile en la base de datos
-    hubfile = Hubfile(name=name, checksum="123456", size=100, feature_model_id=feature_model_id)
+    hubfile = Hubfile(
+        name=name, checksum="123456", size=100, feature_model_id=feature_model_id
+    )
     db.session.add(hubfile)
     db.session.commit()
     return hubfile
@@ -125,37 +143,54 @@ def test_download_all_datasets(test_client):
 
         # Realizar la solicitud para descargar todos los datasets
         response = test_client.get("/dataset/download_all")
-        
+
         # Verificar la respuesta
-        assert response.status_code == 200, "La solicitud para descargar todos los datasets falló."
-        assert response.headers["Content-Type"] == "application/zip", "El tipo de contenido no es un archivo ZIP."
-        assert "all_datasets.zip" in response.headers["Content-Disposition"], "El archivo ZIP no tiene el nombre esperado."
-        
+        assert (
+            response.status_code == 200
+        ), "La solicitud para descargar todos los datasets falló."
+        assert (
+            response.headers["Content-Type"] == "application/zip"
+        ), "El tipo de contenido no es un archivo ZIP."
+        assert (
+            "all_datasets.zip" in response.headers["Content-Disposition"]
+        ), "El archivo ZIP no tiene el nombre esperado."
+
         # Eliminar los datos de prueba
         delete_folder(user)
         db.session.delete(dataset)
         db.session.delete(user)
         db.session.commit()
-    
+
 
 def test_to_glencoe(test_client):
     with test_client.application.app_context():
         # Crear un usuario y dataset para el test
-        user = create_user(email="test_user_glencoe@example.com", password="password123")
+        user = create_user(
+            email="test_user_glencoe@example.com", password="password123"
+        )
         dataset = create_dataset(user_id=user.id)
-       
+
         # Crear un FeatureModel y asociarlo al dataset
         feature_model = create_feature_model(dataset_id=dataset.id)
-      
+
         # Crear un Hubfile y asociarlo al dataset
-        hubfile = create_hubfile(name="mock_dataset", feature_model_id=feature_model.id, user_id=user.id, dataset_id=dataset.id)
+        hubfile = create_hubfile(
+            name="mock_dataset",
+            feature_model_id=feature_model.id,
+            user_id=user.id,
+            dataset_id=dataset.id,
+        )
 
         # Llamar a la función to_glencoe para transformar el archivo
         with tempfile.TemporaryDirectory() as temp_dir:
             result = to_glencoe(file_id=hubfile.id, full_path=temp_dir)
             expected_path = os.path.join(temp_dir, f"{hubfile.name}_glencoe.txt")
-            assert os.path.exists(result), "El archivo transformado no se creó correctamente."
-            assert result == expected_path, "La ruta del archivo transformado no es la esperada."
+            assert os.path.exists(
+                result
+            ), "El archivo transformado no se creó correctamente."
+            assert (
+                result == expected_path
+            ), "La ruta del archivo transformado no es la esperada."
 
         # Eliminar los datos de prueba
         delete_folder(user)
@@ -163,7 +198,7 @@ def test_to_glencoe(test_client):
         db.session.delete(dataset)
         db.session.delete(user)
         db.session.commit()
-     
+
 
 def test_to_splot(test_client):
     with test_client.application.app_context():
@@ -175,14 +210,23 @@ def test_to_splot(test_client):
         feature_model = create_feature_model(dataset_id=dataset.id)
 
         # Crear un Hubfile y asociarlo al dataset
-        hubfile = create_hubfile(name="mock_dataset", feature_model_id=feature_model.id, user_id=user.id, dataset_id=dataset.id)
+        hubfile = create_hubfile(
+            name="mock_dataset",
+            feature_model_id=feature_model.id,
+            user_id=user.id,
+            dataset_id=dataset.id,
+        )
 
         # Llamar a la función to_splot para transformar el archivo
         with tempfile.TemporaryDirectory() as temp_dir:
             result = to_splot(file_id=hubfile.id, full_path=temp_dir)
             expected_path = os.path.join(temp_dir, f"{hubfile.name}_splot.txt")
-            assert os.path.exists(result), "El archivo transformado no se creó correctamente."
-            assert result == expected_path, "La ruta del archivo transformado no es la esperada."
+            assert os.path.exists(
+                result
+            ), "El archivo transformado no se creó correctamente."
+            assert (
+                result == expected_path
+            ), "La ruta del archivo transformado no es la esperada."
 
         # Eliminar los datos de prueba
         delete_folder(user)
@@ -197,19 +241,28 @@ def test_to_cnf(test_client):
         # Crear un usuario y dataset para el test
         user = create_user(email="test_user_cnf@example.com", password="password123")
         dataset = create_dataset(user_id=user.id)
-        
+
         # Crear un FeatureModel y asociarlo al dataset
         feature_model = create_feature_model(dataset_id=dataset.id)
 
         # Crear un Hubfile y asociarlo al dataset
-        hubfile = create_hubfile(name="mock_dataset", feature_model_id=feature_model.id, user_id=user.id, dataset_id=dataset.id)
-        
+        hubfile = create_hubfile(
+            name="mock_dataset",
+            feature_model_id=feature_model.id,
+            user_id=user.id,
+            dataset_id=dataset.id,
+        )
+
         # Llamar a la función to_cnf para transformar el archivo
         with tempfile.TemporaryDirectory() as temp_dir:
             result = to_cnf(file_id=hubfile.id, full_path=temp_dir)
             expected_path = os.path.join(temp_dir, f"{hubfile.name}_cnf.txt")
-            assert os.path.exists(result), "El archivo transformado no se creó correctamente."
-            assert result == expected_path, "La ruta del archivo transformado no es la esperada."
+            assert os.path.exists(
+                result
+            ), "El archivo transformado no se creó correctamente."
+            assert (
+                result == expected_path
+            ), "La ruta del archivo transformado no es la esperada."
 
         # Eliminar los datos de prueba
         delete_folder(user)
