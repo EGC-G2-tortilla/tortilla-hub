@@ -166,6 +166,67 @@ def test_fail_to_unstage_dataset_unstaged(test_client):
     logout(test_client)
 
 
+def test_unstage_all_datasets(test_client):
+    """
+    Test that all datasets can be staged simultaneously
+    """
+    login_response = login(test_client, "user@example.com", "test1234")
+    assert login_response.status_code == 200
+    # Check that the datasets are not staged
+    dataset1 = db.session.get(DataSet, 1)
+    dataset2 = db.session.get(DataSet, 2)
+    response = test_client.post(f"/dataset/stage/{dataset2.id}")
+    dataset2 = db.session.get(DataSet, 2)
+    assert dataset1.ds_meta_data.dataset_status == DatasetStatus.STAGED
+    assert dataset2.ds_meta_data.dataset_status == DatasetStatus.STAGED
+    response = test_client.post(f"/dataset/unstage/all")
+    # Check that the response is a redirect
+    assert response.status_code == 302
+    # Check that a flash message has been set
+    # Check that a flash message has been set
+    with test_client.session_transaction() as session:
+        flash_messages = session["_flashes"]
+        assert any(
+            "Datasets unstaged successfully" in message
+            for category, message in flash_messages
+        )
+    # Check that the datasets have been updated correctly
+    dataset1 = db.session.get(DataSet, 1)
+    dataset2 = db.session.get(DataSet, 2)
+    assert dataset1.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED
+    assert dataset2.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED
+    logout(test_client)
+
+
+def test_stage_all_datasets(test_client):
+    """
+    Test that all datasets can be staged simultaneously
+    """
+    login_response = login(test_client, "user@example.com", "test1234")
+    assert login_response.status_code == 200
+    # Check that the datasets are not staged
+    dataset1 = db.session.get(DataSet, 1)
+    dataset2 = db.session.get(DataSet, 2)
+    assert dataset1.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED
+    assert dataset2.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED
+    response = test_client.post(f"/dataset/stage/all")
+    # Check that the response is a redirect
+    assert response.status_code == 302
+    # Check that a flash message has been set
+    with test_client.session_transaction() as session:
+        flash_messages = session["_flashes"]
+        assert any(
+            "Datasets staged successfully" in message
+            for category, message in flash_messages
+        )
+    # Check that the datasets have been updated correctly
+    dataset1 = db.session.get(DataSet, 1)
+    dataset2 = db.session.get(DataSet, 2)
+    assert dataset1.ds_meta_data.dataset_status == DatasetStatus.STAGED
+    assert dataset2.ds_meta_data.dataset_status == DatasetStatus.STAGED
+    logout(test_client)
+
+
 def test_publish_all_datasets(test_client):
     """
     Test that all datasets can be published
@@ -176,7 +237,7 @@ def test_publish_all_datasets(test_client):
     dataset = db.session.get(DataSet, 1)
     assert dataset.ds_meta_data.dataset_status == DatasetStatus.STAGED
     dataset = db.session.get(DataSet, 2)
-    assert dataset.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED
+    assert dataset.ds_meta_data.dataset_status == DatasetStatus.STAGED
     response = test_client.post("/dataset/publish")
     # Check that the response is a redirect
     assert response.status_code == 302
@@ -184,5 +245,5 @@ def test_publish_all_datasets(test_client):
     dataset = db.session.get(DataSet, 1)
     assert dataset.ds_meta_data.dataset_status == DatasetStatus.PUBLISHED
     dataset = db.session.get(DataSet, 2)
-    assert dataset.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED
+    assert dataset.ds_meta_data.dataset_status == DatasetStatus.PUBLISHED
     logout(test_client)
