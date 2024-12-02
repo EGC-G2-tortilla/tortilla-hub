@@ -14,6 +14,46 @@ def wait_for_page_to_load(driver, timeout=4):
     )
 
 
+def test_check_my_communities():
+    driver = initialize_driver()
+
+    try:
+        host = get_host_for_selenium_testing()
+
+        # Open the login page
+        driver.get(f"{host}/login")
+        wait_for_page_to_load(driver)
+
+        # Find the username and password field and enter the values
+        email_field = driver.find_element(By.NAME, "email")
+        password_field = driver.find_element(By.NAME, "password")
+
+        email_field.send_keys("user3@example.com")
+        password_field.send_keys("1234")
+
+        # Send the form
+        password_field.send_keys(Keys.RETURN)
+        wait_for_page_to_load(driver)
+
+        # Open the upload dataset
+        driver.get(f"{host}/my_communities")
+        wait_for_page_to_load(driver)
+
+        # Find basic info and UVL model and fill values
+        community_expected = driver.find_element(
+            By.LINK_TEXT, "Super Important Community"
+        )
+
+        assert community_expected, "Test failed!"
+
+        print("Test passed!")
+
+    finally:
+
+        # Close the browser
+        close_driver(driver)
+
+
 def test_join_community():
     driver = initialize_driver()
 
@@ -49,13 +89,13 @@ def test_join_community():
         wait_for_page_to_load(driver)
 
         try:
-            you_are_already_a_member = driver.find_element(
-                By.CLASS_NAME, "you_are_already_a_member"
+            waiting_to_be_acepted = driver.find_element(
+                By.CLASS_NAME, "waiting_to_be_acepted"
             )
         except Exception:
-            you_are_already_a_member = None
+            waiting_to_be_acepted = None
 
-        assert you_are_already_a_member, "Test failed!"
+        assert waiting_to_be_acepted, "Test failed!"
 
         print("Test passed!")
 
@@ -235,6 +275,8 @@ def test_upload_dataset_to_community():
 
 
 # Call the test functions
+test_check_my_communities()
+
 test_join_community()
 
 test_create_community()

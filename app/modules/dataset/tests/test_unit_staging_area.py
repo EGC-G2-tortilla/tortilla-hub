@@ -238,7 +238,7 @@ def test_publish_all_datasets(test_client):
     assert dataset.ds_meta_data.dataset_status == DatasetStatus.STAGED
     dataset = db.session.get(DataSet, 2)
     assert dataset.ds_meta_data.dataset_status == DatasetStatus.STAGED
-    response = test_client.post(f"/dataset/publish")
+    response = test_client.post("/dataset/publish")
     # Check that the response is a redirect
     assert response.status_code == 302
     # Check that the datasets have been updated correctly

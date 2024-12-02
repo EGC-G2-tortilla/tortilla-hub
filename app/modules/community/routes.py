@@ -6,12 +6,16 @@ from flask_login import login_required, current_user
 from app.modules.community.services import CommunityService
 from app.modules.community.forms import CommunityForm
 from app.modules.dataset.services import DataSetService
+from app.modules.community_join_request.services import CommunityJoinRequestService
+from app.modules.profile.services import UserProfileService
 from app.modules.community import community_bp
 
 logger = logging.getLogger(__name__)
 
 community_service = CommunityService()
 dataset_service = DataSetService()
+community_join_request_service = CommunityJoinRequestService()
+profile_service = UserProfileService()
 
 
 @community_bp.route("/community", methods=["GET"])
@@ -21,6 +25,14 @@ def index():
     communities = community_service.get_all_communities()
 
     return render_template("community/index.html", communities=communities)
+
+
+@community_bp.route("/my_communities/", methods=["GET"])
+@login_required
+def get_my_communities():
+    communities = current_user.communities
+
+    return render_template("community/my_communities.html", communities=communities)
 
 
 @community_bp.route("/community/<string:community_name>/", methods=["GET"])
@@ -34,6 +46,14 @@ def get_community_by_name(community_name):
         current_user, community
     )
 
+    has_user_send_a_request_to_join = False
+    if not is_user_in_community:
+        has_user_send_a_request_to_join = (
+            community_join_request_service.has_user_sent_a_request(
+                current_user, community
+            )
+        )
+
     datasets = dataset_service.get_by_community_id(community.id)
 
     return render_template(
@@ -41,6 +61,7 @@ def get_community_by_name(community_name):
         community=community,
         user_in_community=is_user_in_community,
         datasets=datasets,
+        has_user_send_a_request_to_join=has_user_send_a_request_to_join,
     )
 
 
@@ -55,14 +76,24 @@ def get_community_info_by_name(community_name):
         current_user, community
     )
 
+    has_user_send_a_request_to_join = False
+    if not is_user_in_community:
+        has_user_send_a_request_to_join = (
+            community_join_request_service.has_user_sent_a_request(
+                current_user, community
+            )
+        )
+
     return render_template(
         "community/community_info.html",
         user_in_community=is_user_in_community,
         community=community,
+        has_user_send_a_request_to_join=has_user_send_a_request_to_join,
     )
 
 
 @community_bp.route("/community/<string:community_name>/members", methods=["GET"])
+@login_required
 def get_community_members_by_name(community_name):
     community = community_service.get_community_by_name(community_name)
 
@@ -73,10 +104,34 @@ def get_community_members_by_name(community_name):
         current_user, community
     )
 
+    has_user_send_a_request_to_join = False
+    if not is_user_in_community:
+        has_user_send_a_request_to_join = (
+            community_join_request_service.has_user_sent_a_request(
+                current_user, community
+            )
+        )
+
+    join_requests = []
+    if current_user.id == community.admin:
+        resquests_to_join = (
+            community_join_request_service.get_all_request_by_community_id(community.id)
+        )
+
+        join_requests = [
+            profile_service.get_by_user_id(req.user_who_wants_to_join_id)
+            for req in resquests_to_join
+        ]
+
+        for index, _ in enumerate(join_requests):
+            join_requests[index, _].id = resquests_to_join[index, _].id
+
     return render_template(
         "community/community_members.html",
         user_in_community=is_user_in_community,
         community=community,
+        join_requests=join_requests,
+        has_user_send_a_request_to_join=has_user_send_a_request_to_join,
     )
 
 
@@ -101,16 +156,3 @@ def create_community():
         return redirect("/community")
 
     return render_template("community/create_community.html", form=form)
-
-
-@community_bp.route("/community/<string:community_name>/join", methods=["POST"])
-@login_required
-def join_a_community(community_name):
-    community = community_service.get_community_by_name(community_name)
-
-    if not community:
-        abort(404)
-
-    community_service.join_a_community(current_user, community)
-
-    return redirect("/community/" + community_name)
