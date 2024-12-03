@@ -561,6 +561,7 @@ def upload_from_zip(dataset_id):
         logging.error(f"Error inesperado en upload_from_zip: {e}")
         return jsonify({"message": f"Unexpected server error: {str(e)}"}), 500
 
+
 @login_required
 def add_files_to_dataset(dataset_id, folder):
     files = [

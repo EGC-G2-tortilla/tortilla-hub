@@ -5,7 +5,12 @@ import tempfile
 from app import db
 from app.modules.auth.models import User
 from app.modules.conftest import login
-from app.modules.dataset.models import DSMetaData, DatasetStatus, PublicationType, DataSet
+from app.modules.dataset.models import (
+    DSMetaData,
+    DatasetStatus,
+    PublicationType,
+    DataSet,
+)
 from flask import json
 import logging
 from zipfile import ZipFile
@@ -62,7 +67,9 @@ def test_upload_zip_valid(test_client, setup_database):
     user = setup_database["user"]
     dataset = setup_database["dataset"]
     login_response = login(test_client, user.email, user.password)
-    assert login_response.status_code == 200, f"Login was unsuccessful: {login_response.data}"
+    assert (
+        login_response.status_code == 200
+    ), f"Login was unsuccessful: {login_response.data}"
 
     # Crear archivo ZIP que contiene el archivo .uvl
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -80,11 +87,14 @@ def test_upload_zip_valid(test_client, setup_database):
                 f"/dataset/upload_zip/{dataset.id}",
                 data=data,
                 content_type="multipart/form-data",
-                follow_redirects=True
+                follow_redirects=True,
             )
 
         # Verificar la respuesta
-        assert response.status_code == 200, "La solicitud de carga del archivo ZIP falló."
+        assert (
+            response.status_code == 200
+        ), "La solicitud de carga del archivo ZIP falló."
+
 
 def test_upload_zip_error_on_extraction(test_client, setup_database):
     dataset = setup_database["dataset"]
@@ -103,7 +113,7 @@ def test_upload_zip_error_on_extraction(test_client, setup_database):
                 f"/dataset/upload_zip/{dataset.id}",
                 data=data,
                 content_type="multipart/form-data",
-                follow_redirects=True
+                follow_redirects=True,
             )
     except UnicodeDecodeError as e:
         # Si se produce un UnicodeDecodeError, consideramos que la prueba es exitosa
