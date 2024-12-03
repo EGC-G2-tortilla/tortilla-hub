@@ -432,6 +432,7 @@ def set_full_permissions(directory):
 
 
 @dataset_bp.route("/dataset/upload_zip/<int:dataset_id>", methods=["POST"])
+@login_required
 def upload_from_zip(dataset_id):
     try:
         # Paso 1: Obtener el dataset y la carpeta temporal
@@ -560,7 +561,7 @@ def upload_from_zip(dataset_id):
         logging.error(f"Error inesperado en upload_from_zip: {e}")
         return jsonify({"message": f"Unexpected server error: {str(e)}"}), 500
 
-
+@login_required
 def add_files_to_dataset(dataset_id, folder):
     files = [
         f for f in os.listdir(folder) if f.endswith(".uvl") and not f.startswith("._")
