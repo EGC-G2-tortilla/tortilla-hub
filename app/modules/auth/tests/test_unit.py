@@ -178,6 +178,8 @@ def test_authorize_github_login(mock_auth_service, mock_github, test_client):
 
 
 def test_get_github_repositories_no_token(test_client):
+    with test_client.session_transaction() as sess:
+        sess["github_token"] = None
     response = test_client.get("/github/repositories")
     assert response.status_code == 401
     assert response.json == {"error": "No authentication token found"}
@@ -285,6 +287,8 @@ def test_authorize_gitlab_login(mock_auth_service, mock_gitlab, test_client):
 
 
 def test_get_gitlab_repositories_no_token(test_client):
+    with test_client.session_transaction() as sess:
+        sess["gitlab_token"] = None
     response = test_client.get("/gitlab/repositories")
     assert response.status_code == 401
     assert response.json == {"error": "No authentication token found"}
