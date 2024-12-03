@@ -1,6 +1,7 @@
+import os
 from unittest.mock import MagicMock, patch
 import pytest
-from flask import session, url_for
+from flask import url_for
 
 from app.modules.auth.services import AuthenticationService
 from app.modules.auth.repositories import UserRepository
@@ -186,6 +187,7 @@ def test_get_github_repositories_no_token(test_client):
 
 
 @patch("app.modules.auth.routes.requests.get")
+@patch.dict('os.environ', {'GITHUB_TEST_TOKEN': 'test_token'})
 def test_get_github_repositories_success(mock_get, test_client):
     mock_response = {
         "status_code": 200,
@@ -214,7 +216,7 @@ def test_get_github_repositories_success(mock_get, test_client):
     )
 
     with test_client.session_transaction() as sess:
-        sess["github_token"] = "test_token"
+        sess["github_token"] = os.getenv("GITHUB_TEST_TOKEN")
 
     response = test_client.get("/github/repositories")
     assert response.status_code == 200
@@ -225,6 +227,7 @@ def test_get_github_repositories_success(mock_get, test_client):
 
 
 @patch("app.modules.auth.routes.requests.get")
+@patch.dict('os.environ', {'GITHUB_TEST_TOKEN': 'test_token'})
 def test_get_github_repositories_failure(mock_get, test_client):
     mock_response = {
         "status_code": 500,
@@ -233,7 +236,7 @@ def test_get_github_repositories_failure(mock_get, test_client):
     mock_get.return_value = type("MockResponse", (object,), mock_response)
 
     with test_client.session_transaction() as sess:
-        sess["github_token"] = "test_token"
+        sess["github_token"] = os.getenv("GITHUB_TEST_TOKEN")
 
     response = test_client.get("/github/repositories")
     assert response.status_code == 500
@@ -295,6 +298,7 @@ def test_get_gitlab_repositories_no_token(test_client):
 
 
 @patch("app.modules.auth.routes.requests.get")
+@patch.dict('os.environ', {'GITLAB_TEST_TOKEN': 'test_token'})
 def test_get_gitlab_repositories_success(mock_get, test_client):
     mock_response = {
         "status_code": 200,
@@ -323,7 +327,7 @@ def test_get_gitlab_repositories_success(mock_get, test_client):
     )
 
     with test_client.session_transaction() as sess:
-        sess["gitlab_token"] = "test_token"
+        sess["gitlab_token"] = os.getenv("GITLAB_TEST_TOKEN")
 
     response = test_client.get("/gitlab/repositories")
     assert response.status_code == 200
@@ -334,6 +338,7 @@ def test_get_gitlab_repositories_success(mock_get, test_client):
 
 
 @patch("app.modules.auth.routes.requests.get")
+@patch.dict('os.environ', {'GITLAB_TEST_TOKEN': 'test_token'})
 def test_get_gitlab_repositories_failure(mock_get, test_client):
     mock_response = {
         "status_code": 500,
@@ -342,7 +347,7 @@ def test_get_gitlab_repositories_failure(mock_get, test_client):
     mock_get.return_value = type("MockResponse", (object,), mock_response)
 
     with test_client.session_transaction() as sess:
-        sess["gitlab_token"] = "test_token"
+        sess["gitlab_token"] = os.getenv("GITLAB_TEST_TOKEN")
 
     response = test_client.get("/gitlab/repositories")
     assert response.status_code == 500
