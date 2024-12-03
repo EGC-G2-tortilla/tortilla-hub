@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch
 import pytest
-from flask import url_for
+from flask import session, url_for
 
 from app.modules.auth.services import AuthenticationService
 from app.modules.auth.repositories import UserRepository
@@ -177,6 +177,67 @@ def test_authorize_github_login(mock_auth_service, mock_github, test_client):
     assert response.location == '/dataset/upload#githubToken=fake_token'
 
 
+def test_get_github_repositories_no_token(test_client):
+    response = test_client.get("/github/repositories")
+    assert response.status_code == 401
+    assert response.json == {"error": "No authentication token found"}
+
+
+@patch("app.modules.auth.routes.requests.get")
+def test_get_github_repositories_success(mock_get, test_client):
+    mock_response = {
+        "status_code": 200,
+        "json.return_value": [
+            {"id": 1, "name": "repo1", "full_name": "user/repo1"},
+            {"id": 2, "name": "repo2", "full_name": "user/repo2"},
+        ],
+    }
+
+    class MockResponse:
+        def __init__(self, status_code, json_data):
+            self.status_code = status_code
+            self._json_data = json_data
+
+        def json(self):
+            return self._json_data
+
+    mock_get.return_value = MockResponse(
+        status_code=mock_response["status_code"],
+        json_data=mock_response["json.return_value"]
+    )
+
+    mock_get.return_value = MockResponse(
+        status_code=mock_response["status_code"],
+        json_data=mock_response["json.return_value"]
+    )
+
+    with test_client.session_transaction() as sess:
+        sess["github_token"] = "test_token"
+
+    response = test_client.get("/github/repositories")
+    assert response.status_code == 200
+    assert response.json == [
+        {"id": 1, "name": "repo1", "full_name": "user/repo1"},
+        {"id": 2, "name": "repo2", "full_name": "user/repo2"},
+    ]
+
+
+@patch("app.modules.auth.routes.requests.get")
+def test_get_github_repositories_failure(mock_get, test_client):
+    mock_response = {
+        "status_code": 500,
+        "json.return_value": {"error": "Failed to fetch repositories"},
+    }
+    mock_get.return_value = type("MockResponse", (object,), mock_response)
+
+    with test_client.session_transaction() as sess:
+        sess["github_token"] = "test_token"
+
+    response = test_client.get("/github/repositories")
+    assert response.status_code == 500
+    assert response.json == {"error": "Failed to fetch repositories"}
+
+
 @patch('app.modules.auth.routes.gitlab')
 @patch('app.modules.auth.routes.authentication_service')
 def test_authorize_gitlab_signup(mock_auth_service, mock_gitlab, test_client):
@@ -221,3 +282,64 @@ def test_authorize_gitlab_login(mock_auth_service, mock_gitlab, test_client):
 
     assert response.status_code == 302
     assert response.location == '/dataset/upload#gitlabToken=fake_token'
+
+
+def test_get_gitlab_repositories_no_token(test_client):
+    response = test_client.get("/gitlab/repositories")
+    assert response.status_code == 401
+    assert response.json == {"error": "No authentication token found"}
+
+
+@patch("app.modules.auth.routes.requests.get")
+def test_get_gitlab_repositories_success(mock_get, test_client):
+    mock_response = {
+        "status_code": 200,
+        "json.return_value": [
+            {"id": 1, "name": "repo1", "path_with_namespace": "user/repo1"},
+            {"id": 2, "name": "repo2", "path_with_namespace": "user/repo2"},
+        ],
+    }
+
+    class MockResponse:
+        def __init__(self, status_code, json_data):
+            self.status_code = status_code
+            self._json_data = json_data
+
+        def json(self):
+            return self._json_data
+
+    mock_get.return_value = MockResponse(
+        status_code=mock_response["status_code"],
+        json_data=mock_response["json.return_value"]
+    )
+
+    mock_get.return_value = MockResponse(
+        status_code=mock_response["status_code"],
+        json_data=mock_response["json.return_value"]
+    )
+
+    with test_client.session_transaction() as sess:
+        sess["gitlab_token"] = "test_token"
+
+    response = test_client.get("/gitlab/repositories")
+    assert response.status_code == 200
+    assert response.json == [
+        {"id": 1, "name": "repo1", "full_name": "user/repo1"},
+        {"id": 2, "name": "repo2", "full_name": "user/repo2"},
+    ]
+
+
+@patch("app.modules.auth.routes.requests.get")
+def test_get_gitlab_repositories_failure(mock_get, test_client):
+    mock_response = {
+        "status_code": 500,
+        "json.return_value": {"error": "Failed to fetch repositories"},
+    }
+    mock_get.return_value = type("MockResponse", (object,), mock_response)
+
+    with test_client.session_transaction() as sess:
+        sess["gitlab_token"] = "test_token"
+
+    response = test_client.get("/gitlab/repositories")
+    assert response.status_code == 500
+    assert response.json == {"error": "Failed to fetch repositories"}
