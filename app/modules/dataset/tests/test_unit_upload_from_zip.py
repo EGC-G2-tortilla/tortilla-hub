@@ -11,7 +11,6 @@ from app.modules.dataset.models import (
     PublicationType,
     DataSet,
 )
-from flask import json
 import logging
 from zipfile import ZipFile
 
@@ -109,7 +108,7 @@ def test_upload_zip_error_on_extraction(test_client, setup_database):
     try:
         with open(corrupt_zip_path, "rb") as corrupt_zip:
             data = {"zipFile": corrupt_zip}
-            response = test_client.post(
+            test_client.post(
                 f"/dataset/upload_zip/{dataset.id}",
                 data=data,
                 content_type="multipart/form-data",
@@ -118,3 +117,68 @@ def test_upload_zip_error_on_extraction(test_client, setup_database):
     except UnicodeDecodeError as e:
         # Si se produce un UnicodeDecodeError, consideramos que la prueba es exitosa
         assert True, f"Se produjo un UnicodeDecodeError como se esperaba: {str(e)}"
+       
+
+def test_upload_empty_zip(test_client, setup_database):
+    user = setup_database["user"]
+    dataset = setup_database["dataset"]
+    login_response = login(test_client, user.email, user.password)
+    assert login_response.status_code == 200, f"Login was unsuccessful: {login_response.data}"
+
+    # Crear un archivo ZIP vacío
+    with tempfile.TemporaryDirectory() as temp_dir:
+        empty_zip_path = os.path.join(temp_dir, "empty.zip")
+        ZipFile(empty_zip_path, 'w').close()
+
+        # Simular la subida del archivo ZIP vacío
+        with open(empty_zip_path, "rb") as empty_zip:
+            data = {"zipFile": empty_zip}
+            response = test_client.post(
+                f"/dataset/upload_zip/{dataset.id}",
+                data=data,
+                content_type="multipart/form-data",
+                follow_redirects=True
+            )
+
+        # Verificar la respuesta
+        assert response.status_code == 200, f"La solicitud de carga del archivo ZIP vacío falló: {response.status_code}, {response.data}"
+
+    
+def test_upload_zip_with_subdirectories(test_client, setup_database):
+    user = setup_database["user"]
+    dataset = setup_database["dataset"]
+    login_response = login(test_client, user.email, user.password)
+    assert login_response.status_code == 200, f"Login was unsuccessful: {login_response.data}"
+
+    # Crear un archivo ZIP que contiene múltiples archivos y subdirectorios
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # Crear archivos y subdirectorios
+        os.makedirs(os.path.join(temp_dir, "subdir1"))
+        os.makedirs(os.path.join(temp_dir, "subdir2"))
+        
+        file1_path = os.path.join(temp_dir, "file1.uvl")
+        file2_path = os.path.join(temp_dir, "subdir1", "file2.uvl")
+        file3_path = os.path.join(temp_dir, "subdir2", "file3.uvl")
+        
+        with open(file1_path, "w") as f:
+            f.write("content of file1")
+        with open(file2_path, "w") as f:
+            f.write("content of file2")
+        with open(file3_path, "w") as f:
+            f.write("content of file3")
+
+        zip_path = os.path.join(temp_dir, "test_with_subdirs.zip")
+        shutil.make_archive(zip_path.replace(".zip", ""), "zip", temp_dir)
+
+        # Simular la subida del archivo ZIP
+        with open(zip_path, "rb") as zip_file:
+            data = {"zipFile": zip_file}
+            response = test_client.post(
+                f"/dataset/upload_zip/{dataset.id}",
+                data=data,
+                content_type="multipart/form-data",
+                follow_redirects=True
+            )
+
+        # Verificar la respuesta
+        assert response.status_code == 200, f"La solicitud de carga del archivo ZIP con subdirectorios falló: {response.status_code}, {response.data}"
