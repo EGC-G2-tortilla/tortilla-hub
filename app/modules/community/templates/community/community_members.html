@@ -31,7 +31,7 @@
                     <input name="join_community_button" type="submit" value="Join!" type="button" class="btn btn-success">
                 </form>
                 {% elif has_user_send_a_request_to_join %}
-                <buton disabled class="btn btn-warning">Waiting to be accepted by the administrator</button>
+                <buton disabled class="btn btn-warning waiting_to_be_acepted">Waiting to be accepted by the administrator</button>
                 {% else %}
                 <p class="you_are_already_a_member" style="font-weight: 900;">
                     You are already a member
@@ -58,12 +58,22 @@
 
                         <div style="display: flex;flex-direction: row;gap:20px;">
                             <form action="/community-join-request/{{ future_member.id }}/accept" method="post">
-                                <input type="submit" value="Accept" type="button" class="btn btn-success">
+                                <input type="submit" value="Accept" type="button" class="btn btn-success accept-button">
                             </form>
                             <form action="/community-join-request/{{ future_member.id }}/decline" method="post">
-                                <input type="submit" value="Decline" type="button" class="btn btn-danger">
+                                <input type="submit" value="Decline" type="button" class="btn btn-danger decline-button">
                             </form>
                         </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% for member in community.members %}
+                <div class="card">
+                    <div class="card-body member">
+                        {{member.profile.name}} {{member.profile.surname}}
+
+
                     </div>
                 </div>
             {% endfor %}
