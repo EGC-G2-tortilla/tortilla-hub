@@ -197,7 +197,7 @@ def test_get_github_repositories_no_token(test_client):
 
 
 @patch("app.modules.auth.routes.requests.get")
-@patch.dict('os.environ', {'GITHUB_TEST_TOKEN': 'test_token'})
+@patch.dict("os.environ", {"GITHUB_TEST_TOKEN": "test_token"})
 def test_get_github_repositories_success(mock_get, test_client):
     mock_response = {
         "status_code": 200,
@@ -237,7 +237,7 @@ def test_get_github_repositories_success(mock_get, test_client):
 
 
 @patch("app.modules.auth.routes.requests.get")
-@patch.dict('os.environ', {'GITHUB_TEST_TOKEN': 'test_token'})
+@patch.dict("os.environ", {"GITHUB_TEST_TOKEN": "test_token"})
 def test_get_github_repositories_failure(mock_get, test_client):
     mock_response = {
         "status_code": 500,
@@ -318,7 +318,7 @@ def test_get_gitlab_repositories_no_token(test_client):
 
 
 @patch("app.modules.auth.routes.requests.get")
-@patch.dict('os.environ', {'GITLAB_TEST_TOKEN': 'test_token'})
+@patch.dict("os.environ", {"GITLAB_TEST_TOKEN": "test_token"})
 def test_get_gitlab_repositories_success(mock_get, test_client):
     mock_response = {
         "status_code": 200,
@@ -358,7 +358,7 @@ def test_get_gitlab_repositories_success(mock_get, test_client):
 
 
 @patch("app.modules.auth.routes.requests.get")
-@patch.dict('os.environ', {'GITLAB_TEST_TOKEN': 'test_token'})
+@patch.dict("os.environ", {"GITLAB_TEST_TOKEN": "test_token"})
 def test_get_gitlab_repositories_failure(mock_get, test_client):
     mock_response = {
         "status_code": 500,
