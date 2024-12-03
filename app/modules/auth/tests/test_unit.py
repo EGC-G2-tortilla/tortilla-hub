@@ -131,36 +131,46 @@ def test_service_create_with_profile_fail_no_password(clean_database):
     assert UserProfileRepository().count() == 0
 
 
-@patch('app.modules.auth.routes.github')
-@patch('app.modules.auth.routes.authentication_service')
+@patch("app.modules.auth.routes.github")
+@patch("app.modules.auth.routes.authentication_service")
 def test_authorize_github_signup(mock_auth_service, mock_github, test_client):
     mock_github.authorize_access_token.return_value = {"access_token": "fake_token"}
     mock_github.token = {"access_token": "fake_token"}
     mock_github.get.side_effect = [
         MagicMock(json=lambda: {"email": "test@example.com", "id": "github_id"}),
-        MagicMock(json=lambda: [{"email": "test@example.com", "primary": True, "verified": True}])
+        MagicMock(
+            json=lambda: [
+                {"email": "test@example.com", "primary": True, "verified": True}
+            ]
+        ),
     ]
     mock_auth_service.get_by_email.return_value = None
-    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = MagicMock(get_id=lambda: "mock_user_id")
+    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = (
+        MagicMock(get_id=lambda: "mock_user_id")
+    )
 
     with test_client.session_transaction() as sess:
-        sess['signup_state'] = 'test_state'
-        sess['origin_url'] = '/dataset/upload'
+        sess["signup_state"] = "test_state"
+        sess["origin_url"] = "/dataset/upload"
 
-    response = test_client.get('/authorize/github?flow=signup')
+    response = test_client.get("/authorize/github?flow=signup")
 
     assert response.status_code == 302
-    assert response.location == '/dataset/upload#githubToken=fake_token'
+    assert response.location == "/dataset/upload#githubToken=fake_token"
 
 
-@patch('app.modules.auth.routes.github')
-@patch('app.modules.auth.routes.authentication_service')
+@patch("app.modules.auth.routes.github")
+@patch("app.modules.auth.routes.authentication_service")
 def test_authorize_github_login(mock_auth_service, mock_github, test_client):
     mock_github.authorize_access_token.return_value = None
     mock_github.token = {"access_token": "fake_token"}
     mock_github.get.side_effect = [
         MagicMock(json=lambda: {"email": "test@example.com", "id": "github_id"}),
-        MagicMock(json=lambda: [{"email": "test@example.com", "primary": True, "verified": True}])
+        MagicMock(
+            json=lambda: [
+                {"email": "test@example.com", "primary": True, "verified": True}
+            ]
+        ),
     ]
     mock_user = MagicMock()
     mock_user.oauth_providers = []
@@ -168,13 +178,13 @@ def test_authorize_github_login(mock_auth_service, mock_github, test_client):
     mock_user.get_id.return_value = "mock_user_id"
 
     with test_client.session_transaction() as sess:
-        sess['login_state'] = 'test_state'
-        sess['origin_url'] = '/dataset/upload'
+        sess["login_state"] = "test_state"
+        sess["origin_url"] = "/dataset/upload"
 
-    response = test_client.get('/authorize/github?flow=login')
+    response = test_client.get("/authorize/github?flow=login")
 
     assert response.status_code == 302
-    assert response.location == '/dataset/upload#githubToken=fake_token'
+    assert response.location == "/dataset/upload#githubToken=fake_token"
 
 
 def test_get_github_repositories_no_token(test_client):
@@ -205,12 +215,12 @@ def test_get_github_repositories_success(mock_get, test_client):
 
     mock_get.return_value = MockResponse(
         status_code=mock_response["status_code"],
-        json_data=mock_response["json.return_value"]
+        json_data=mock_response["json.return_value"],
     )
 
     mock_get.return_value = MockResponse(
         status_code=mock_response["status_code"],
-        json_data=mock_response["json.return_value"]
+        json_data=mock_response["json.return_value"],
     )
 
     with test_client.session_transaction() as sess:
@@ -240,36 +250,46 @@ def test_get_github_repositories_failure(mock_get, test_client):
     assert response.json == {"error": "Failed to fetch repositories"}
 
 
-@patch('app.modules.auth.routes.gitlab')
-@patch('app.modules.auth.routes.authentication_service')
+@patch("app.modules.auth.routes.gitlab")
+@patch("app.modules.auth.routes.authentication_service")
 def test_authorize_gitlab_signup(mock_auth_service, mock_gitlab, test_client):
     mock_gitlab.authorize_access_token.return_value = None
     mock_gitlab.token = {"access_token": "fake_token"}
     mock_gitlab.get.side_effect = [
         MagicMock(json=lambda: {"email": "test@example.com", "id": "gitlab_id"}),
-        MagicMock(json=lambda: [{"email": "test@example.com", "primary": True, "verified": True}])
+        MagicMock(
+            json=lambda: [
+                {"email": "test@example.com", "primary": True, "verified": True}
+            ]
+        ),
     ]
     mock_auth_service.get_by_email.return_value = None
-    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = MagicMock(get_id=lambda: "mock_user_id")
+    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = (
+        MagicMock(get_id=lambda: "mock_user_id")
+    )
 
     with test_client.session_transaction() as sess:
-        sess['signup_state'] = 'test_state'
-        sess['origin_url'] = '/dataset/upload'
+        sess["signup_state"] = "test_state"
+        sess["origin_url"] = "/dataset/upload"
 
-    response = test_client.get('/authorize/gitlab?flow=signup')
+    response = test_client.get("/authorize/gitlab?flow=signup")
 
     assert response.status_code == 302
-    assert response.location == '/dataset/upload#gitlabToken=fake_token'
+    assert response.location == "/dataset/upload#gitlabToken=fake_token"
 
 
-@patch('app.modules.auth.routes.gitlab')
-@patch('app.modules.auth.routes.authentication_service')
+@patch("app.modules.auth.routes.gitlab")
+@patch("app.modules.auth.routes.authentication_service")
 def test_authorize_gitlab_login(mock_auth_service, mock_gitlab, test_client):
     mock_gitlab.authorize_access_token.return_value = None
     mock_gitlab.token = {"access_token": "fake_token"}
     mock_gitlab.get.side_effect = [
         MagicMock(json=lambda: {"email": "test@example.com", "id": "gitlab_id"}),
-        MagicMock(json=lambda: [{"email": "test@example.com", "primary": True, "verified": True}])
+        MagicMock(
+            json=lambda: [
+                {"email": "test@example.com", "primary": True, "verified": True}
+            ]
+        ),
     ]
     mock_user = MagicMock()
     mock_user.oauth_providers = []
@@ -277,13 +297,13 @@ def test_authorize_gitlab_login(mock_auth_service, mock_gitlab, test_client):
     mock_user.get_id.return_value = "mock_user_id"
 
     with test_client.session_transaction() as sess:
-        sess['login_state'] = 'test_state'
-        sess['origin_url'] = '/dataset/upload'
+        sess["login_state"] = "test_state"
+        sess["origin_url"] = "/dataset/upload"
 
-    response = test_client.get('/authorize/gitlab?flow=login')
+    response = test_client.get("/authorize/gitlab?flow=login")
 
     assert response.status_code == 302
-    assert response.location == '/dataset/upload#gitlabToken=fake_token'
+    assert response.location == "/dataset/upload#gitlabToken=fake_token"
 
 
 def test_get_gitlab_repositories_no_token(test_client):
@@ -314,12 +334,12 @@ def test_get_gitlab_repositories_success(mock_get, test_client):
 
     mock_get.return_value = MockResponse(
         status_code=mock_response["status_code"],
-        json_data=mock_response["json.return_value"]
+        json_data=mock_response["json.return_value"],
     )
 
     mock_get.return_value = MockResponse(
         status_code=mock_response["status_code"],
-        json_data=mock_response["json.return_value"]
+        json_data=mock_response["json.return_value"],
     )
 
     with test_client.session_transaction() as sess:
