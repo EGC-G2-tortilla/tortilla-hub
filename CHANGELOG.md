@@ -1,3 +1,29 @@
+# [1.11.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.10.0...v1.11.0) (2024-12-03)
+
+
+### Bug Fixes
+
+* errores de estilo de linter solucionados ([eeb05a3](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/eeb05a3ba4faebaedd4d8abe07ad9904b8b0b918))
+* **rating:** prevent users from updating existing ratings ([4fee2ca](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/4fee2ca70e268ba563d7121ffc94a589f240cc97))
+
+
+### Features
+
+* añadida funcionalidad y vista para poder ver las comunidades a las que pertenezco ([087e6ee](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/087e6ee848c4b9b2d18fa84e71fc0a4d8fcb5b11))
+* añadido boton para poder acceder a mis comunidades desde el menu de la izquierda ([153eb82](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/153eb826370deb6fba19e7834de9d4e2eedb301c))
+* añadido el test de selenium  para stagear un dataset ([48cd79b](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/48cd79b5c7fb54de9a5c77548abb9d276b2194a5))
+* añadido el test de selenium para unstagear un dataset ([728cc6a](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/728cc6a4e984cfa40924ccf363aafc5de52f894e))
+* añadido poder unstagear todos los datasets simultánea ([e972103](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e972103e7b893814909914e9401c8f6363908179))
+* Añadido test de interfaz para subir archivos UVL ([66946a6](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/66946a65790b5def9db08a3427ca231c66928cf7))
+* añadidos los test para stagear todos los datasets y publicarlos ([e1999dd](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e1999dd79bf95ce0c16551b740afde6d5ea721d8))
+* añadidos los tests de carga para las operaciones de staging area closes [#104](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/104) ([6fe9889](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/6fe98897d9bffd6431a0fbea1a6aa47ed3ad0479))
+* añadidos tests de interfaz para stage all y unstage all datasets ([dad632d](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/dad632d2cd38da5d66658714f0529ef8b7a1d9e6))
+* añadidos tests unitarios de stage all y unstage all datasets ([496f230](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/496f230ef12eff9d32848f377291fb4ff11c283a))
+* **dataset:** add dataset rating functionality ([3aa8d47](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/3aa8d47f08c76a0683efb9ab0f82cb600c85d439))
+* **dataset:** add DatasetRating model, migration, and seeders ([50c207d](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/50c207d5df2b5626568a11a38dc5686eafd59427))
+* Mejoras en la UI al mostrar los mensajes de error de sintaxis ([d7ff6d4](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/d7ff6d41874b62d221032b068c2f776c16940bee))
+* **rating:** integrate dataset rating functionality in frontend and update logic for rating modifications closes [#58](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/58) ([f2f22a5](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/f2f22a569973f67cfb010c48168a4ba4229855a4))
+
 # [1.10.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.9.0...v1.10.0) (2024-12-02)
 
 
