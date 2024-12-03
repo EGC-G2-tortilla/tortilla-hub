@@ -43,6 +43,7 @@ from app.modules.dataset.services import (
     DSViewRecordService,
     DataSetService,
     DOIMappingService,
+    DatasetRatingService,
 )
 from app.modules.fakenodo.services import FakenodoService
 from app.modules.featuremodel.models import FMMetaData, FeatureModel
@@ -61,6 +62,7 @@ dsmetadata_service = DSMetaDataService()
 fakenodo_service = FakenodoService()
 doi_mapping_service = DOIMappingService()
 ds_view_record_service = DSViewRecordService()
+dataset_rating_service = DatasetRatingService()
 community_service = CommunityService()
 
 
@@ -670,6 +672,17 @@ def stage_all_datasets():
     return redirect(url_for("dataset.list_dataset"))
 
 
+@dataset_bp.route("/dataset/unstage/all", methods=["POST"])
+@login_required
+def unstage_all_datasets():
+    try:
+        dataset_service.unstage_all_datasets(current_user.id)
+        flash("Datasets unstaged successfully", "success")
+    except Exception as e:
+        flash(f"Error unstaging datasets: {str(e)}", "danger")
+    return redirect(url_for("dataset.list_dataset"))
+
+
 def to_glencoe(file_id, full_path):
     try:
         # Obtener el archivo original usando el file_id
@@ -822,6 +835,62 @@ def download_all_datasets():
     finally:
         # Eliminar el directorio temporal después de su uso
         shutil.rmtree(temp_dir)
+
+
+@dataset_bp.route("/datasets/<int:dataset_id>/rate", methods=["POST"])
+@login_required
+def rate_dataset(dataset_id):
+    data = request.get_json()
+    rating_value = data.get("rating")
+
+    if not rating_value:
+        return jsonify({"status": "error", "message": "Rating value is required"}), 400
+
+    try:
+        # Register or update the rating
+        dataset_rating_service.rate_dataset(current_user.id, dataset_id, rating_value)
+
+        # Get updated rating summary
+        summary = dataset_rating_service.get_dataset_rating_summary(dataset_id)
+
+        return (
+            jsonify(
+                {
+                    "status": "success",
+                    "message": "Rating submitted successfully",
+                    "average_rating": summary["average_rating"],
+                    "total_ratings": summary["total_ratings"],
+                }
+            ),
+            200,
+        )
+
+    except ValueError as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
+    except Exception as e:
+        logger.error(f"Error rating dataset: {e}")
+        return jsonify({"status": "error", "message": "An error occurred"}), 500
+
+
+@dataset_bp.route("/datasets/<int:dataset_id>/ratings", methods=["GET"])
+def get_dataset_ratings(dataset_id):
+    """Returns the average rating and total number of ratings for a dataset, along with the user's rating."""
+    result = dataset_rating_service.get_dataset_rating_summary(dataset_id)
+    user_rating = None
+    if current_user.is_authenticated:
+        user_rating = dataset_rating_service.get_user_rating(
+            current_user.id, dataset_id
+        )
+    return (
+        jsonify(
+            {
+                "average_rating": result["average_rating"],
+                "total_ratings": result["total_ratings"],
+                "user_rating": user_rating,
+            }
+        ),
+        200,
+    )
 
 
 @dataset_bp.route("/dataset/download_repo_zip", methods=["POST"])
