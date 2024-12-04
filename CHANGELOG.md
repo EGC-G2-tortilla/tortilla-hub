@@ -1,3 +1,17 @@
+# [1.12.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.11.0...v1.12.0) (2024-12-04)
+
+
+### Bug Fixes
+
+* Arreglos codacy ([8f40afb](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/8f40afbbc0d3cd2b6cc62b6a87cca989846d03c6))
+* Arreglos en tests para ejecución en rosemary ([e3986d8](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e3986d8b4665b15cf380a4ab00e7f670e839bce4))
+* Errores de codacy y localización del entrypoint ([318eb85](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/318eb85fd58f8113984b501693c4aa962466bce4))
+
+
+### Features
+
+* Añadir entrypoint e imagen nueva para datos de prueba en develop. ([ae81140](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ae811401c608cbeac46ec75c01a61fadd29b9ddb)), closes [#167](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/167)
+
 # [1.11.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.10.0...v1.11.0) (2024-12-03)
 
 
