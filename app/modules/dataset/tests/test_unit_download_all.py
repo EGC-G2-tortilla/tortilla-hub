@@ -1,5 +1,4 @@
 import shutil
-import tempfile
 import pytest
 import os
 from app import db
