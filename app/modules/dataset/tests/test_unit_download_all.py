@@ -171,12 +171,16 @@ def test_to_glencoe(test_client):
     # Llamar a la función to_glencoe para transformar el archivo
     temp_dir = "temp_glencoe"
     os.makedirs(temp_dir, exist_ok=True)
-    
+
     try:
         result = to_glencoe(file_id=hubfile.id, full_path=temp_dir)
         expected_path = os.path.join(temp_dir, f"{hubfile.name}_glencoe.txt")
-        assert os.path.exists(result), "El archivo transformado no se creó correctamente."
-        assert result == expected_path, "La ruta del archivo transformado no es la esperada."
+        assert os.path.exists(
+            result
+        ), "El archivo transformado no se creó correctamente."
+        assert (
+            result == expected_path
+        ), "La ruta del archivo transformado no es la esperada."
     finally:
         shutil.rmtree(temp_dir)
 
@@ -209,12 +213,16 @@ def test_to_splot(test_client):
     # Llamar a la función to_splot para transformar el archivo
     temp_dir = "temp_splot"
     os.makedirs(temp_dir, exist_ok=True)
-    
+
     try:
         result = to_splot(file_id=hubfile.id, full_path=temp_dir)
         expected_path = os.path.join(temp_dir, f"{hubfile.name}_splot.txt")
-        assert os.path.exists(result), "El archivo transformado no se creó correctamente."
-        assert result == expected_path, "La ruta del archivo transformado no es la esperada."
+        assert os.path.exists(
+            result
+        ), "El archivo transformado no se creó correctamente."
+        assert (
+            result == expected_path
+        ), "La ruta del archivo transformado no es la esperada."
     finally:
         shutil.rmtree(temp_dir)
 
@@ -247,12 +255,16 @@ def test_to_cnf(test_client):
     # Llamar a la función to_cnf para transformar el archivo
     temp_dir = "temp_cnf"
     os.makedirs(temp_dir, exist_ok=True)
-    
+
     try:
         result = to_cnf(file_id=hubfile.id, full_path=temp_dir)
         expected_path = os.path.join(temp_dir, f"{hubfile.name}_cnf.txt")
-        assert os.path.exists(result), "El archivo transformado no se creó correctamente."
-        assert result == expected_path, "La ruta del archivo transformado no es la esperada."
+        assert os.path.exists(
+            result
+        ), "El archivo transformado no se creó correctamente."
+        assert (
+            result == expected_path
+        ), "La ruta del archivo transformado no es la esperada."
     finally:
         shutil.rmtree(temp_dir)
 
