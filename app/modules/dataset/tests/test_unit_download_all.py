@@ -165,7 +165,7 @@ def test_to_glencoe(test_client):
         user_id=user.id,
         dataset_id=dataset.id,
     )
-    
+
     os.environ["WORKING_DIR"] = os.getcwd()
 
     # Llamar a la función to_glencoe para transformar el archivo
@@ -207,7 +207,7 @@ def test_to_splot(test_client):
         user_id=user.id,
         dataset_id=dataset.id,
     )
-    
+
     os.environ["WORKING_DIR"] = os.getcwd()
 
     # Llamar a la función to_splot para transformar el archivo
@@ -249,7 +249,7 @@ def test_to_cnf(test_client):
         user_id=user.id,
         dataset_id=dataset.id,
     )
-    
+
     os.environ["WORKING_DIR"] = os.getcwd()
 
     # Llamar a la función to_cnf para transformar el archivo
