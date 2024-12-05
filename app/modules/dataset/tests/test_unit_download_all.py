@@ -2,13 +2,12 @@ import shutil
 import tempfile
 import pytest
 import os
-from app import create_app, db
+from app import db
 from app.modules.auth.models import User
 from app.modules.featuremodel.models import FeatureModel
 from app.modules.hubfile.models import Hubfile
 from app.modules.dataset.models import (
     DSMetaData,
-    DatasetStatus,
     PublicationType,
     DataSet,
 )
@@ -22,22 +21,8 @@ def test_client(test_client):
     and sets up the database with specific testing data.
     """
     with test_client.application.app_context():
-        # Crear usuario y dataset para pruebas
-        user_test = User(email="user100@example.com", password="test1234")
-        db.session.add(user_test)
-        db.session.commit()
-
-        dataset_test = DataSet(
-            user_id=user_test.id,
-            ds_meta_data=DSMetaData(
-                title="Test",
-                description="Test",
-                publication_type=PublicationType.JOURNAL_ARTICLE,
-                dataset_status=DatasetStatus.UNSTAGED,
-            ),
-        )
-        db.session.add(dataset_test)
-        db.session.commit()
+        user_test = create_user(email="user_test@example.com", password="password123")
+        dataset_test = create_dataset(user_id=user_test.id)
 
         # Crear carpeta de dataset y archivo
         os.makedirs(
@@ -58,7 +43,7 @@ def test_client(test_client):
         db.session.delete(dataset_test)
         db.session.delete(user_test)
         db.session.commit()
-        shutil.rmtree(f"uploads/user_{user_test.id}", ignore_errors=True)
+        shutil.rmtree(f"uploads/user_{user_test.id}/dataset_{dataset_test.id}", ignore_errors=True)
 
 
 def create_user(email, password):
@@ -127,8 +112,11 @@ def create_hubfile(name, feature_model_id, user_id, dataset_id):
     return hubfile
 
 
-def delete_folder(user):
-    shutil.rmtree(f"uploads/user_{user.id}", ignore_errors=True)
+def delete_folder(user, dataset):
+    if user.id != 2 or user.id != 1:
+        shutil.rmtree(f"uploads/user_{user.id}", ignore_errors=True)
+    else:
+        shutil.rmtree(f"uploads/user_{user.id}/dataset_{dataset.id}", ignore_errors=True)
 
 
 def test_download_all_datasets(test_client):
@@ -152,10 +140,10 @@ def test_download_all_datasets(test_client):
     ), "El archivo ZIP no tiene el nombre esperado."
 
     # Eliminar los datos de prueba
-    delete_folder(user)
     db.session.delete(dataset)
     db.session.delete(user)
     db.session.commit()
+    delete_folder(user, dataset)
 
 
 def test_to_glencoe(test_client):
@@ -186,11 +174,11 @@ def test_to_glencoe(test_client):
         ), "La ruta del archivo transformado no es la esperada."
 
     # Eliminar los datos de prueba
-    delete_folder(user)
     db.session.delete(hubfile)
     db.session.delete(dataset)
     db.session.delete(user)
     db.session.commit()
+    delete_folder(user, dataset)
 
 
 def test_to_splot(test_client):
@@ -221,11 +209,11 @@ def test_to_splot(test_client):
         ), "La ruta del archivo transformado no es la esperada."
 
     # Eliminar los datos de prueba
-    delete_folder(user)
     db.session.delete(hubfile)
     db.session.delete(dataset)
     db.session.delete(user)
     db.session.commit()
+    delete_folder(user, dataset)
 
 
 def test_to_cnf(test_client):
@@ -256,9 +244,9 @@ def test_to_cnf(test_client):
         ), "La ruta del archivo transformado no es la esperada."
 
     # Eliminar los datos de prueba
-    delete_folder(user)
     db.session.delete(hubfile)
     db.session.delete(feature_model)
     db.session.delete(dataset)
     db.session.delete(user)
     db.session.commit()
+    delete_folder(user, dataset)
