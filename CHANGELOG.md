@@ -1,3 +1,18 @@
+# [1.13.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.12.0...v1.13.0) (2024-12-05)
+
+
+### Bug Fixes
+
+* Corrección de test_client en las pruebas de descarga de todos los datasets ([aa72d9f](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/aa72d9ff7d50237127c28150129228766ee57973))
+* Corregir del borrado de datos de las pruebas ([2258b28](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/2258b28deff36041f8ea655264cad3035f75b6f8))
+* Mejorar la gestión de directorios temporales ([22f49fa](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/22f49fabf18515ac97fee52d5b7acb087301d4f3))
+
+
+### Features
+
+* Establecer el directorio de trabajo en las pruebas de transformación de archivos ([391959a](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/391959ab034cab1b76afc5c4b7f987611c42351d))
+* nuevo workflow que crea una issue si detecta que se ha hecho push a main con un autor que no esta registrado en el archivo .mailmap ([4786e1d](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/4786e1defac54ae15c8d31914c9b6008707ed15d))
+
 # [1.12.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.11.0...v1.12.0) (2024-12-04)
 
 
