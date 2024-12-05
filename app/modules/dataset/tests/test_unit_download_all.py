@@ -43,7 +43,9 @@ def test_client(test_client):
         db.session.delete(dataset_test)
         db.session.delete(user_test)
         db.session.commit()
-        shutil.rmtree(f"uploads/user_{user_test.id}/dataset_{dataset_test.id}", ignore_errors=True)
+        shutil.rmtree(
+            f"uploads/user_{user_test.id}/dataset_{dataset_test.id}", ignore_errors=True
+        )
 
 
 def create_user(email, password):
@@ -116,7 +118,9 @@ def delete_folder(user, dataset):
     if user.id != 2 or user.id != 1:
         shutil.rmtree(f"uploads/user_{user.id}", ignore_errors=True)
     else:
-        shutil.rmtree(f"uploads/user_{user.id}/dataset_{dataset.id}", ignore_errors=True)
+        shutil.rmtree(
+            f"uploads/user_{user.id}/dataset_{dataset.id}", ignore_errors=True
+        )
 
 
 def test_download_all_datasets(test_client):
