@@ -3,7 +3,7 @@ name: Create issue if author is not found in .mailmap
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   check-author-in-mailmap:
@@ -23,7 +23,8 @@ jobs:
       - name: Comprobar si el autor esta en .mailmap
         id: check_author
         run: |
-          if ! grep -qE "$AUTHOR_NAME" .mailmap || ! grep -qE "$AUTHOR_EMAIL" .mailmap; then
+          cat .mailmap
+          if ! grep -F "$AUTHOR_NAME" .mailmap || ! grep -F "$AUTHOR_EMAIL" .mailmap; then
             echo "Autor no encontrado en .mailmap"
             echo "author_not_found=true" >> $GITHUB_ENV
           else
