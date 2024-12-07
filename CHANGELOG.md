@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.13.0...v1.13.1) (2024-12-07)
+
+
+### Bug Fixes
+
+* se introducido una solucion para que el workflow de crear issues si el autor no esta en el .mailmap no de falsos positivos Close [#176](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/176) ([7890dd7](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7890dd7b1bb3d619c99d124d70de7d5f34723ab6))
+
 # [1.13.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.12.0...v1.13.0) (2024-12-05)
 
 
