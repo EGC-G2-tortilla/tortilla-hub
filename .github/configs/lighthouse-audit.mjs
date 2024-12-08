@@ -20,7 +20,7 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 (async () => {
   const browser = await launch({
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
   });
   const page = await browser.newPage();
 
