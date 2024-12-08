@@ -1,3 +1,10 @@
+## [1.14.2](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.14.1...v1.14.2) (2024-12-08)
+
+
+### Bug Fixes
+
+* Cambio en los Secrets y añadir un argumento al navegador ([8d8241d](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/8d8241d8f48918d0242ecdc8f97f1597bc5d8ac7))
+
 ## [1.14.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.14.0...v1.14.1) (2024-12-08)
 
 
