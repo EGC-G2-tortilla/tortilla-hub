@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.13.1...v1.14.0) (2024-12-08)
+
+
+### Features
+
+* Añadir workflow para medir la accesibilidad. ([a35ae36](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/a35ae3696a7924723a0a8e77e2a782cfe2f756fe))
+
 ## [1.13.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.13.0...v1.13.1) (2024-12-07)
 
 
