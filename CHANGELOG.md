@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.14.0...v1.14.1) (2024-12-08)
+
+
+### Bug Fixes
+
+* Añadir argumentos para la compatibilidad del navegador ([b8e5a33](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b8e5a33009f2c6e5c8b5364faf07756edc919967))
+
 # [1.14.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.13.1...v1.14.0) (2024-12-08)
 
 
