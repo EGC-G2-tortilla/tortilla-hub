@@ -1,50 +1,22 @@
----
-- name: Install Python 3.12 and dependencies
-  hosts: all
-  become: yes
+- hosts: all
+  become: true
+
   tasks:
-    - name: Install required packages for building Python from source
-      apt:
-        name:
-          - build-essential
-          - zlib1g-dev
-          - libffi-dev
-          - libssl-dev
-          - wget
-          - libbz2-dev
-          - libreadline-dev
-          - libsqlite3-dev
-          - libncurses5-dev
-          - libgdbm-dev
-          - libnss3-dev
-          - liblzma-dev
-          - mariadb-client
+    - name: Add deadsnakes PPA for installing Python 3.12
+      apt_repository:
+        repo: ppa:deadsnakes/ppa
         state: present
         update_cache: yes
 
-    - name: Download Python 3.12 source
-      shell: |
-        wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tar.xz -O /tmp/Python-3.12.0.tar.xz
-        tar -xf /tmp/Python-3.12.0.tar.xz -C /tmp
-      args:
-        executable: /bin/bash
+    - name: Update the system and install Python 3.12 and dependencies
+      apt:
+        name:
+          - python3.12
+          - python3.12-venv
+          - mariadb-client
+        state: present
 
-    - name: Compile and install Python 3.12
-      shell: |
-        cd /tmp/Python-3.12.0
-        ./configure --enable-optimizations
-        make -j$(nproc)
-        make altinstall
-      args:
-        executable: /bin/bash
-
-    - name: Verify Python 3.12 installation
-      shell: |
-        python3.12 --version
-      register: python_version
-      changed_when: false
-
-    - name: Install pip and setuptools for Python 3.12
+    - name: Install pip and setuptools for Python 3.12 from source
       shell: |
         wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
         python3.12 /tmp/get-pip.py
@@ -59,18 +31,18 @@
 
     - name: Remove existing virtual environment if it exists
       file:
-        path: "{{ working_dir }}venv"
+        path: "{{ working_dir }}/venv"
         state: absent
         force: yes
 
     - name: Set up the Python 3.12 virtual environment
-      command: python3.12 -m venv {{ working_dir }}venv
+      command: python3.12 -m venv {{ working_dir }}/venv
       args:
-        creates: "{{ working_dir }}venv/bin/activate"
+        creates: "{{ working_dir }}/venv/bin/activate"
 
     - name: Activate the virtual environment and install dependencies
       shell: |
-        source {{ working_dir }}venv/bin/activate
+        source {{ working_dir }}/venv/bin/activate
         pip install --upgrade pip
         cd {{ working_dir }}
         pip install -r requirements.txt
