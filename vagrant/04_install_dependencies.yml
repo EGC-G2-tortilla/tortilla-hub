@@ -1,26 +1,53 @@
-- hosts: all
-  become: true
-
+---
+- name: Install Python 3.12 and dependencies
+  hosts: all
+  become: yes
   tasks:
-    - name: Add deadsnakes PPA (for installing Python 3.12)
-      apt_repository:
-        repo: ppa:deadsnakes/ppa
+    - name: Install required packages for building Python from source
+      apt:
+        name:
+          - build-essential
+          - zlib1g-dev
+          - libffi-dev
+          - libssl-dev
+          - wget
+          - libbz2-dev
+          - libreadline-dev
+          - libsqlite3-dev
+          - libncurses5-dev
+          - libgdbm-dev
+          - libnss3-dev
+          - liblzma-dev
+          - mariadb-client
         state: present
         update_cache: yes
 
-    - name: Update the system and install Python 3.12 and dependencies
-      apt:
-        name:
-          - python3.12
-          - python3.12-venv
-          - python3.12-distutils
-          - mariadb-client
-        state: present
-
-    - name: Install pip and setuptools for Python 3.12 from source
+    - name: Download Python 3.12 source
       shell: |
-        wget https://bootstrap.pypa.io/get-pip.py
-        python3.12 get-pip.py
+        wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tar.xz -O /tmp/Python-3.12.0.tar.xz
+        tar -xf /tmp/Python-3.12.0.tar.xz -C /tmp
+      args:
+        executable: /bin/bash
+
+    - name: Compile and install Python 3.12
+      shell: |
+        cd /tmp/Python-3.12.0
+        ./configure --enable-optimizations
+        make -j$(nproc)
+        make altinstall
+      args:
+        executable: /bin/bash
+
+    - name: Verify Python 3.12 installation
+      shell: |
+        python3.12 --version
+      register: python_version
+      changed_when: false
+
+    - name: Install pip and setuptools for Python 3.12
+      shell: |
+        wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
+        python3.12 /tmp/get-pip.py
       args:
         executable: /bin/bash
 
