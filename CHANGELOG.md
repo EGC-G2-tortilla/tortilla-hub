@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.14.2...v1.15.0) (2024-12-09)
+
+
+### Features
+
+* despliegue con vagrant arreglado ([ba7dfdb](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ba7dfdb18260f5355dd8f25a2cbcc988473a04ff))
+
 ## [1.14.2](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.14.1...v1.14.2) (2024-12-08)
 
 
