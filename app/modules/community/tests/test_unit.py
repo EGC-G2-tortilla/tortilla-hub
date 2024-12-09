@@ -22,29 +22,49 @@ def test_client(test_client):
         user_test = User(email="user@example.com", password="test1234")
         db.session.add(user_test)
 
-        user_profile_test = UserProfile(user=user_test, orcid="1234", affiliation="sample",
-                                        name="sample0", surname="sample_sample0")
+        user_profile_test = UserProfile(
+            user=user_test,
+            orcid="1234",
+            affiliation="sample",
+            name="sample0",
+            surname="sample_sample0",
+        )
         db.session.add(user_profile_test)
 
         user_test1 = User(email="user_1@example.com", password="test1234")
         db.session.add(user_test1)
 
-        user_profile_test1 = UserProfile(user=user_test1, orcid="1234", affiliation="sample",
-                                         name="sample1", surname="sample_sample1")
+        user_profile_test1 = UserProfile(
+            user=user_test1,
+            orcid="1234",
+            affiliation="sample",
+            name="sample1",
+            surname="sample_sample1",
+        )
         db.session.add(user_profile_test1)
 
         user_test2 = User(email="user_2@example.com", password="test1234")
         db.session.add(user_test2)
 
-        user_profile_test2 = UserProfile(user=user_test2, orcid="1234", affiliation="sample",
-                                         name="sample2", surname="sample_sample2")
+        user_profile_test2 = UserProfile(
+            user=user_test2,
+            orcid="1234",
+            affiliation="sample",
+            name="sample2",
+            surname="sample_sample2",
+        )
         db.session.add(user_profile_test2)
 
         user_test3 = User(email="user_3@example.com", password="test1234")
         db.session.add(user_test3)
 
-        user_profile_test3 = UserProfile(user=user_test3, orcid="1234", affiliation="sample",
-                                         name="sample3", surname="sample_sample3")
+        user_profile_test3 = UserProfile(
+            user=user_test3,
+            orcid="1234",
+            affiliation="sample",
+            name="sample3",
+            surname="sample_sample3",
+        )
         db.session.add(user_profile_test3)
         db.session.commit()
 
@@ -63,9 +83,9 @@ def test_client(test_client):
 
 def test_sample_assertion(test_client):
     """
-        Autor: Delfín Santana
-        Test para comprobar que se estan poniendo los valores
-        bien
+    Autor: Delfín Santana
+    Test para comprobar que se estan poniendo los valores
+    bien
     """
     test_user = db.session.get(
         User, 2
@@ -81,9 +101,9 @@ def test_sample_assertion(test_client):
 
 def test_get_community_by_name(test_client):
     """
-        Autor: Delfín Santana
-        Debe de haber una función en el servicio para poder
-        obtener una comunidad por su nombre
+    Autor: Delfín Santana
+    Debe de haber una función en el servicio para poder
+    obtener una comunidad por su nombre
     """
     test_community = Community.query.filter_by(name="sample community").first()
 
@@ -93,9 +113,9 @@ def test_get_community_by_name(test_client):
 
 def test_get_community_by_id(test_client):
     """
-        Autor: Delfín Santana
-        Debe de haber una función en el servicio para poder
-        obtener una comunidad por su id
+    Autor: Delfín Santana
+    Debe de haber una función en el servicio para poder
+    obtener una comunidad por su id
     """
     test_community = Community.query.filter_by(name="sample community").first()
 
@@ -105,12 +125,12 @@ def test_get_community_by_id(test_client):
 
 def test_join_community_and_is_user_in_community(test_client):
     """
-        Autor: Delfín Santana
-        Debe de haber una función en el servicio para poder
-        unirse a una comunidad y para poder comprobar que
-        esta en la comunidad. En este test se prueban juntas
-        para ver si funcionan bien cuando se ejecutan una
-        detras de otra
+    Autor: Delfín Santana
+    Debe de haber una función en el servicio para poder
+    unirse a una comunidad y para poder comprobar que
+    esta en la comunidad. En este test se prueban juntas
+    para ver si funcionan bien cuando se ejecutan una
+    detras de otra
     """
     test_user = User.query.filter_by(email="user_1@example.com").first()
     test_community = Community.query.filter_by(name="sample community").first()
@@ -123,9 +143,9 @@ def test_join_community_and_is_user_in_community(test_client):
 
 def test_is_user_in_community(test_client):
     """
-        Autor: Delfín Santana
-        Debe de haber una función en el servicio para poder
-        comprobar si un usuario está en una comunidad
+    Autor: Delfín Santana
+    Debe de haber una función en el servicio para poder
+    comprobar si un usuario está en una comunidad
     """
     test_user = User.query.filter_by(email="user_1@example.com").first()
     test_community = Community.query.filter_by(name="sample community").first()
@@ -137,9 +157,9 @@ def test_is_user_in_community(test_client):
 
 def test_create_request(test_client):
     """
-        Autor: Delfín Santana
-        Debe de haber una función en el servicio para poder
-        crear una request a una comunidad
+    Autor: Delfín Santana
+    Debe de haber una función en el servicio para poder
+    crear una request a una comunidad
     """
     test_user1 = db.session.get(User, 4)
 
@@ -162,10 +182,10 @@ def test_create_request(test_client):
 
 def test_create_request_when_already_in_community(test_client):
     """
-        Autor: Delfín Santana
-        Debe de haber una función en el servicio para poder
-        crear una request a una comunidad, si el usuario
-        ya esta en la comunidad, no debe de pasar nada
+    Autor: Delfín Santana
+    Debe de haber una función en el servicio para poder
+    crear una request a una comunidad, si el usuario
+    ya esta en la comunidad, no debe de pasar nada
     """
     test_user3 = db.session.get(User, 3)
 
@@ -186,12 +206,12 @@ def test_create_request_when_already_in_community(test_client):
 
 def test_check_if_user_has_sent_a_request(test_client):
     """
-        Autor: Delfín Santana
-        Debe de haber una función en el servicio para poder
-        comprobar si un usuario ha enviado una request a una
-        comunidad, respondiendo correctamente dependiendo de
-        si el usuario ya esta en la comunidad, o si ha enviado
-        o no una solicitud
+    Autor: Delfín Santana
+    Debe de haber una función en el servicio para poder
+    comprobar si un usuario ha enviado una request a una
+    comunidad, respondiendo correctamente dependiendo de
+    si el usuario ya esta en la comunidad, o si ha enviado
+    o no una solicitud
     """
     test_user1 = db.session.get(User, 3)
     test_user2 = db.session.get(User, 4)
@@ -213,10 +233,10 @@ def test_check_if_user_has_sent_a_request(test_client):
 
 def test_get_all_request_sent_to_community(test_client):
     """
-        Autor: Delfín Santana
-        Debe de haber una función en el servicio para poder
-        obtener todas las requests que se han enviado
-        a una comunidad
+    Autor: Delfín Santana
+    Debe de haber una función en el servicio para poder
+    obtener todas las requests que se han enviado
+    a una comunidad
     """
     test_user1 = db.session.get(User, 4)
     test_user2 = db.session.get(User, 5)
@@ -236,9 +256,9 @@ def test_get_all_request_sent_to_community(test_client):
 
 def test_accept_request(test_client):
     """
-        Autor: Delfín Santana
-        Debe de haber una función en el servicio para poder
-        aceptar una request
+    Autor: Delfín Santana
+    Debe de haber una función en el servicio para poder
+    aceptar una request
     """
     test_user1 = db.session.get(User, 4)
     test_user2 = db.session.get(User, 5)
@@ -262,9 +282,9 @@ def test_accept_request(test_client):
 
 def test_accept_request_bad(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se acepta una request de un usuario que no es quien
-        la ha enviado, no debe de pasar nada
+    Autor: Delfín Santana
+    Cuando se acepta una request de un usuario que no es quien
+    la ha enviado, no debe de pasar nada
     """
     test_user1 = db.session.get(User, 4)
     test_user2 = db.session.get(User, 5)
@@ -289,9 +309,9 @@ def test_accept_request_bad(test_client):
 
 def test_decline_request(test_client):
     """
-        Autor: Delfín Santana
-        Debe de haber una función en el servicio para poder
-        declinar una request
+    Autor: Delfín Santana
+    Debe de haber una función en el servicio para poder
+    declinar una request
     """
     test_user1 = db.session.get(User, 5)
 
@@ -313,67 +333,79 @@ def test_decline_request(test_client):
 
 def test_route_communities_without_loggin_in(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se accede a la ruta /community, se puede acceder y
-        te debe de devolver todas las comunidades, aunque no estes
-        logueado
+    Autor: Delfín Santana
+    Cuando se accede a la ruta /community, se puede acceder y
+    te debe de devolver todas las comunidades, aunque no estes
+    logueado
     """
     response = test_client.get("/community")
+    assert response.status_code == 200, "Communities page could not be accessed."
     assert (
-        response.status_code == 200
-    ), "Communities page could not be accessed."
-    assert b"sample community" in response.data, "The expected content is not present on the page"
-    assert b"https://sample.com" in response.data, "The expected content is not present on the page"
-    assert b"sample sample sample" not in response.data, "The expected content is not present on the page"
+        b"sample community" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"https://sample.com" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample sample sample" not in response.data
+    ), "The expected content is not present on the page"
 
     logout(test_client)
 
 
 def test_route_communities(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se accede a la ruta /community, se puede acceder y
-        te debe de devolver todas las comunidades
+    Autor: Delfín Santana
+    Cuando se accede a la ruta /community, se puede acceder y
+    te debe de devolver todas las comunidades
     """
     login_response = login(test_client, "user@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
 
     response = test_client.get("/community")
+    assert response.status_code == 200, "Communities page could not be accessed."
     assert (
-        response.status_code == 200
-    ), "Communities page could not be accessed."
-    assert b"sample community" in response.data, "The expected content is not present on the page"
-    assert b"https://sample.com" in response.data, "The expected content is not present on the page"
-    assert b"sample sample sample" not in response.data, "The expected content is not present on the page"
+        b"sample community" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"https://sample.com" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample sample sample" not in response.data
+    ), "The expected content is not present on the page"
 
     logout(test_client)
 
 
 def test_route_get_my_communities(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se accede a la ruta /my_communities, se puede acceder y
-        te debe de devolver las comunidades de las que eres miembro
+    Autor: Delfín Santana
+    Cuando se accede a la ruta /my_communities, se puede acceder y
+    te debe de devolver las comunidades de las que eres miembro
     """
     login_response = login(test_client, "user@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
 
     response = test_client.get("/my_communities")
+    assert response.status_code == 200, "My communities page could not be accessed."
     assert (
-        response.status_code == 200
-    ), "My communities page could not be accessed."
-    assert b"sample community" in response.data, "The expected content is not present on the page"
-    assert b"https://sample.com" in response.data, "The expected content is not present on the page"
-    assert b"sample sample sample" not in response.data, "The expected content is not present on the page"
+        b"sample community" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"https://sample.com" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample sample sample" not in response.data
+    ), "The expected content is not present on the page"
 
     logout(test_client)
 
 
 def test_route_get_my_communities_when_not_logged(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se accede a la ruta /my_communities sin estar loguedado,
-        te debe de redireccionar
+    Autor: Delfín Santana
+    Cuando se accede a la ruta /my_communities sin estar loguedado,
+    te debe de redireccionar
     """
     response = test_client.get("/my_communities")
     assert (
@@ -383,50 +415,60 @@ def test_route_get_my_communities_when_not_logged(test_client):
 
 def test_route_get_my_communities_when_not_in_any_community(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se accede a la ruta /my_communities,
-        no te debe de salir información de aquellas comunidades a las que no perteneces
+    Autor: Delfín Santana
+    Cuando se accede a la ruta /my_communities,
+    no te debe de salir información de aquellas comunidades a las que no perteneces
     """
     login_response = login(test_client, "user_3@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
 
     response = test_client.get("/my_communities")
+    assert response.status_code == 200, "My communities page could not be accessed."
     assert (
-        response.status_code == 200
-    ), "My communities page could not be accessed."
-    assert b"sample community" not in response.data, "The expected content is not present on the page"
-    assert b"https://sample.com" not in response.data, "The expected content is not present on the page"
-    assert b"sample sample sample" not in response.data, "The expected content is not present on the page"
+        b"sample community" not in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"https://sample.com" not in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample sample sample" not in response.data
+    ), "The expected content is not present on the page"
 
     logout(test_client)
 
 
 def test_route_get_specific_community(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se accede a la ruta /community/<nombre de comunidad que existe>,
-        te debe de salir información de la comunidad a la que se ha accedido
-        especificamente. Pero no te debe de salir informacion de mas
-        que esta reservado para otras vistas, como es la descripcion de la
-        comunidad
+    Autor: Delfín Santana
+    Cuando se accede a la ruta /community/<nombre de comunidad que existe>,
+    te debe de salir información de la comunidad a la que se ha accedido
+    especificamente. Pero no te debe de salir informacion de mas
+    que esta reservado para otras vistas, como es la descripcion de la
+    comunidad
     """
     response = test_client.get("/community/sample community/")
     assert (
         response.status_code == 200
     ), "Specific commumity view page could not be accessed."
     assert b"Join!" in response.data, "The expected content is not present on the page"
-    assert b"sample community" in response.data, "The expected content is not present on the page"
-    assert b"https://sample.com" in response.data, "The expected content is not present on the page"
-    assert b"sample sample sample" not in response.data, "The expected content is not present on the page"
+    assert (
+        b"sample community" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"https://sample.com" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample sample sample" not in response.data
+    ), "The expected content is not present on the page"
 
     logout(test_client)
 
 
 def test_route_get_specific_community_that_doesnt_exists(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se accede a la ruta /community/<nombre de comunidad que NO existe>,
-        te debe de salir un error 404
+    Autor: Delfín Santana
+    Cuando se accede a la ruta /community/<nombre de comunidad que NO existe>,
+    te debe de salir un error 404
     """
     response = test_client.get("/community/blah_blah/")
     assert (
@@ -438,28 +480,34 @@ def test_route_get_specific_community_that_doesnt_exists(test_client):
 
 def test_route_get_specific_community_info(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se accede a la ruta /community/<nombre de comunidad que existe>/info,
-        te debe de salir información de la comunidad a la que se ha accedido
-        especificamente. En especifico, su descripcion
+    Autor: Delfín Santana
+    Cuando se accede a la ruta /community/<nombre de comunidad que existe>/info,
+    te debe de salir información de la comunidad a la que se ha accedido
+    especificamente. En especifico, su descripcion
     """
     response = test_client.get("/community/sample community/info")
     assert (
         response.status_code == 200
     ), "Specific commumity info view page could not be accessed."
     assert b"Join!" in response.data, "The expected content is not present on the page"
-    assert b"sample community" in response.data, "The expected content is not present on the page"
-    assert b"https://sample.com" in response.data, "The expected content is not present on the page"
-    assert b"sample sample sample" in response.data, "The expected content is not present on the page"
+    assert (
+        b"sample community" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"https://sample.com" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample sample sample" in response.data
+    ), "The expected content is not present on the page"
 
     logout(test_client)
 
 
 def test_route_get_specific_community_that_doesnt_exsits_info(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se accede a la ruta /community/<nombre de comunidad que NO existe>/info,
-        te debe de salir un error 404
+    Autor: Delfín Santana
+    Cuando se accede a la ruta /community/<nombre de comunidad que NO existe>/info,
+    te debe de salir un error 404
     """
     response = test_client.get("/community/blah blah/info")
     assert (
@@ -471,9 +519,9 @@ def test_route_get_specific_community_that_doesnt_exsits_info(test_client):
 
 def test_route_get_specific_community_members(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se accede a la ruta /community/<nombre de comunidad que existe>/members,
-        se debe de poder acceder
+    Autor: Delfín Santana
+    Cuando se accede a la ruta /community/<nombre de comunidad que existe>/members,
+    se debe de poder acceder
     """
     login_response = login(test_client, "user@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
@@ -482,18 +530,24 @@ def test_route_get_specific_community_members(test_client):
     assert (
         response.status_code == 200
     ), "Specific commumity members view page could not be accessed."
-    assert b"sample community" in response.data, "The expected content is not present on the page"
-    assert b"https://sample.com" in response.data, "The expected content is not present on the page"
-    assert b"sample sample sample" not in response.data, "The expected content is not present on the page"
+    assert (
+        b"sample community" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"https://sample.com" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample sample sample" not in response.data
+    ), "The expected content is not present on the page"
 
     logout(test_client)
 
 
 def test_route_get_specific_community_members_when_not_logged_in(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se accede a la ruta /community/<nombre de comunidad que existe>/members,
-        cuando no estas registrado te debe de redireccionar
+    Autor: Delfín Santana
+    Cuando se accede a la ruta /community/<nombre de comunidad que existe>/members,
+    cuando no estas registrado te debe de redireccionar
     """
 
     response = test_client.get("/community/sample community/members")
@@ -506,9 +560,9 @@ def test_route_get_specific_community_members_when_not_logged_in(test_client):
 
 def test_route_get_specific_community_that_doesnt_exists_members(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se accede a la ruta /community/<nombre de comunidad que NO existe>/members,
-        debe de dar un error 404
+    Autor: Delfín Santana
+    Cuando se accede a la ruta /community/<nombre de comunidad que NO existe>/members,
+    debe de dar un error 404
     """
     login_response = login(test_client, "user@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
@@ -523,17 +577,19 @@ def test_route_get_specific_community_that_doesnt_exists_members(test_client):
 
 def test_route_post_create_community(test_client):
     """
-        Autor: Delfín Santana
-        Se debe de poder crear una comunidad
+    Autor: Delfín Santana
+    Se debe de poder crear una comunidad
     """
     login_response = login(test_client, "user@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
 
-    response = test_client.post("/community/create", data={
+    response = test_client.post(
+        "/community/create",
+        data={
             "name": "new_community_just_created",
             "description_info": "This a new community",
-            "url": "https://sample.sample.sample.com"
-        }
+            "url": "https://sample.sample.sample.com",
+        },
     )
     assert response.status_code == 302, "Community could not be created."
 
@@ -549,8 +605,8 @@ def test_route_post_create_community(test_client):
 
 def test_route_join_community(test_client):
     """
-        Autor: Delfín Santana
-        Se debe de poder mandar una request para unirse a una comunidad
+    Autor: Delfín Santana
+    Se debe de poder mandar una request para unirse a una comunidad
     """
     test_user = db.session.get(User, 5)
     assert test_user.email == "user_3@example.com"
@@ -579,9 +635,9 @@ def test_route_join_community(test_client):
 
 def test_route_get_specific_community_after_sending_request_to_join(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se acceda a la vista de la comunidad a la que he mandado
-        solicitud de unirme, la vista debe de mostrar que he mandado la solicitud
+    Autor: Delfín Santana
+    Cuando se acceda a la vista de la comunidad a la que he mandado
+    solicitud de unirme, la vista debe de mostrar que he mandado la solicitud
     """
     login_response = login(test_client, "user_3@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
@@ -590,20 +646,30 @@ def test_route_get_specific_community_after_sending_request_to_join(test_client)
     assert (
         response.status_code == 200
     ), "Specific commumity view page could not be accessed."
-    assert b"Join!" not in response.data, "The expected content is not present on the page"
-    assert b"Waiting to be accepted by the administrator" in response.data, "The expected content is not present on the page"
-    assert b"sample community" in response.data, "The expected content is not present on the page"
-    assert b"https://sample.com" in response.data, "The expected content is not present on the page"
-    assert b"sample sample sample" not in response.data, "The expected content is not present on the page"
+    assert (
+        b"Join!" not in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"Waiting to be accepted by the administrator" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample community" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"https://sample.com" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample sample sample" not in response.data
+    ), "The expected content is not present on the page"
 
     logout(test_client)
 
 
 def test_route_get_specific_community_info_after_sending_request_to_join(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se acceda a la vista de info de la comunidad a la que he mandado
-        solicitud de unirme, la vista debe de mostrar que he mandado la solicitud
+    Autor: Delfín Santana
+    Cuando se acceda a la vista de info de la comunidad a la que he mandado
+    solicitud de unirme, la vista debe de mostrar que he mandado la solicitud
     """
     login_response = login(test_client, "user_3@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
@@ -612,20 +678,32 @@ def test_route_get_specific_community_info_after_sending_request_to_join(test_cl
     assert (
         response.status_code == 200
     ), "Specific commumity view page could not be accessed."
-    assert b"Join!" not in response.data, "The expected content is not present on the page"
-    assert b"Waiting to be accepted by the administrator" in response.data, "The expected content is not present on the page"
-    assert b"sample community" in response.data, "The expected content is not present on the page"
-    assert b"https://sample.com" in response.data, "The expected content is not present on the page"
-    assert b"sample sample sample" in response.data, "The expected content is not present on the page"
+    assert (
+        b"Join!" not in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"Waiting to be accepted by the administrator" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample community" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"https://sample.com" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample sample sample" in response.data
+    ), "The expected content is not present on the page"
 
     logout(test_client)
 
 
-def test_route_get_specific_community_members_after_sending_request_to_join(test_client):
+def test_route_get_specific_community_members_after_sending_request_to_join(
+    test_client,
+):
     """
-        Autor: Delfín Santana
-        Cuando se acceda a la vista de members de la comunidad a la que he mandado
-        solicitud de unirme, la vista debe de mostrar que he mandado la solicitud
+    Autor: Delfín Santana
+    Cuando se acceda a la vista de members de la comunidad a la que he mandado
+    solicitud de unirme, la vista debe de mostrar que he mandado la solicitud
     """
     login_response = login(test_client, "user_3@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
@@ -634,20 +712,32 @@ def test_route_get_specific_community_members_after_sending_request_to_join(test
     assert (
         response.status_code == 200
     ), "Specific commumity view page could not be accessed."
-    assert b"Join!" not in response.data, "The expected content is not present on the page"
-    assert b"Waiting to be accepted by the administrator" in response.data, "The expected content is not present on the page"
-    assert b"sample community" in response.data, "The expected content is not present on the page"
-    assert b"https://sample.com" in response.data, "The expected content is not present on the page"
-    assert b"sample sample sample" not in response.data, "The expected content is not present on the page"
+    assert (
+        b"Join!" not in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"Waiting to be accepted by the administrator" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample community" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"https://sample.com" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample sample sample" not in response.data
+    ), "The expected content is not present on the page"
 
     logout(test_client)
 
 
-def test_route_get_specific_community_members_being_admin_after_sending_request_to_join(test_client):
+def test_route_get_specific_community_members_being_admin_after_sending_request_to_join(
+    test_client,
+):
     """
-        Autor: Delfín Santana
-        Cuando se acceda a la vista de members de la comunidad a la que he mandado
-        solicitud de unirme, la vista debe de mostrar que he mandado la solicitud
+    Autor: Delfín Santana
+    Cuando se acceda a la vista de members de la comunidad a la que he mandado
+    solicitud de unirme, la vista debe de mostrar que he mandado la solicitud
     """
     login_response = login(test_client, "user@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
@@ -657,19 +747,27 @@ def test_route_get_specific_community_members_being_admin_after_sending_request_
         response.status_code == 200
     ), "Specific commumity view page could not be accessed."
     assert b"Accept" in response.data, "The expected content is not present on the page"
-    assert b"Decline" in response.data, "The expected content is not present on the page"
-    assert b"sample community" in response.data, "The expected content is not present on the page"
-    assert b"https://sample.com" in response.data, "The expected content is not present on the page"
-    assert b"sample sample sample" not in response.data, "The expected content is not present on the page"
+    assert (
+        b"Decline" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample community" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"https://sample.com" in response.data
+    ), "The expected content is not present on the page"
+    assert (
+        b"sample sample sample" not in response.data
+    ), "The expected content is not present on the page"
 
     logout(test_client)
 
 
 def test_route_decline_join_request_when_I_am_not_admin(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se intenta denegar una solicitud de unirse a una comunidad sin ser el admin
-        de esa comunidad se devuelve un codigo 503
+    Autor: Delfín Santana
+    Cuando se intenta denegar una solicitud de unirse a una comunidad sin ser el admin
+    de esa comunidad se devuelve un codigo 503
     """
     test_user = db.session.get(User, 5)
     assert test_user.email == "user_3@example.com"
@@ -688,7 +786,9 @@ def test_route_decline_join_request_when_I_am_not_admin(test_client):
     login_response = login(test_client, "user_3@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
 
-    response = test_client.post("/community-join-request/"+str(request_id)+"/accept")
+    response = test_client.post(
+        "/community-join-request/" + str(request_id) + "/accept"
+    )
     assert (
         response.status_code == 503
     ), "Join request could be declined by someone that is not admin."
@@ -709,9 +809,9 @@ def test_route_decline_join_request_when_I_am_not_admin(test_client):
 
 def test_route_decline_join_request_that_doenst_exists(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se intenta denegar una solicitud de unirse a una comunidad, y la
-        solicitud no existe, se devuelve el codigo 404
+    Autor: Delfín Santana
+    Cuando se intenta denegar una solicitud de unirse a una comunidad, y la
+    solicitud no existe, se devuelve el codigo 404
     """
     login_response = login(test_client, "user@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
@@ -726,9 +826,9 @@ def test_route_decline_join_request_that_doenst_exists(test_client):
 
 def test_route_decline_join_request(test_client):
     """
-        Autor: Delfín Santana
-        Se debe de poder declinar una request de unirse a una comunidad
-        siendo admin a traves de una ruta
+    Autor: Delfín Santana
+    Se debe de poder declinar una request de unirse a una comunidad
+    siendo admin a traves de una ruta
     """
     test_user = db.session.get(User, 5)
     assert test_user.email == "user_3@example.com"
@@ -745,7 +845,9 @@ def test_route_decline_join_request(test_client):
     login_response = login(test_client, "user@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
 
-    response = test_client.post("/community-join-request/"+str(request_id)+"/decline")
+    response = test_client.post(
+        "/community-join-request/" + str(request_id) + "/decline"
+    )
     assert (
         response.status_code == 302
     ), "Specific commumity view page could not be accessed."
@@ -759,8 +861,8 @@ def test_route_decline_join_request(test_client):
 
 def test_route_join_community_after_being_declined(test_client):
     """
-        Autor: Delfín Santana
-        Se debe de poder enviar una ruta para unirse a una comunidad despues de ser rechazado
+    Autor: Delfín Santana
+    Se debe de poder enviar una ruta para unirse a una comunidad despues de ser rechazado
     """
     test_user = db.session.get(User, 5)
     assert test_user.email == "user_3@example.com"
@@ -789,9 +891,9 @@ def test_route_join_community_after_being_declined(test_client):
 
 def test_route_accept_join_request_when_I_am_not_admin(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se intenta aceptar una solicitud de unirse a una comunidad sin ser el admin
-        de esa comunidad se devuelve un codigo 503
+    Autor: Delfín Santana
+    Cuando se intenta aceptar una solicitud de unirse a una comunidad sin ser el admin
+    de esa comunidad se devuelve un codigo 503
     """
     test_user = db.session.get(User, 5)
     assert test_user.email == "user_3@example.com"
@@ -810,7 +912,9 @@ def test_route_accept_join_request_when_I_am_not_admin(test_client):
     login_response = login(test_client, "user_3@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
 
-    response = test_client.post("/community-join-request/"+str(request_id)+"/accept")
+    response = test_client.post(
+        "/community-join-request/" + str(request_id) + "/accept"
+    )
     assert (
         response.status_code == 503
     ), "Join request could be accepted by someone that is not admin."
@@ -831,9 +935,9 @@ def test_route_accept_join_request_when_I_am_not_admin(test_client):
 
 def test_route_accept_join_request_that_doenst_exists(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se intenta aceptar una solicitud de unirse a una comunidad, y la
-        solicitud no existe, se devuelve el codigo 404
+    Autor: Delfín Santana
+    Cuando se intenta aceptar una solicitud de unirse a una comunidad, y la
+    solicitud no existe, se devuelve el codigo 404
     """
     login_response = login(test_client, "user@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
@@ -848,9 +952,9 @@ def test_route_accept_join_request_that_doenst_exists(test_client):
 
 def test_route_accept_join_request(test_client):
     """
-        Autor: Delfín Santana
-        Se debe de poder aceptara una request de unirse a una comunidad
-        siendo admin a traves de una ruta
+    Autor: Delfín Santana
+    Se debe de poder aceptara una request de unirse a una comunidad
+    siendo admin a traves de una ruta
     """
     test_user = db.session.get(User, 5)
     assert test_user.email == "user_3@example.com"
@@ -867,7 +971,9 @@ def test_route_accept_join_request(test_client):
     login_response = login(test_client, "user@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
 
-    response = test_client.post("/community-join-request/"+str(request_id)+"/accept")
+    response = test_client.post(
+        "/community-join-request/" + str(request_id) + "/accept"
+    )
     assert (
         response.status_code == 302
     ), "Specific commumity view page could not be accessed."
@@ -886,9 +992,9 @@ def test_route_accept_join_request(test_client):
 
 def test_route_join_community_when_already_in_community(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se intenta crear una solicitud de unirse a una comunidad a la que ya se pertenece
-        no pasa nada
+    Autor: Delfín Santana
+    Cuando se intenta crear una solicitud de unirse a una comunidad a la que ya se pertenece
+    no pasa nada
     """
     test_user = db.session.get(User, 5)
     assert test_user.email == "user_3@example.com"
@@ -916,9 +1022,9 @@ def test_route_join_community_when_already_in_community(test_client):
 
 def test_route_join_community_that_doesnt_exists(test_client):
     """
-        Autor: Delfín Santana
-        Cuando se intenta crear una solicitud de unirse a una comunidad que no existe
-        se devuelve un codigo 404
+    Autor: Delfín Santana
+    Cuando se intenta crear una solicitud de unirse a una comunidad que no existe
+    se devuelve un codigo 404
     """
     login_response = login(test_client, "user_3@example.com", "test1234")
     assert login_response.status_code == 200, "Login was unsuccessful."
