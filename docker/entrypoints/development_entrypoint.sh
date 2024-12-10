@@ -63,8 +63,6 @@ else
     flask db upgrade
 fi
 
-# Run the discord bot
-python3 ./app/modules/discord_bot/bot.py &
 
 # Start the Flask application with specified host and port, enabling reload and debug mode
 exec flask run --host=0.0.0.0 --port=5000 --reload --debug
