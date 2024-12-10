@@ -3,4 +3,4 @@ from wtforms import SubmitField
 
 
 class DiscordBotForm(FlaskForm):
-    submit = SubmitField('Save discord_bot')
+    submit = SubmitField("Save discord_bot")
