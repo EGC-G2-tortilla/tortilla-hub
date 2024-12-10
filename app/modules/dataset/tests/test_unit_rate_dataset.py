@@ -125,8 +125,8 @@ class TestRateDatasets:
             dataset_id = dataset.id
 
             # Attempt to rate with a non-integer value
-            invalid_ratings = ["five"]  # Different invalid types
-
+            invalid_ratings = ["five", 4.5, None, {}, []]  # Different invalid types
+            
             for invalid_rating in invalid_ratings:
                 with pytest.raises(ValueError, match="Rating value must be an integer"):
                     rating_service.rate_dataset(user_id, dataset_id, invalid_rating)
@@ -149,3 +149,46 @@ class TestRateDatasets:
             # Attempt to rate with an invalid value
             with pytest.raises(ValueError):
                 rating_service.rate_dataset(user_id, dataset_id, 6)
+    
+    
+    def test_get_dataset_rating_summary(self, test_client_with_ratings):
+        """Test retrieving a dataset's rating summary."""
+        with test_client_with_ratings.application.app_context():
+            # Fetch dataset
+            dataset = (
+                DataSet.query.options(joinedload(DataSet.ds_meta_data))
+                .join(DSMetaData)
+                .filter(DSMetaData.title == "Dataset 1")
+                .first()
+            )
+            assert dataset is not None, "Dataset with title 'Dataset 1' not found."
+            dataset_id = dataset.id
+
+            # Retrieve the rating summary
+            summary = rating_service.get_dataset_rating_summary(dataset_id)
+
+            # Validate the rating summary
+            assert summary["average_rating"] == 3.5, "Average rating does not match expected value."
+            assert summary["total_ratings"] == 2, "Total ratings count does not match expected value."
+    
+    
+    def test_get_user_rating(self, test_client_with_ratings):
+        """Test retrieving a user's rating for a dataset."""
+        with test_client_with_ratings.application.app_context():
+            # Fetch the user ID from the database based on email
+            user_id = User.query.filter_by(email="user1@example.com").first().id
+            
+            # Fetch the dataset based on the dataset's title (considering changes made)
+            dataset = (
+                DataSet.query.options(joinedload(DataSet.ds_meta_data))
+                .join(DSMetaData)
+                .filter(DSMetaData.title == "Dataset 1")
+                .first()
+            )
+            assert dataset is not None, "Dataset with title 'Dataset 1' not found."
+            dataset_id = dataset.id
+            
+            # Get the user's rating for the dataset
+            user_rating = rating_service.get_user_rating(user_id, dataset_id)
+            
+            assert user_rating == 2  # Based on the initial setup
