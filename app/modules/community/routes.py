@@ -114,17 +114,17 @@ def get_community_members_by_name(community_name):
 
     join_requests = []
     if current_user.id == community.admin:
-        resquests_to_join = (
+        requests_to_join = (
             community_join_request_service.get_all_request_by_community_id(community.id)
         )
 
         join_requests = [
             profile_service.get_by_user_id(req.user_who_wants_to_join_id)
-            for req in resquests_to_join
+            for req in requests_to_join
         ]
 
         for index, _ in enumerate(join_requests):
-            join_requests[index].id = resquests_to_join[index].id
+            join_requests[index].id_join_request = requests_to_join[index].id
 
     return render_template(
         "community/community_members.html",
