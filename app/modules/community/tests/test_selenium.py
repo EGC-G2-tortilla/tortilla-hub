@@ -352,7 +352,7 @@ def test_check_my_communities():
         email_field = driver.find_element(By.NAME, "email")
         password_field = driver.find_element(By.NAME, "password")
 
-        email_field.send_keys("user3@example.com")
+        email_field.send_keys("user1@example.com")
         password_field.send_keys("1234")
 
         password_field.send_keys(Keys.RETURN)
@@ -522,4 +522,4 @@ test_create_community()
 
 test_check_my_communities()
 
-# test_upload_dataset_to_community()
+test_upload_dataset_to_community()

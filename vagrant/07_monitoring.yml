@@ -1,0 +1,61 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Add Grafana GPG key
+      shell: |
+        curl -fsSL https://packages.grafana.com/gpg.key | gpg --dearmor -o /usr/share/keyrings/grafana-archive-keyring.gpg
+      args:
+        executable: /bin/bash
+
+    - name: Add Grafana repository
+      copy:
+        content: |
+          deb [signed-by=/usr/share/keyrings/grafana-archive-keyring.gpg] https://packages.grafana.com/oss/deb stable main
+        dest: /etc/apt/sources.list.d/grafana.list
+
+    - name: Update APT cache
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - prometheus
+          - grafana
+        state: present
+
+    - name: Start and enable Prometheus service
+      systemd:
+        name: prometheus
+        state: started
+        enabled: yes
+
+    - name: Start and enable Grafana service
+      systemd:
+        name: grafana-server
+        state: started
+        enabled: yes
+
+    - name: Configure Prometheus to scrape basic node metrics
+      template:
+        src: prometheus.yml.j2
+        dest: /etc/prometheus/prometheus.yml
+      notify: Restart Prometheus
+
+    - name: Install Node Exporter
+      apt:
+        name: prometheus-node-exporter
+        state: present
+
+    - name: Ensure Node Exporter is running
+      systemd:
+        name: prometheus-node-exporter
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Restart Prometheus
+      systemd:
+        name: prometheus
+        state: restarted

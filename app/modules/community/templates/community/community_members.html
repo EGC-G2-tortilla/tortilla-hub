@@ -57,10 +57,10 @@
                         {{future_member.name}} {{future_member.surname}}
 
                         <div style="display: flex;flex-direction: row;gap:20px;">
-                            <form action="/community-join-request/{{ future_member.id }}/accept" method="post">
+                            <form action="/community-join-request/{{ future_member.id_join_request }}/accept" method="post">
                                 <input type="submit" value="Accept" type="button" class="btn btn-success accept-button">
                             </form>
-                            <form action="/community-join-request/{{ future_member.id }}/decline" method="post">
+                            <form action="/community-join-request/{{ future_member.id_join_request }}/decline" method="post">
                                 <input type="submit" value="Decline" type="button" class="btn btn-danger decline-button">
                             </form>
                         </div>
