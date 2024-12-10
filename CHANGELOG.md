@@ -1,3 +1,16 @@
+# [1.16.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.15.0...v1.16.0) (2024-12-10)
+
+
+### Bug Fixes
+
+* se ha solucionado un error en las solicitudes de entrar a una comunidad en el que se alteraba el id de user_profile sin querer ([63ad0a2](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/63ad0a225a55c5d0460ec3035884461d78f9e34d))
+* Sustituido distutils por setuptools por quedar obsoleto ([c1a2f6a](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/c1a2f6a07268ce48175e0b144e4f86f642c8493b))
+
+
+### Features
+
+* Añadido setup para monitorización con Grafana y Prometheus ([48abd8b](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/48abd8b508c28174e8511e076c92e8b2addd8081))
+
 # [1.15.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.14.2...v1.15.0) (2024-12-09)
 
 
