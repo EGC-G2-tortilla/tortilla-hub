@@ -1,3 +1,10 @@
+## [1.16.2](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.16.1...v1.16.2) (2024-12-11)
+
+
+### Bug Fixes
+
+* Añadir variables de navegador que se habían borrado ([d1d5d2a](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/d1d5d2ae272d3bab1e59169b3cad0ff28bc2b79f))
+
 ## [1.16.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.16.0...v1.16.1) (2024-12-11)
 
 
