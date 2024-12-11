@@ -1,0 +1,51 @@
+name: Create issue if author is not found in .mailmap
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  check-author-in-mailmap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Obtener el autor y el email del commit
+        run: |
+          AUTHOR_NAME=$(git log -1 --pretty=format:'%an')
+          AUTHOR_EMAIL=$(git log -1 --pretty=format:'%ae')
+          echo "AUTHOR_NAME=${AUTHOR_NAME}" >> $GITHUB_ENV
+          echo "AUTHOR_EMAIL=${AUTHOR_EMAIL}" >> $GITHUB_ENV
+
+      - name: Comprobar si el autor esta en .mailmap
+        id: check_author
+        run: |
+          cat .mailmap
+          if ! grep -F "$AUTHOR_NAME" .mailmap || ! grep -F "$AUTHOR_EMAIL" .mailmap; then
+            echo "Autor no encontrado en .mailmap"
+            echo "author_not_found=true" >> $GITHUB_ENV
+          else
+            echo "Autor encontrado .mailmap"
+            echo "author_not_found=false" >> $GITHUB_ENV
+          fi
+
+      - name: Crear issue
+        if: env.author_not_found == 'true'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueTitle = `Autor de commit no contemplado en .mailmap: ${process.env.AUTHOR_NAME} o ${process.env.AUTHOR_EMAIL}`;
+            const issueBody = `Un commit fue creado por un autor (o por un correo) que no está en el archivo .mailmap:\n\n- **Nombre**: ${process.env.AUTHOR_NAME}\n- **Email**: ${process.env.AUTHOR_EMAIL}\n\nEl archivo .mailmap sirve para trazar todos los nombres de usuario y de correo que utilizamos a solo un nombre de usuario y correo. Por este motivo, por favor actualiza el archivo .mailmap para introducir este autor.`;
+            const label= ["bug"]
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: issueTitle,
+              body: issueBody,
+              labels: label,
+            });

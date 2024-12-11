@@ -88,3 +88,19 @@
 
 - **Acuerdo 2024-02-05: Reconocimiento de Autoría**
   - En el documento final del equipo se deberá detallar la autoría de las tareas desarrolladas por Tortilla-Hub-1.
+
+### ACTA 2024-03
+
+- **Fecha**: 13/11/2024
+- **Asistentes**:
+  - Fernández Pérez, Pablo  
+  - Iborra Conejo, José Miguel  
+  - Macías Ferrera, Antonio  
+  - Maureira Flores, Benjamín Ignacio  
+  - Ridruejo Pineda, Guadalupe  
+  - Santana Rubio, Delfín  
+  - Vela Camacho, Daniel
+- **Resultado**: Dudas resueltas sobre la implementación de tests
+
+- **Acuerdo 2024-03-01: Desarrollo de _tests_**
+  - Se acordó que, dado que durante el desarrollo del proyecto cada miembro del equipo se encarga exclusivamente de un Work Item para el grupo tortilla-hub-1, las pruebas correspondientes a cada uno de ellos son también responsabilidad individual del desarrollador de la tarea. Esto implica que cada miembro del equipo solo desarrollará las pruebas que sean coherentes con su WI, es decir, que si el desarrollo de esa funcionalidad no require de pruebas de integración, por ejemplo, ese miembro del equipo no está obligado a realizarlas.

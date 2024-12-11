@@ -7,7 +7,12 @@
     <div class="card">
         <div class="card-body">
             <h2>
-                    {{ community.name }}
+                    {{ community.name }}   
+                    {% if user_in_community %}              
+                        <a href="/dataset/{{ community.name }}/upload">
+                            <button type="button" class="btn btn-primary upload_dataset_button" data-dismiss="modal">Upload dataset</button>
+                        </a>
+                    {% endif %}
             </h2>
             <a href="{{ community.url }}">{{ community.url }}</a>
 
@@ -21,12 +26,14 @@
                 <a href="/community/{{ community.name }}/members">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Members</button>
                 </a>
-                {% if not user_in_community %}
+                {% if not user_in_community and not has_user_send_a_request_to_join %}
                 <form action="/community/{{ community.name }}/join" method="post">
                     <input name="join_community_button" type="submit" value="Join!" type="button" class="btn btn-success">
                 </form>
+                {% elif has_user_send_a_request_to_join %}
+                <buton disabled class="btn btn-warning waiting_to_be_acepted">Waiting to be accepted by the administrator</button>
                 {% else %}
-                <p class="you_are_already_a_member">
+                <p class="you_are_already_a_member" style="font-weight: 900;">
                     You are already a member
                 </p>
                 {% endif %}
@@ -49,11 +56,15 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <h2>
-
+                                {% if not dataset.get_uvlhub_doi().endswith('/doi/None') %}
                                 <a href="{{ dataset.get_uvlhub_doi() }}">
                                     {{ dataset.ds_meta_data.title }}
                                 </a>
-
+                                {% else %}
+                                <a href="{{ url_for('dataset.get_unsynchronized_dataset', dataset_id=dataset.id) }}">
+                                    {{ dataset.ds_meta_data.title }}
+                                </a>
+                                {% endif %}
                             </h2>
                             <div>
                                 <span class="badge bg-secondary">{{ dataset.get_cleaned_publication_type() }}</span>
@@ -89,7 +100,7 @@
                         </div>
 
                         <div class="row mb-2">
-
+                            {% if not dataset.get_uvlhub_doi().endswith('/doi/None') %}
                             <div class="col-12">
                                 <a href="{{ dataset.get_uvlhub_doi() }}">{{ dataset.get_uvlhub_doi() }}</a>
                                  <div id="dataset_doi_uvlhub_{{ dataset.id }}" style="display: none">
@@ -100,7 +111,11 @@
                                style="cursor: pointer"
                                onclick="copyText('dataset_doi_uvlhub_{{ dataset.id }}')"></i>
                             </div>
-
+                            {% else %}
+                            <div class="col-12">
+                                <p>Dataset not published yet</p>
+                            </div>
+                            {% endif %}
 
 
                         </div>
@@ -117,11 +132,19 @@
 
                         <div class="row  mt-4">
                             <div class="col-12">
+                                {% if not dataset.get_uvlhub_doi().endswith('/doi/None') %}
                                 <a href="{{ dataset.get_uvlhub_doi() }}" class="btn btn-outline-primary btn-sm"
                                    style="border-radius: 5px;">
                                     <i data-feather="eye" class="center-button-icon"></i>
                                     View dataset
                                 </a>
+                                {% else %}
+                                <a href="{{ url_for('dataset.get_unsynchronized_dataset', dataset_id=dataset.id) }}" class="btn btn-outline-primary btn-sm"
+                                   style="border-radius: 5px;">
+                                    <i data-feather="eye" class="center-button-icon"></i>
+                                    View dataset
+                                </a>
+                                {% endif %}
 
                                 <a href="/dataset/download/{{ dataset.id }}" class="btn btn-outline-primary btn-sm"
                                    style="border-radius: 5px;">

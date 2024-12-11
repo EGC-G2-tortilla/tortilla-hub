@@ -2,37 +2,6 @@
 
 {% block title %}View dataset{% endblock %}
 
-{% block head_extra %}
-<style>
-    .option-button {
-        display: block;
-        width: 100%;
-        margin-bottom: 5px;
-    }
-
-    .option-button:last-child {
-        margin-bottom: 0;
-    }
-    .dataset-title-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-    }
-    .divider {
-        border-top: 2px solid #ccc;
-        margin-bottom: 2rem;
-    }
-    .search-input {
-        margin-right: 10px;
-    }
-    .card-transparent {
-        background-color: transparent;
-        border: none;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
 <!-- Dataset Title, Stars and Explore Button -->
 <div class="dataset-title-container d-flex justify-content-between align-items-center" style="width: 100%;">
@@ -40,9 +9,23 @@
         <h1><b>{{ dataset.ds_meta_data.title }}</b></h1>
     </div>
     <div class="d-flex align-items-center">
-        <button class="btn btn-outline-secondary me-2 d-flex align-items-center" id="starButton" style="border-radius: 5px;">
-            <i data-feather="star" style="margin-right: 5px;"></i> Star <span id="starCount" class="ms-1">0</span>
-        </button>
+        <div class="ratings-wrapper">
+            <div class="ratings-container">
+                <div id="stars" class="ratings" data-datasetid="{{ dataset.id }}">
+                    {% for i in range(1, 6) %}
+                        <span data-rating="{{ i }}" 
+                              class="star 
+                              {% if i <= dataset.get_average_rating()|int %}filled{% elif i - dataset.get_average_rating() < 1 %}half-filled{% endif %}">
+                            ★
+                        </span>
+                    {% endfor %}
+                </div>
+                <div class="rating-details">
+                    <span id="rating-value">{{ dataset.get_average_rating() }} / 5 stars</span>
+                    <span id="rating-count">({{ dataset.ratings|length }} ratings)</span>
+                </div>
+            </div>
+        </div>
         <a href="/explore" class="btn btn-primary btn-sm d-flex align-items-center" id="search" style="border-radius: 5px;">
             <i data-feather="search" class="center-button-icon" style="margin-right: 5px;"></i>
             Explore more datasets
@@ -156,6 +139,39 @@
                 </button>
             </div>
         </div>
+
+        <!-- Botón visible solo si el usuario está autenticado con GitHub -->
+        {% if current_user.is_authenticated %}
+        <div class="input-group mb-1 mt-3">
+            <input type="text" id="repoUrlInput" class="form-control" placeholder="Insert a GitHub repo URL">
+            <form id="downloadZipForm" action="/dataset/download_repo_zip" method="post" style="display: inline;">
+                <input type="hidden" name="repo_url" id="repoUrlHiddenInput">
+                <input type="hidden" name="dataset_id" value="{{ dataset.id }}">
+                <button class="btn btn-primary" id="downloadZipButton" type="button">
+                    <i data-feather="github"></i> Upload from Github
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Modal para mostrar los archivos seleccionados -->
+        <div class="modal fade" id="githubModal" tabindex="-1" aria-labelledby="githubModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="githubModalLabel">Select one or more models from the repo</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="selectFilesForm" action="/dataset/upload_github_files" method="post">
+                            <input type="hidden" name="dataset_id" value="{{ dataset.id }}">
+                            <ul id="uvlFileList"></ul>
+                            <button id="uploadFilesButton" class="btn btn-primary" type="submit">Upload selected models</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Right Column: Dataset Information -->
@@ -240,13 +256,15 @@
                 Download all ({{ dataset.get_file_total_size_for_human() }})
             </a>
             
-            <a href="/dataset/upload_repo/{{ dataset.id }}" class="btn btn-primary mt-3" style="border-radius: 5px;">
-                <i data-feather="download" class="center-button-icon"></i>
+            <a href="/dataset/upload_repo/{{ dataset.id }}" class="btn btn-primary mt-3" style="border-radius: 5px; background-color: #333; color: white;">
+                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub logo" style="width: 20px; height: 20px; margin-right: 10px;">
+                <i data-feather="upload" class="center-button-icon"></i>
                 Upload from Github
             </a>
+
             <!-- Botón visible -->
             <a href="#" id="uploadButton" class="btn btn-primary mt-3" style="border-radius: 5px;">
-                <i data-feather="download" class="center-button-icon"></i>
+                <i data-feather="upload" class="center-button-icon"></i>
                 Upload from ZIP
             </a>
             <!-- Formulario oculto -->
@@ -280,9 +298,122 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
 <script type="text/javascript" src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
 
+{% if current_user.is_authenticated %}
 <script>
+    document.getElementById('downloadZipButton').addEventListener('click', function() {
+        const repoUrl = document.getElementById('repoUrlInput').value;
+        document.getElementById('repoUrlHiddenInput').value = repoUrl;
+    
+        const form = document.getElementById('downloadZipForm');
+        const formData = new FormData(form);
+    
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', form.action, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                try {
+                    const contentType = xhr.getResponseHeader('Content-Type');
+                    if (contentType && contentType.indexOf('application/json') !== -1) {
+                        const uvlFiles = JSON.parse(xhr.responseText);
+                        const uvlFileList = document.getElementById('uvlFileList');
+                        uvlFileList.innerHTML = '';
+    
+                        // Ordenar los archivos alfabéticamente con orden natural
+                        uvlFiles.sort((a, b) => {
+                            const fileNameA = a.split('/').pop().toLowerCase();
+                            const fileNameB = b.split('/').pop().toLowerCase();
+                            return naturalSort(fileNameA, fileNameB);
+                        });
+    
+                        uvlFiles.forEach(file => {
+                            const fileItem = document.createElement('li');
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.name = 'files';
+                            checkbox.value = file;
+                            const fileName = file.split('/').pop(); // Extraer solo el nombre del archivo
+                            checkbox.value = file;
+                            fileItem.appendChild(checkbox);
+                            fileItem.appendChild(document.createTextNode(' ')); // Añadir espacio
+                            fileItem.appendChild(document.createTextNode(fileName));
+                            uvlFileList.appendChild(fileItem);
+                        });
+                        new bootstrap.Modal(document.getElementById('githubModal')).show();
+                    } else {
+                        console.error('Error: La respuesta no es JSON.');
+                        alert('Error al procesar la solicitud.');
+                    }
+                } catch (e) {
+                    console.error('Error al analizar la respuesta JSON:', e);
+                    alert('Error al analizar la respuesta del servidor.');
+                }
+            } else {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    alert(response.error);
+                } catch (e) {
+                    console.error('Error al analizar la respuesta JSON:', e);
+                    alert('Error al procesar la solicitud.');
+                }
+            }
+        };
+        xhr.onerror = function() {
+            alert('Error al descargar el archivo ZIP.');
+        };
+        xhr.send(formData);
+    });
+    
+    function naturalSort(a, b) {
+        const ax = [], bx = [];
+    
+        a.replace(/(\d+)|(\D+)/g, (_, $1, $2) => {
+            ax.push([$1 || Infinity, $2 || ""]);
+        });
+        b.replace(/(\d+)|(\D+)/g, (_, $1, $2) => {
+            bx.push([$1 || Infinity, $2 || ""]);
+        });
+    
+        while (ax.length && bx.length) {
+            const an = ax.shift();
+            const bn = bx.shift();
+            const nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
+            if (nn) return nn;
+        }
+    
+        return ax.length - bx.length;
+    }
+</script>
+{%endif%}
+
+<script>
+    document.getElementById('uploadFilesButton').addEventListener('click', function(event) {
+        event.preventDefault();
+        const form = document.getElementById('selectFilesForm');
+        const formData = new FormData(form);
+    
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', document.getElementById('selectFilesForm').action, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Recargar la página actual
+                window.location.reload();
+            } else {
+                console.log(xhr.status);
+                console.error('Error al analizar la respuesta JSON');
+                alert('Error al procesar la solicitud.');
+            }
+        };
+        xhr.onerror = function() {
+            alert('Error al subir los archivos seleccionados.');
+        };
+        xhr.send(formData);
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         feather.replace();
     });
@@ -400,21 +531,6 @@
         });
     }
 
-    document.getElementById("starButton").addEventListener("click", function () {
-        let starCount = document.getElementById("starCount");
-        let count = parseInt(starCount.textContent);
-        if (this.classList.contains("btn-outline-secondary")) {
-            this.classList.remove("btn-outline-secondary");
-            this.classList.add("btn-warning");
-            count += 1;
-        } else {
-            this.classList.remove("btn-warning");
-            this.classList.add("btn-outline-secondary");
-            count -= 1;
-        }
-        starCount.textContent = count;
-    });
-
     document.getElementById('uploadButton').addEventListener('click', function(event) {
         event.preventDefault();
         document.getElementById('zipFileInput').click();
@@ -437,6 +553,115 @@
             xhr.send(formData);
         }
     });
-    
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const stars = document.querySelectorAll(".ratings span");
+    const userLoggedIn = JSON.parse("{{ current_user.is_authenticated|tojson }}");
+    let currentRating = 0;
+
+    // Initialize the current rating on page load
+    stars.forEach(star => {
+        if (star.classList.contains('filled') || star.classList.contains('half-filled')) {
+            currentRating += star.classList.contains('half-filled') ? 0.5 : 1;
+        }
+    });
+
+    stars.forEach((star, index) => {
+        // Hover behavior
+        star.addEventListener("mouseover", function () {
+            highlightStars(index + 1);
+        });
+
+        star.addEventListener("mouseout", function () {
+            restoreCurrentRating();
+        });
+
+        // Click behavior
+        star.addEventListener("click", function () {
+            if (!userLoggedIn) {
+                alert('Please, login to rate a dataset.');
+                return;
+            }
+
+            const rating = parseFloat(this.dataset.rating);
+            const datasetId = this.parentElement.dataset.datasetid;
+
+            // Save rating to the server
+            fetch(`/datasets/${datasetId}/rate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        currentRating = rating; // Update current rating
+                        updateUserVote(rating); // Update stars for personal vote
+                        fetchRatings(datasetId); // Fetch updated rating
+                        showAlert('Thank you for your rating! The dataset statistics have been updated.');
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+
+    // Highlight stars during hover
+    function highlightStars(rating) {
+        stars.forEach((star, index) => {
+            star.classList.toggle('filled', index < rating);
+        });
+    }
+
+    // Restore stars to the current personal rating
+    function restoreCurrentRating() {
+        updateUserVote(currentRating);
+    }
+
+    // Update stars to reflect the user's vote
+    function updateUserVote(rating) {
+        stars.forEach((star, index) => {
+            star.classList.toggle('filled', index < rating);
+            star.classList.remove('half-filled');
+        });
+    }
+
+    // Fetch and update rating display
+    function fetchRatings(datasetId) {
+        fetch(`/datasets/${datasetId}/ratings`)
+            .then(response => response.json())
+            .then(data => {
+                const ratingValue = document.getElementById('rating-value');
+                const ratingCount = document.getElementById('rating-count');
+
+                // Update average rating and total ratings
+                ratingValue.textContent = `${data.average_rating} / 5 stars`;
+                ratingCount.textContent = `(${data.total_ratings} ratings)`;
+
+                // Highlight updated data for visibility
+                [ratingValue, ratingCount].forEach(el => {
+                    el.classList.add('updated');
+                    setTimeout(() => el.classList.remove('updated'), 1000);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Show a brief alert (toast-style)
+    function showAlert(message) {
+        const alertBox = document.createElement('div');
+        alertBox.className = 'toast-alert';
+        alertBox.textContent = message;
+
+        document.body.appendChild(alertBox);
+
+        // Automatically remove the alert after 3 seconds
+        setTimeout(() => {
+            alertBox.remove();
+        }, 3000);
+    }
+    });
+
 </script>
 {% endblock %}

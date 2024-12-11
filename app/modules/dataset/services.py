@@ -12,7 +12,6 @@ import requests
 
 from app.modules.auth.services import AuthenticationService
 from app.modules.dataset.models import (
-    Author,
     DSDownloadRecord,
     DSViewRecord,
     DataSet,
@@ -26,6 +25,7 @@ from app.modules.dataset.repositories import (
     DSMetaDataRepository,
     DSViewRecordRepository,
     DataSetRepository,
+    DatasetRatingRepository,
 )
 from app.modules.featuremodel.repositories import (
     FMMetaDataRepository,
@@ -37,7 +37,9 @@ from app.modules.hubfile.repositories import (
     HubfileViewRecordRepository,
 )
 from core.services.BaseService import BaseService
+from app.modules.fakenodo.services import FakenodoService
 
+fakenodo = FakenodoService()
 logger = logging.getLogger(__name__)
 
 
@@ -196,7 +198,7 @@ class DataSetService(BaseService):
                 f"Subida a GitLab del archivo {file_name}: {response.status_code} {response.reason}"
             )
 
-    def create_from_form(self, form, current_user) -> DataSet:
+    def create_from_form(self, form, current_user, community=None) -> DataSet:
         main_author = {
             "name": f"{current_user.profile.surname}, {current_user.profile.name}",
             "affiliation": current_user.profile.affiliation,
@@ -213,9 +215,19 @@ class DataSetService(BaseService):
                 )
                 dsmetadata.authors.append(author)
 
-            dataset = self.create(
-                commit=False, user_id=current_user.id, ds_meta_data_id=dsmetadata.id
-            )
+            if community is not None:
+                dataset = self.create(
+                    commit=False,
+                    user_id=current_user.id,
+                    ds_meta_data_id=dsmetadata.id,
+                    community_id=community.id,
+                )
+                print("\n\tcommunity is not none\n")
+            else:
+                dataset = self.create(
+                    commit=False, user_id=current_user.id, ds_meta_data_id=dsmetadata.id
+                )
+                print("\n\tcommunity is none\n")
 
             for feature_model in form.feature_models:
                 uvl_filename = feature_model.uvl_filename.data
@@ -269,6 +281,9 @@ class DataSetService(BaseService):
     def get_all_datasets(self):
         return self.repository.get_all_datasets()
 
+    def get_dataset_by_id(self, dataset_id):
+        return self.repository.get_or_404(dataset_id)
+
     def set_dataset_to_staged(self, dataset_id):
         try:
             dataset = self.repository.get_by_id(dataset_id)
@@ -302,6 +317,7 @@ class DataSetService(BaseService):
             datasets = self.repository.get_user_staged_datasets(current_user_id)
             for dataset in datasets:
                 if dataset.ds_meta_data.dataset_status == DatasetStatus.STAGED:
+                    fakenodo.test_full_connection()
                     dataset.ds_meta_data.dataset_status = DatasetStatus.PUBLISHED
                     self.repository.session.commit()
                 else:
@@ -324,6 +340,19 @@ class DataSetService(BaseService):
             logger.error(f"Exception setting dataset to staged: {exc}")
             self.repository.session.rollback()
 
+    def unstage_all_datasets(self, current_user_id):
+        try:
+            datasets = self.repository.get_user_staged_datasets(current_user_id)
+            if len(datasets) > 0:
+                for dataset in datasets:
+                    dataset.ds_meta_data.dataset_status = DatasetStatus.UNSTAGED
+                self.repository.session.commit()
+            else:
+                raise ValueError("There's no datasets available to unstage")
+        except Exception as exc:
+            logger.error(f"Exception setting dataset to unstaged: {exc}")
+            self.repository.session.rollback()
+
 
 class AuthorService(BaseService):
     def __init__(self):
@@ -334,14 +363,8 @@ class AuthorService(BaseService):
         result = []
 
         for author in popular_authors:
-            dataset_count = (
-                self.repository.session.query(func.count(DataSet.id))
-                .join(DSMetaData, DSMetaData.id == DataSet.ds_meta_data_id)
-                .filter(Author.ds_meta_data_id == DSMetaData.id)
-                .filter(Author.id == author.id)
-                .scalar()
-            )
-            result.append({"name": author.name, "datasets": dataset_count})
+            download_count = self.repository.total_downloads_by_author(author.id)
+            result.append({"name": author.name, "downloads": download_count})
 
         return result
 
@@ -414,3 +437,43 @@ class SizeService:
             return f"{round(size / (1024 ** 2), 2)} MB"
         else:
             return f"{round(size / (1024 ** 3), 2)} GB"
+
+
+class DatasetRatingService(BaseService):
+    def __init__(self):
+        super().__init__(DatasetRatingRepository())
+
+    def rate_dataset(self, user_id: int, dataset_id: int, rating_value: int):
+        """Allows registering or updating a rating for a dataset."""
+        try:
+            rating_value = int(rating_value)
+        except ValueError:
+            raise ValueError("Rating value must be an integer")
+
+        if not (1 <= rating_value <= 5):
+            raise ValueError("Rating value must be between 1 and 5")
+
+        # Check if a previous rating exists
+        existing_rating = self.repository.get_rating_by_user_and_dataset(
+            user_id, dataset_id
+        )
+        if existing_rating:
+            # Update the existing rating
+            existing_rating.rating = rating_value
+            self.repository.save(existing_rating)
+        else:
+            # Create a new rating
+            self.repository.create(
+                user_id=user_id, dataset_id=dataset_id, rating=rating_value
+            )
+
+    def get_dataset_rating_summary(self, dataset_id: int):
+        """Gets the average and total number of ratings for a dataset."""
+        average_rating = self.repository.get_average_rating(dataset_id)
+        total_ratings = self.repository.get_ratings_count(dataset_id)
+        return {"average_rating": average_rating, "total_ratings": total_ratings}
+
+    def get_user_rating(self, user_id: int, dataset_id: int) -> Optional[int]:
+        """Gets the rating given by a user for a specific dataset."""
+        rating = self.repository.get_rating_by_user_and_dataset(user_id, dataset_id)
+        return rating.rating if rating else None

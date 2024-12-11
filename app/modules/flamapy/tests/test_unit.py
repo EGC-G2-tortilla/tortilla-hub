@@ -110,3 +110,136 @@ def test_validate_uvl_file_invalid(test_client):
         assert any(
             expected in error for error in error_messages
         ), f"Expected'{expected}' not found in message."
+
+
+def test_validate_uvl_file_empty(test_client):
+    """
+    Prueba la función validate_uvl_file con un archivo UVL vacío.
+    """
+    empty_uvl_content = ""
+
+    data = {"file": (BytesIO(empty_uvl_content.encode("utf-8")), "empty_model.uvl")}
+
+    response = test_client.post(
+        "/flamapy/validate_uvl", data=data, content_type="multipart/form-data"
+    )
+
+    # Verificar que la respuesta indica un error
+    assert response.status_code == 400
+    json_data = response.get_json()
+
+    assert "errors" in json_data
+    assert len(json_data["errors"]) == 1  # Un solo error esperado
+    assert json_data["errors"][0] == "The UVL file is empty and cannot be processed."
+
+
+def test_validate_uvl_file_complex_structure(test_client):
+    """
+    Prueba la función validate_uvl_file con un archivo UVL con sintaxis compleja.
+    """
+    complex_uvl_content = """features
+    System
+        mandatory
+            Core
+                alternative
+                    ModuleA
+                    ModuleB
+            Plugins
+                or
+                    Plugin1
+                    Plugin2
+        optional
+            Documentation
+
+constraints
+    ModuleA => Plugin1
+    Plugin2 => Documentation
+"""
+
+    data = {
+        "file": (
+            BytesIO(complex_uvl_content.encode("utf-8")),
+            "complex_model.uvl",
+        )
+    }
+
+    response = test_client.post(
+        "/flamapy/validate_uvl", data=data, content_type="multipart/form-data"
+    )
+
+    # Verificar que la respuesta es exitosa
+    assert response.status_code == 200
+    assert response.get_json() == {"message": "Valid Model"}
+
+
+def test_validate_uvl_file_invalid_characters(test_client):
+    """
+    Prueba la función validate_uvl_file con un archivo UVL que contiene caracteres no válidos.
+    """
+    invalid_chars_uvl_content = """features
+    Root@
+        mandatory
+            Component$
+"""
+
+    data = {
+        "file": (
+            BytesIO(invalid_chars_uvl_content.encode("utf-8")),
+            "invalid_chars_model.uvl",
+        )
+    }
+
+    response = test_client.post(
+        "/flamapy/validate_uvl", data=data, content_type="multipart/form-data"
+    )
+
+    # Verificar que la respuesta indica un error
+    assert response.status_code == 400
+    json_data = response.get_json()
+
+    assert "errors" in json_data
+    assert len(json_data["errors"]) > 0
+    assert "token recognition error" in json_data["errors"][0]
+
+
+def test_validate_uvl_file_multiple_errors(test_client):
+    """
+    Prueba la función validate_uvl_file con un archivo UVL que contiene múltiples errores.
+    """
+    multiple_errors_uvl_content = """features
+    Root
+        alternative
+            Component1
+            Component2
+
+    constraints
+    Component1 => Component3
+    """
+
+    data = {
+        "file": (
+            BytesIO(multiple_errors_uvl_content.encode("utf-8")),
+            "multiple_errors_model.uvl",
+        )
+    }
+
+    response = test_client.post(
+        "/flamapy/validate_uvl", data=data, content_type="multipart/form-data"
+    )
+
+    # Verificar que la respuesta indica un error
+    assert response.status_code == 400
+    json_data = response.get_json()
+
+    assert "errors" in json_data
+    assert len(json_data["errors"]) > 1  # Más de un error esperado
+
+    # Verificar mensajes clave
+    expected_error_fragments = [
+        "extraneous input",
+        "missing '<INDENT>'",
+    ]
+    for fragment in expected_error_fragments:
+        assert any(
+            fragment in error for error in json_data["errors"]
+        ), f"Expected '{fragment}' in errors, got {json_data['errors']}"

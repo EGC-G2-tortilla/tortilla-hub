@@ -51,6 +51,7 @@ kaitaistruct==0.10
 locust==2.29.1
 Mako==1.3.5
 MarkupSafe==2.1.5
+matplotlib==3.9.3
 mccabe==0.7.0
 msgpack==1.0.8
 networkx==3.3
@@ -63,6 +64,8 @@ pyasn1==0.6.0
 pycodestyle==2.12.0
 pycparser==2.22
 pyflakes==3.2.0
+PyGithub==2.5.0
+GitPython==3.1.43
 PyMySQL==1.1.1
 pyOpenSSL==24.1.0
 pyparsing==3.1.2
@@ -86,6 +89,7 @@ SQLAlchemy==2.0.31
 SQLAlchemy-Utils==0.41.2
 trio==0.26.0
 trio-websocket==0.11.1
+tqdm==4.67.1
 typing_extensions==4.12.2
 Unidecode==1.3.8
 urllib3==2.2.2
@@ -99,3 +103,5 @@ WTForms==3.1.2
 zope.event==5.0
 zope.interface==6.4.post2
 zstandard==0.22.0
+nextcord==2.6.0
+nextcord-ext-menus==1.5.7
