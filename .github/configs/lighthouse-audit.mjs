@@ -18,16 +18,13 @@ if (!fs.existsSync(configPath)) {
 const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
 (async () => {
-  const browser = await launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
-  });
+  const browser = await launch({ headless: true });
   const page = await browser.newPage();
 
   try {
     // Login
     console.log('Iniciando sesión...');
-    await page.goto(config.login.url, { timeout: 60000 });
+    await page.goto(config.login.url, { timeout: 100000 });
     await page.type(config.login.usernameSelector, process.env.LOGIN_USERNAME);
     await page.type(config.login.passwordSelector, process.env.LOGIN_PASSWORD);
 
@@ -53,7 +50,7 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
       const report = await lighthouse(url, {
         port: new URL(browser.wsEndpoint()).port,
         output: 'html',
-        onlyCategories: ['accessibility'],
+        onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
       });
 
       const fileName = `${reportsDir}/lighthouse-report-${url.replace(/[^a-z0-9]/gi, '_')}.html`;
@@ -63,7 +60,7 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
     // Logout
     console.log('Navegando a la página de logout...');
-    await page.goto(config.logout.url, { timeout: 60000 });
+    await page.goto(config.logout.url, { timeout: 100000 });
     console.log('Logout completado.');
 
     console.log('Analizando rutas públicas...');
@@ -74,7 +71,7 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
       const report = await lighthouse(url, {
         port: new URL(browser.wsEndpoint()).port,
         output: 'html',
-        onlyCategories: ['accessibility'],
+        onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
       });
 
       const fileName = `${reportsDir}/lighthouse-report-${url.replace(/[^a-z0-9]/gi, '_')}.html`;
