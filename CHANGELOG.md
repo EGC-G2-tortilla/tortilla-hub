@@ -1,3 +1,10 @@
+## [1.16.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.16.0...v1.16.1) (2024-12-11)
+
+
+### Bug Fixes
+
+* Modificar workflow lighthouse para que analice otras métricas. ([ffb1a61](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ffb1a618e0291a83cc757aa6e9524d148ce522f0))
+
 # [1.16.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.15.0...v1.16.0) (2024-12-10)
 
 
