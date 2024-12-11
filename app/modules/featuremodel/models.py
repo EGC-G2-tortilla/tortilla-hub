@@ -19,12 +19,54 @@ class FeatureModel(db.Model):
         return f"FeatureModel<{self.id}>"
 
     def get_fact_labels(self):
+        metrics = self.fm_meta_data.fm_metrics if self.fm_meta_data and self.fm_meta_data.fm_metrics else None
         return {
             "id": self.id,
-            "title": self.fm_meta_data.title,
-            "uvl_filename": self.fm_meta_data.uvl_filename,
-            "metrics": self.fm_meta_data.fm_metrics.to_dict() if self.fm_meta_data.fm_metrics else None,
+            "title": self.fm_meta_data.title if self.fm_meta_data else None,
+            "uvl_filename": self.fm_meta_data.uvl_filename if self.fm_meta_data else None,
+            "metrics": metrics.to_dict() if metrics else None,
         }
+
+    @staticmethod
+    def extract_features(uvl_file_path):
+        parser = UVLParser()
+        model_data = parser.parse(uvl_file_path)
+        return model_data["features"]
+
+    @staticmethod
+    def extract_constraints(uvl_file_path):
+        parser = UVLParser()
+        model_data = parser.parse(uvl_file_path)
+        return model_data["constraints"]
+
+    @staticmethod
+    def calculate_max_depth(features):
+        parser = UVLParser()
+        model_data = parser.parse(features)
+        return model_data["max_depth"]
+
+    @staticmethod
+    def calculate_variability(features, constraints):
+        """
+        Calcula la variabilidad del modelo.
+        """
+        if not features:
+            return 0.0
+        # Ejemplo: consideramos que cada restricción reduce la variabilidad
+        return len(constraints) / len(features) if features else 0.0
+
+    def calculate_metrics(self, file_path):
+        parser = UVLParser()
+        model_data = parser.parse(file_path)
+
+        # Asignar métricas a los campos correspondientes
+        self.fm_meta_data.fm_metrics = self.fm_meta_data.fm_metrics or FMMetrics()
+        self.fm_meta_data.fm_metrics.number_of_features = len(model_data["features"])
+        self.fm_meta_data.fm_metrics.constraints_count = len(model_data["constraints"])
+        self.fm_meta_data.fm_metrics.max_depth = model_data["max_depth"]
+        self.fm_meta_data.fm_metrics.variability = self.calculate_variability(
+            model_data["features"], model_data["constraints"]
+        )
 
     def to_dict(self):
         return {
@@ -32,6 +74,7 @@ class FeatureModel(db.Model):
             "fact_labels": self.get_fact_labels(),  # Añadido
             "files": [file.to_dict() for file in self.files],
         }
+
 
 class FMMetaData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -87,6 +130,7 @@ class FMMetrics(db.Model):
         )
 
     def to_dict(self):
+        
         return {
             "solver": self.solver,
             "not_solver": self.not_solver,
@@ -96,3 +140,38 @@ class FMMetrics(db.Model):
             "variability": self.variability,
         }
 
+class UVLParser:
+    def parse(self, file_path):
+        features = []
+        constraints = []
+        max_depth = 0
+
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+
+        current_depth = 0
+        for line in lines:
+            line = line.strip()
+
+            # Procesar características
+            if line.startswith("features"):
+                current_depth = 0
+            elif line and not line.startswith("constraints"):
+                if line.startswith("mandatory") or line.startswith("optional") or line.startswith("alternative") or line.startswith("or"):
+                    current_depth += 1
+                elif line.endswith(";"):
+                    feature_name = line.strip(";").strip('"')
+                    features.append(feature_name)
+                    max_depth = max(max_depth, current_depth)
+
+            # Procesar restricciones
+            elif line.startswith("constraints"):
+                continue
+            elif line:
+                constraints.append(line)
+
+        return {
+            "features": features,
+            "constraints": constraints,
+            "max_depth": max_depth,
+        }

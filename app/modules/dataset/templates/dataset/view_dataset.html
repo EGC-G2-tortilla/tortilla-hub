@@ -104,6 +104,16 @@
                             </div>
                         </div>
                     </div>
+                    <!-- FM Fact Labels -->
+                    <div class="mt-2">
+                        <strong>Fact Labels:</strong>
+                        <ul>
+                            <li><strong>Size:</strong> {{ feature_model.fm_meta_data.fm_metrics.number_of_features }}</li>
+                            <li><strong>Depth:</strong> {{ feature_model.fm_meta_data.fm_metrics.max_depth }}</li>
+                            <li><strong>Constraints:</strong> {{ feature_model.fm_meta_data.fm_metrics.constraints_count }}</li>
+                            <li><strong>Variability:</strong> {{ feature_model.fm_meta_data.fm_metrics.variability }}</li>
+                        </ul>
+                    </div>
                 {% endfor %}
             {% endfor %}
         </div>
@@ -174,6 +184,21 @@
         </div>
     </div>
 
+    <!-- Dataset Fact Labels -->
+    <div class="row mb-4">
+        <div class="row-md-4 col-12">
+            <span class="text-secondary"><b>Fact Labels</b></span>
+        </div>
+        <div class="row-md-8 col-12">
+            <ul>
+                <li><strong>Number of Models:</strong> {{ dataset.get_fact_labels().dataset.number_of_models }}</li>
+                <li><strong>Total Features:</strong> {{ dataset.get_fact_labels().dataset.total_features }}</li>
+                <li><strong>Average Features:</strong> {{ dataset.get_fact_labels().dataset.average_features_per_model }}</li>
+                <li><strong>Constraints:</strong> {{ dataset.get_fact_labels().dataset.constraints_count }}</li>
+                <li><strong>Max Depth:</strong> {{ dataset.get_fact_labels().dataset.max_depth }}</li>
+            </ul>
+        </div>
+    </div>
     <!-- Right Column: Dataset Information -->
     <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
         <div class="card-transparent">

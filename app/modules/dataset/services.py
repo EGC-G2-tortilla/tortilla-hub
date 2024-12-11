@@ -222,12 +222,12 @@ class DataSetService(BaseService):
                     ds_meta_data_id=dsmetadata.id,
                     community_id=community.id,
                 )
-                print("\n\tcommunity is not none\n")
+                logger.info("Community is not none")
             else:
                 dataset = self.create(
                     commit=False, user_id=current_user.id, ds_meta_data_id=dsmetadata.id
                 )
-                print("\n\tcommunity is none\n")
+                logger.info("Community is none")
 
             for feature_model in form.feature_models:
                 uvl_filename = feature_model.uvl_filename.data
@@ -256,6 +256,13 @@ class DataSetService(BaseService):
                     feature_model_id=fm.id,
                 )
                 fm.files.append(file)
+
+                # **Cálculo de métricas**
+                try:
+                    fm.calculate_metrics(file_path)  # Llama al método de cálculo en el modelo
+                except Exception as e:
+                    logger.error(f"Error calculating metrics for FeatureModel {fm.id}: {e}")
+
                 if github_repo:
                     self.upload_to_hub("github", github_repo, file_path)
                 if gitlab_repo:
