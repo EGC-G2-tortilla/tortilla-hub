@@ -1,3 +1,10 @@
+## [1.16.3](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.16.2...v1.16.3) (2024-12-12)
+
+
+### Bug Fixes
+
+* Importado el playbook de monitorización ([da1d168](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/da1d1685355ce9006317f03286c6f8fae1648b06))
+
 ## [1.16.2](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.16.1...v1.16.2) (2024-12-11)
 
 
