@@ -837,8 +837,8 @@ def download_all_datasets():
         response.headers["X-Success-Message"] = "All datasets downloaded successfully"
     finally:
         # Eliminar el directorio temporal después de su uso
-        return response
         shutil.rmtree(temp_dir)
+    return response
 
 
 @dataset_bp.route("/datasets/<int:dataset_id>/rate", methods=["POST"])
