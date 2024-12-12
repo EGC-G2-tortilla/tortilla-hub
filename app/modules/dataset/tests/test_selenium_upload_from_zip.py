@@ -61,17 +61,19 @@ def test_exists_button():
 
 def test_not_exists_button():
     driver = initialize_driver()
-    
+
     try:
         host = get_host_for_selenium_testing()
         # Ir a la página de un dataset
         driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")
         wait_for_page_to_load(driver)
-        
+
         try:
             driver.find_element(By.ID, "uploadButton")
             assert False, "El botón de subir archivo existe"
         except NoSuchElementException:
-            assert True  # El botón no se encontró, lo cual es el comportamiento esperado
+            assert (
+                True  # El botón no se encontró, lo cual es el comportamiento esperado
+            )
     finally:
         close_driver(driver)
