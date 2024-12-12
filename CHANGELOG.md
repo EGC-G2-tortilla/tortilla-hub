@@ -1,3 +1,20 @@
+# [1.17.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.16.3...v1.17.0) (2024-12-12)
+
+
+### Bug Fixes
+
+* .mailmap añadido Daniel Fernandez Caballero <danfercab@alum.us.es>  Close [#188](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/188) ([1eaf319](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/1eaf319a91843ea02d529e850477aa15b4c2e125))
+* .mailmap añadido manbarjim2 <manbarjim2@gmail.com> y el correo que le genera github Close [#193](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/193) ([f35fe57](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/f35fe5746447ab459cd9a35d8f03563e3e9f0829))
+* Borrar botón upload from github ([627cee2](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/627cee2e61644b4850637aacee96bfb9f55f229b))
+* Fallo del enrutamiento del bot de discord ([ab97e39](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ab97e395467d8a48f15d5dd487d210dfb57a9a3a)), closes [#187](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/187)
+
+
+### Features
+
+* Inicialización bot discord ([7c27650](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7c27650b4424c28fa93b946f396d11d9a68efad3))
+* Integración del bot finalizada y comando para ejecutarlo en despliegue ([4d7cf89](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/4d7cf891dfbcec17509fce9d4fb2cb431a2207d7))
+* Primeros comandos del bot de discord ([81bd9e3](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/81bd9e34e2d808dfea7a2bbe4622b4f365afe061))
+
 ## [1.16.3](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.16.2...v1.16.3) (2024-12-12)
 
 
