@@ -42,15 +42,15 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{secrets.PI_HOST}} >> ~/.ssh/known_hosts
       
-          
+
       - name: Degub SSH connection
         run: |
           ssh -vvv -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} "echo 'SSH connection successful'"
 
           
       - name: Pull Docker image
-      run: |
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} "docker pull uvlhubtortilla/tortilla-hub:latest"
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} "docker pull uvlhubtortilla/tortilla-hub:latest"
         
 
       - name: Start Docker containers
