@@ -56,6 +56,6 @@ jobs:
       - name: Start Docker containers
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} << 'EOF'
-            cd /developer/tortilla-hub
+            cd /home/tortilla/developer/tortilla-hub
             docker compose -f docker/docker-compose.dev.yml up -d --force-recreate
           EOF
