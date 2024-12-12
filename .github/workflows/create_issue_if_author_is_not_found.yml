@@ -38,7 +38,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issueTitle = `Autor de commit no contemplado en .mailmap: ${process.env.AUTHOR_NAME} o ${process.env.AUTHOR_EMAIL}`;
+            const issueTitle = `Incidencia: Autor de commit no contemplado en .mailmap: ${process.env.AUTHOR_NAME} o ${process.env.AUTHOR_EMAIL}`;
             const issueBody = `Un commit fue creado por un autor (o por un correo) que no está en el archivo .mailmap:\n\n- **Nombre**: ${process.env.AUTHOR_NAME}\n- **Email**: ${process.env.AUTHOR_EMAIL}\n\nEl archivo .mailmap sirve para trazar todos los nombres de usuario y de correo que utilizamos a solo un nombre de usuario y correo. Por este motivo, por favor actualiza el archivo .mailmap para introducir este autor.`;
             const label= ["bug"]
             
