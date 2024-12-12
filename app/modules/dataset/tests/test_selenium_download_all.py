@@ -81,20 +81,24 @@ def test_download_all_authenticated():
 
 def test_download_all_unauthenticated():
     driver = initialize_driver()
-    
+
     try:
         host = get_host_for_selenium_testing()
         driver.get(f"{host}")
         wait_for_page_to_load(driver)
-        
+
         # 1. Click on the "Download all" button
         # Esperar explícitamente a que el elemento sea clickable
         download_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "a[href='/dataset/download_all']"))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "a[href='/dataset/download_all']")
+            )
         )
 
         # Verificar si el botón es visible y habilitado
-        assert download_button.is_displayed() and download_button.is_enabled(), "El botón no está visible o habilitado"
+        assert (
+            download_button.is_displayed() and download_button.is_enabled()
+        ), "El botón no está visible o habilitado"
 
         # Desplazarse al elemento
         driver.execute_script("arguments[0].scrollIntoView(true);", download_button)
@@ -104,17 +108,20 @@ def test_download_all_unauthenticated():
             driver.execute_script("arguments[0].click();", download_button)
         except Exception as e:
             raise RuntimeError(f"No se pudo hacer clic en el botón: {str(e)}")
-        
+
         wait_for_page_to_load(driver)
-        
+
         # 2. Check if in the response headers theres an X-Success-Message
         session_cookies = driver.get_cookies()
-        cookies = {cookie['name']: cookie['value'] for cookie in session_cookies}
+        cookies = {cookie["name"]: cookie["value"] for cookie in session_cookies}
 
         response = requests.get(f"{host}/dataset/download_all", cookies=cookies)
-        
-        assert response.headers.get("X-Success-Message") == "All datasets downloaded successfully", "El encabezado 'X-Success-Message' no contiene el valor esperado en la respuesta"
-        
+
+        assert (
+            response.headers.get("X-Success-Message")
+            == "All datasets downloaded successfully"
+        ), "El encabezado 'X-Success-Message' no contiene el valor esperado en la respuesta"
+
     finally:
         close_driver(driver)
 
