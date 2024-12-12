@@ -59,14 +59,18 @@ class FeatureModel(db.Model):
         parser = UVLParser()
         model_data = parser.parse(file_path)
 
-        # Asignar métricas a los campos correspondientes
-        self.fm_meta_data.fm_metrics = self.fm_meta_data.fm_metrics or FMMetrics()
+        if not self.fm_meta_data.fm_metrics:
+            self.fm_meta_data.fm_metrics = FMMetrics()
+            db.session.add(self.fm_meta_data.fm_metrics)
+
         self.fm_meta_data.fm_metrics.number_of_features = len(model_data["features"])
         self.fm_meta_data.fm_metrics.constraints_count = len(model_data["constraints"])
         self.fm_meta_data.fm_metrics.max_depth = model_data["max_depth"]
         self.fm_meta_data.fm_metrics.variability = self.calculate_variability(
             model_data["features"], model_data["constraints"]
         )
+
+        db.session.commit()
 
     def to_dict(self):
         return {
