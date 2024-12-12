@@ -44,7 +44,7 @@ jobs:
       
       - name: Degub SSH connection
         run: |
-          ssh -vvv -i ~/.ssh/id_rsa StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} "echo 'SSH connection successful'"
+          ssh -vvv -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} "echo 'SSH connection successful'"
 
           
       - name: Deploy to Raspberry Pi
