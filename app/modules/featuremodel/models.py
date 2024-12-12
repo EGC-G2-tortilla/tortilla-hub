@@ -130,7 +130,6 @@ class FMMetrics(db.Model):
         )
 
     def to_dict(self):
-        
         return {
             "solver": self.solver,
             "not_solver": self.not_solver,
@@ -139,6 +138,7 @@ class FMMetrics(db.Model):
             "max_depth": self.max_depth,
             "variability": self.variability,
         }
+
 
 class UVLParser:
     def parse(self, file_path):
@@ -157,7 +157,12 @@ class UVLParser:
             if line.startswith("features"):
                 current_depth = 0
             elif line and not line.startswith("constraints"):
-                if line.startswith("mandatory") or line.startswith("optional") or line.startswith("alternative") or line.startswith("or"):
+                if (
+                    line.startswith("mandatory")
+                    or line.startswith("optional")
+                    or line.startswith("alternative")
+                    or line.startswith("or")
+                ):
                     current_depth += 1
                 elif line.endswith(";"):
                     feature_name = line.strip(";").strip('"')

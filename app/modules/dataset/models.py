@@ -49,6 +49,7 @@ class Author(db.Model):
         return {"name": self.name, "affiliation": self.affiliation, "orcid": self.orcid}
         return {"name": self.name, "affiliation": self.affiliation, "orcid": self.orcid}
 
+
 class DSMetrics(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     number_of_models = db.Column(db.String(120))  # Número de modelos en el dataset
@@ -65,6 +66,7 @@ class DSMetrics(db.Model):
             f"constraints={self.constraints_count}, "
             f"max_depth={self.max_depth}>"
         )
+
     def to_dict(self):
         return {
             "number_of_models": self.number_of_models,
@@ -108,7 +110,6 @@ class DSMetaData(db.Model):
         }
 
 
-
 class DataSet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
@@ -135,8 +136,9 @@ class DataSet(db.Model):
         "FeatureModel", backref="data_set", lazy=True, cascade="all, delete"
     )
     ratings = db.relationship(
-         "DatasetRating", backref = "dataset", lazy = True
+         "DatasetRating", backref="dataset", lazy=True
     )
+
     def name(self):
         return self.ds_meta_data.title
 
@@ -211,8 +213,8 @@ class DataSet(db.Model):
                 ),
                 "max_depth": max(
                     (fm.fm_meta_data.fm_metrics.max_depth
-                    for fm in self.feature_models
-                    if fm.fm_meta_data and fm.fm_meta_data.fm_metrics),
+                     for fm in self.feature_models
+                     if fm.fm_meta_data and fm.fm_meta_data.fm_metrics),
                     default=0,
                 ),
             },
@@ -220,7 +222,6 @@ class DataSet(db.Model):
                 {"model_id": fm.id, **fm.get_fact_labels()} for fm in self.feature_models
             ],
         }
-
 
     def to_dict(self):
         return {
@@ -281,10 +282,11 @@ class DOIMapping(db.Model):
     dataset_doi_old = db.Column(db.String(120))
     dataset_doi_new = db.Column(db.String(120))
 
+
 class DatasetRating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    dataset_id = db.Column(db.Integer, db.ForeignKey("data_set.id"), nullable = False)
+    dataset_id = db.Column(db.Integer, db.ForeignKey("data_set.id"), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     rated_at = db.Column(db.DateTime, server_default=db.func.now())
 
