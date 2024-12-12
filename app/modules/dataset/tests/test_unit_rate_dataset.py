@@ -4,8 +4,8 @@ from app.modules.auth.models import User
 from app.modules.dataset.models import (
     DatasetRating,
     DataSet,
-    DSMetrics, 
-    DSMetaData, 
+    DSMetrics,
+    DSMetaData,
     PublicationType,
 )
 from app.modules.dataset.repositories import DatasetRatingRepository
@@ -15,6 +15,7 @@ from sqlalchemy.orm import joinedload
 
 rating_repository = DatasetRatingRepository()
 rating_service = DatasetRatingService()
+
 
 @pytest.fixture(scope="module")
 def test_client_with_ratings(test_client):
@@ -64,6 +65,7 @@ def test_client_with_ratings(test_client):
 
     yield test_client
 
+
 class TestRateDatasets:
     def test_rate_dataset_new(self, test_client_with_ratings):
         """Test adding a new rating."""
@@ -81,7 +83,9 @@ class TestRateDatasets:
 
             # Add a new rating
             rating_service.rate_dataset(user_id, dataset_id, 3)
-            new_rating = rating_repository.get_rating_by_user_and_dataset(user_id, dataset_id)
+            new_rating = rating_repository.get_rating_by_user_and_dataset(
+                user_id, dataset_id
+            )
 
             # Validate the rating
             assert new_rating is not None
@@ -103,12 +107,15 @@ class TestRateDatasets:
 
             # Update the existing rating
             rating_service.rate_dataset(user_id, dataset_id, 2)
-            updated_rating = rating_repository.get_rating_by_user_and_dataset(user_id, dataset_id)
+            updated_rating = rating_repository.get_rating_by_user_and_dataset(
+                user_id, dataset_id
+            )
 
             # Validate the updated rating
             assert updated_rating is not None, "Rating was not found."
-            assert updated_rating.rating == 2, "The rating value did not update correctly."
-
+            assert (
+                updated_rating.rating == 2
+            ), "The rating value did not update correctly."
 
     def test_rate_dataset_invalid_type(self, test_client_with_ratings):
         """Test handling non-integer rating values."""
@@ -126,12 +133,11 @@ class TestRateDatasets:
 
             # Attempt to rate with a non-integer value
             invalid_ratings = ["five", 4.5, None, {}, []]  # Different invalid types
-            
+
             for invalid_rating in invalid_ratings:
                 with pytest.raises(ValueError, match="Rating value must be an integer"):
                     rating_service.rate_dataset(user_id, dataset_id, invalid_rating)
-                    
-    
+
     def test_rate_dataset_invalid(self, test_client_with_ratings):
         """Test handling invalid rating values."""
         with test_client_with_ratings.application.app_context():
@@ -149,8 +155,7 @@ class TestRateDatasets:
             # Attempt to rate with an invalid value
             with pytest.raises(ValueError):
                 rating_service.rate_dataset(user_id, dataset_id, 6)
-    
-    
+
     def test_get_dataset_rating_summary(self, test_client_with_ratings):
         """Test retrieving a dataset's rating summary."""
         with test_client_with_ratings.application.app_context():
@@ -168,16 +173,19 @@ class TestRateDatasets:
             summary = rating_service.get_dataset_rating_summary(dataset_id)
 
             # Validate the rating summary
-            assert summary["average_rating"] == 3.5, "Average rating does not match expected value."
-            assert summary["total_ratings"] == 2, "Total ratings count does not match expected value."
-    
-    
+            assert (
+                summary["average_rating"] == 3.5
+            ), "Average rating does not match expected value."
+            assert (
+                summary["total_ratings"] == 2
+            ), "Total ratings count does not match expected value."
+
     def test_get_user_rating(self, test_client_with_ratings):
         """Test retrieving a user's rating for a dataset."""
         with test_client_with_ratings.application.app_context():
             # Fetch the user ID from the database based on email
             user_id = User.query.filter_by(email="user1@example.com").first().id
-            
+
             # Fetch the dataset based on the dataset's title (considering changes made)
             dataset = (
                 DataSet.query.options(joinedload(DataSet.ds_meta_data))
@@ -187,8 +195,8 @@ class TestRateDatasets:
             )
             assert dataset is not None, "Dataset with title 'Dataset 1' not found."
             dataset_id = dataset.id
-            
+
             # Get the user's rating for the dataset
             user_rating = rating_service.get_user_rating(user_id, dataset_id)
-            
+
             assert user_rating == 2  # Based on the initial setup
