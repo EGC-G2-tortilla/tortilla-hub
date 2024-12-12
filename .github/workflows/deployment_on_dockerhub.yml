@@ -35,11 +35,21 @@ jobs:
           docker build -f docker/images/Dockerfile.dev -t uvlhubtortilla/tortilla-hub:latest .
           docker push uvlhubtortilla/tortilla-hub:latest
 
-      # - name: Set up and deploy containers
-      #   run: docker compose -f docker/docker-compose.dev.yml up -d
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{secrets.PI_HOST}} >> ~/.ssh/known_hosts
+      
+      - name: Degub SSH connection
+        run: |
+          ssh -vvv -i ~/.ssh/id_rsa StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} "echo 'SSH connection successful'"
+
+          
       - name: Deploy to Raspberry Pi
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} << 'EOF'
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} << 'EOF'
             docker pull uvlhubtortilla/tortilla-hub:latest
             cd /developer/tortilla-hub
             docker compose -f docker/docker-compose.dev.yml up -d --force-recreate
