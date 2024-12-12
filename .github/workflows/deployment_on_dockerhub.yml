@@ -47,12 +47,13 @@ jobs:
         run: |
           ssh -vvv -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} "echo 'SSH connection successful'"
 
-          
       - name: Pull Docker image
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} "docker pull uvlhubtortilla/tortilla-hub:latest"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
+              -o ServerAliveInterval=30 \
+              -o ServerAliveCountMax=120 \
+              ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} "docker pull uvlhubtortilla/tortilla-hub:latest"
         
-
       - name: Start Docker containers
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} << 'EOF'
