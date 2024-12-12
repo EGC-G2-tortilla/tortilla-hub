@@ -828,14 +828,16 @@ def download_all_datasets():
                                 continue
 
         # Enviar el archivo ZIP para descarga
-        return send_file(
+        response = send_file(
             zip_path,
             as_attachment=True,
             mimetype="application/zip",
             download_name="all_datasets.zip",
         )
+        response.headers["X-Success-Message"] = "All datasets downloaded successfully"
     finally:
         # Eliminar el directorio temporal después de su uso
+        return response
         shutil.rmtree(temp_dir)
 
 
