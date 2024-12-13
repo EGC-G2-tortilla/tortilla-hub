@@ -467,6 +467,7 @@ def test_upload_dataset_to_community():
         dropzone.send_keys(file2_path)
         wait_for_page_to_load(driver)
 
+        time.sleep(1)
         # Add authors in UVL models
         show_button = driver.find_element(By.ID, "0_button")
         show_button.send_keys(Keys.RETURN)
