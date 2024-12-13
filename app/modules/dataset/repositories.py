@@ -172,6 +172,8 @@ class DataSetRepository(BaseRepository):
             .filter(
                 DataSet.user_id == current_user_id,
                 DSMetaData.dataset_status == DatasetStatus.STAGED,
+                DSMetaData.dataset_doi.is_(None),
+
             )
             .all()
         )
@@ -182,6 +184,8 @@ class DataSetRepository(BaseRepository):
             .filter(
                 DataSet.user_id == current_user_id,
                 DSMetaData.dataset_status == DatasetStatus.UNSTAGED,
+                DSMetaData.dataset_doi.is_(None),
+
             )
             .all()
         )
@@ -192,6 +196,8 @@ class DataSetRepository(BaseRepository):
             .filter(
                 DataSet.user_id == current_user_id,
                 DSMetaData.dataset_status == DatasetStatus.PUBLISHED,
+                DSMetaData.dataset_doi.isnot(None),
+
             )
             .all()
         )
