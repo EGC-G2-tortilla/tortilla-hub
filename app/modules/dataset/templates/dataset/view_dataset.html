@@ -256,11 +256,13 @@
                 Download all ({{ dataset.get_file_total_size_for_human() }})
             </a>
             
-            <!-- Botón visible -->
-            <a href="#" id="uploadButton" class="btn btn-primary mt-3" style="border-radius: 5px;">
-                <i data-feather="upload" class="center-button-icon"></i>
-                Upload from ZIP
-            </a>
+            {% if current_user.is_authenticated %}
+                <!-- Botón visible -->
+                <a href="#" id="uploadButton" class="btn btn-primary mt-3" style="border-radius: 5px;">
+                    <i data-feather="upload" class="center-button-icon"></i>
+                    Upload from ZIP
+                </a>
+            {% endif %}
             <!-- Formulario oculto -->
             <form id="uploadForm" action="/dataset/upload_zip/{{ dataset.id }}" method="post" enctype="multipart/form-data" style="display: none;">
                 <input type="file" id="zipFileInput" name="zipFile" accept=".zip">
@@ -299,6 +301,12 @@
 
 {% if current_user.is_authenticated %}
 <script>
+    document.getElementById("uploadButton").addEventListener("click", function(event) {
+        event.preventDefault(); // Prevenir el comportamiento por defecto del enlace
+    
+        // Mostrar el mensaje en la consola
+        console.log("Cuadro de selección aparecido");
+    });
     document.getElementById('downloadZipButton').addEventListener('click', function() {
         const repoUrl = document.getElementById('repoUrlInput').value;
         document.getElementById('repoUrlHiddenInput').value = repoUrl;
