@@ -143,7 +143,9 @@ class SelectAndUploadFilesBehavior(TaskSet):
 
     def login(self):
         """Simula el inicio de sesión."""
-        with self.client.get("/login", name="Login Page", catch_response=True) as response:
+        with self.client.get(
+            "/login", name="Login Page", catch_response=True
+        ) as response:
             csrf_token = get_csrf_token(response)
             if csrf_token:
                 login_data = {
