@@ -1,8 +1,10 @@
 from datetime import datetime, timezone
+import os
 from flask import request
 from app import db
 from app.modules.auth.models import User
 from app.modules.dataset.models import DataSet
+from app.modules.featuremodel.models import UVLParser
 
 
 class Hubfile(db.Model):
@@ -34,6 +36,28 @@ class Hubfile(db.Model):
         from app.modules.hubfile.services import HubfileService
 
         return HubfileService().get_path_by_hubfile(self)
+
+    def get_fact_labels(self):
+        parser = UVLParser()
+        try:
+            file_path = self.get_path()  # Obtener la ruta del archivo
+            if not os.path.exists(file_path):
+                # Si el archivo no existe, devolver valores predeterminados
+                return {
+                    "features": [],
+                    "constraints": [],
+                    "max_depth": 0,
+                    "variability": 0.0,
+                }
+            model_data = parser.parse(file_path)
+            return {
+                "number_of_features": len(model_data.get("features", [])),
+                "constraints_count": len(model_data.get("constraints", [])),
+                "max_depth": model_data.get("max_depth", 0),
+                "variability": model_data.get("variability", 0.0),
+            }
+        except Exception as e:
+            raise RuntimeError(f"Error calculating fact labels for Hubfile {self.id}: {str(e)}")
 
     def to_dict(self):
         return {
