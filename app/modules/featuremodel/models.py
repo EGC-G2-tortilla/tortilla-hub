@@ -1,3 +1,5 @@
+import os
+from venv import logger
 from app import db
 from sqlalchemy import Enum as SQLAlchemyEnum
 
@@ -15,69 +17,41 @@ class FeatureModel(db.Model):
         "FMMetaData", uselist=False, backref="feature_model", cascade="all, delete"
     )
 
-    def __repr__(self):
-        return f"FeatureModel<{self.id}>"
+    @property
+    def fact_labels(self):
+        """
+        Calcula y devuelve los fact labels para este FeatureModel.
+        """
+        try:
+            if not self.files:
+                return {
+                    "number_of_features": 0,
+                    "constraints_count": 0,
+                    "max_depth": 0,
+                    "variability": 0.0,
+                }
+            # Obtener el primer archivo asociado y calcular sus métricas
+            return self.files[0].get_fact_labels()
+        except Exception as e:
+            logger.error(f"Error calculating fact labels for FeatureModel {self.id}: {str(e)}")
+            return {
+                "number_of_features": 0,
+                "constraints_count": 0,
+                "max_depth": 0,
+                "variability": 0.0,
+            }
 
     def get_fact_labels(self):
-        metrics = self.fm_meta_data.fm_metrics if self.fm_meta_data and self.fm_meta_data.fm_metrics else None
-        return {
-            "id": self.id,
-            "title": self.fm_meta_data.title if self.fm_meta_data else None,
-            "uvl_filename": self.fm_meta_data.uvl_filename if self.fm_meta_data else None,
-            "metrics": metrics.to_dict() if metrics else None,
-        }
-
-    @staticmethod
-    def extract_features(uvl_file_path):
-        parser = UVLParser()
-        model_data = parser.parse(uvl_file_path)
-        return model_data["features"]
-
-    @staticmethod
-    def extract_constraints(uvl_file_path):
-        parser = UVLParser()
-        model_data = parser.parse(uvl_file_path)
-        return model_data["constraints"]
-
-    @staticmethod
-    def calculate_max_depth(features):
-        parser = UVLParser()
-        model_data = parser.parse(features)
-        return model_data["max_depth"]
-
-    @staticmethod
-    def calculate_variability(features, constraints):
         """
-        Calcula la variabilidad del modelo.
+        Calcula métricas para el modelo de características.
         """
-        if not features:
-            return 0.0
-        # Ejemplo: consideramos que cada restricción reduce la variabilidad
-        return len(constraints) / len(features) if features else 0.0
+        try:
+            return self.files[0].get_fact_labels() if self.files else {}
+        except Exception as e:
+            raise RuntimeError(f"Error calculating fact labels for FeatureModel {self.id}: {str(e)}")
 
-    def calculate_metrics(self, file_path):
-        parser = UVLParser()
-        model_data = parser.parse(file_path)
-
-        if not self.fm_meta_data.fm_metrics:
-            self.fm_meta_data.fm_metrics = FMMetrics()
-            db.session.add(self.fm_meta_data.fm_metrics)
-
-        self.fm_meta_data.fm_metrics.number_of_features = len(model_data["features"])
-        self.fm_meta_data.fm_metrics.constraints_count = len(model_data["constraints"])
-        self.fm_meta_data.fm_metrics.max_depth = model_data["max_depth"]
-        self.fm_meta_data.fm_metrics.variability = self.calculate_variability(
-            model_data["features"], model_data["constraints"]
-        )
-
-        db.session.commit()
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "fact_labels": self.get_fact_labels(),  # Añadido
-            "files": [file.to_dict() for file in self.files],
-        }
+    def __repr__(self):
+        return f"FeatureModel<{self.id}>"
 
 
 class FMMetaData(db.Model):
@@ -102,85 +76,125 @@ class FMMetaData(db.Model):
     def __repr__(self):
         return f"FMMetaData<{self.title}"
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "uvl_filename": self.uvl_filename,
-            "title": self.title,
-            "description": self.description,
-            "publication_type": self.publication_type.value,
-            "publication_doi": self.publication_doi,
-            "tags": self.tags.split(",") if self.tags else [],
-            "uvl_version": self.uvl_version,
-            "metrics": self.fm_metrics.to_dict() if self.fm_metrics else None,  # Añadido
-            "authors": [author.to_dict() for author in self.authors],
-        }
-
 
 class FMMetrics(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    solver = db.Column(db.Text)  # Información sobre el solver
-    not_solver = db.Column(db.Text)  # Información sobre restricciones no resueltas
-    number_of_features = db.Column(db.Integer)  # Número de características en el modelo
-    constraints_count = db.Column(db.Integer)  # Número de restricciones en el modelo
-    max_depth = db.Column(db.Integer)  # Profundidad máxima del árbol del modelo
-    variability = db.Column(db.Float)  # Porcentaje de variabilidad (si aplica)
+    solver = db.Column(db.Text)
+    not_solver = db.Column(db.Text)
 
     def __repr__(self):
-        return (
-            f"FMMetrics<solver={self.solver}, not_solver={self.not_solver}, "
-            f"features={self.number_of_features}, constraints={self.constraints_count}, "
-            f"max_depth={self.max_depth}, variability={self.variability}>"
-        )
-
-    def to_dict(self):
-        return {
-            "solver": self.solver,
-            "not_solver": self.not_solver,
-            "number_of_features": self.number_of_features,
-            "constraints_count": self.constraints_count,
-            "max_depth": self.max_depth,
-            "variability": self.variability,
-        }
+        return f"FMMetrics<solver={self.solver}, not_solver={self.not_solver}>"
 
 
 class UVLParser:
     def parse(self, file_path):
-        features = []
-        constraints = []
-        max_depth = 0
+        try:
+            if not os.path.exists(file_path):
+                # Manejar el caso en que el archivo no exista
+                return {
+                    "features": [],
+                    "constraints": [],
+                    "max_depth": 0,
+                    "variability": 0.0,
+                }
 
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
+            features = []
+            constraints = []
 
-        current_depth = 0
-        for line in lines:
-            line = line.strip()
+            # Leer el archivo UVL
+            with open(file_path, 'r') as file:
+                lines = file.readlines()
 
-            # Procesar características
-            if line.startswith("features"):
-                current_depth = 0
-            elif line and not line.startswith("constraints"):
-                if (
-                    line.startswith("mandatory")
-                    or line.startswith("optional")
-                    or line.startswith("alternative")
-                    or line.startswith("or")
-                ):
-                    current_depth += 1
-                elif line.endswith(";"):
+            if not lines:
+                raise ValueError("El archivo UVL está vacío.")
+
+            in_features_section = False
+            in_constraints_section = False
+
+            for line in lines:
+                line = line.strip()
+
+                # Detectar secciones de características y restricciones
+                if line.lower().startswith("features"):
+                    in_features_section = True
+                    in_constraints_section = False
+                    continue
+                elif line.lower().startswith("constraints"):
+                    in_constraints_section = True
+                    in_features_section = False
+                    continue
+
+                # Procesar características
+                if in_features_section and line:
+                    # Eliminar caracteres no deseados como ";" y comillas
                     feature_name = line.strip(";").strip('"')
-                    features.append(feature_name)
-                    max_depth = max(max_depth, current_depth)
+                    if feature_name and not feature_name.startswith(
+                        ("mandatory", "optional", "alternative", "or")
+                    ):
+                        features.append(feature_name)
 
-            # Procesar restricciones
-            elif line.startswith("constraints"):
+                # Procesar restricciones
+                elif in_constraints_section and line:
+                    constraints.append(line)
+
+            # Calcular la profundidad máxima utilizando una función auxiliar
+            max_depth = self.calculate_max_depth(lines)
+
+            if not features:
+                raise ValueError("No se encontraron características en el archivo UVL.")
+
+            return {
+                "features": features,
+                "constraints": constraints,
+                "max_depth": max_depth,  # Calculado por la función auxiliar
+                "variability": len(constraints) / len(features) if features else 0.0,
+            }
+        except FileNotFoundError:
+            # Devolver valores predeterminados si el archivo no existe
+            return {
+                "features": [],
+                "constraints": [],
+                "max_depth": 0,
+                "variability": 0.0,
+            }
+        except Exception as e:
+            raise RuntimeError(f"Error al procesar el archivo UVL: {e}")
+
+    # Función Auxiliar para Calcular la Max Depth
+    def calculate_max_depth(self, lines):
+        depth_stack = []  # Pila para rastrear profundidad
+        max_depth = 0  # Profundidad máxima
+        in_features_section = False
+        found_features_section = False  # Bandera para detectar "features"
+
+        for line in lines:
+            stripped_line = line.strip()
+
+            # Detectar inicio de la sección de características
+            if stripped_line.lower().startswith("features"):
+                in_features_section = True
+                found_features_section = True  # Marcar que se encontró la sección
+                depth_stack = []  # Reiniciar pila de profundidad
                 continue
-            elif line:
-                constraints.append(line)
+            elif stripped_line.lower().startswith("constraints"):
+                in_features_section = False
+                continue
 
-        return {
-            "features": features,
-            "constraints": constraints,
-            "max_depth": max_depth,
-        }
+            # Procesar solo líneas en la sección de características
+            if in_features_section and stripped_line:
+                leading_spaces = len(line) - len(line.lstrip())
+                depth = leading_spaces // 4  # Suponemos que 4 espacios equivalen a un nivel
+
+                # Manejar la pila de profundidad
+                while len(depth_stack) > depth:
+                    depth_stack.pop()
+                depth_stack.append(stripped_line)
+
+                # Actualizar profundidad máxima
+                max_depth = max(max_depth, len(depth_stack) - 1)  # Restar 1 para excluir la raíz
+
+        # Si no se encontró la sección "features", devolver profundidad 0
+        if not found_features_section:
+            return 0
+
+        return max_depth
