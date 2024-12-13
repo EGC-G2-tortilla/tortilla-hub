@@ -395,18 +395,10 @@ def subdomain_index(doi):
         if is_github:
             auth = True
 
-    community_name = None
-    if dataset.community_id:
-        community_name = community_service.get_community_by_id(dataset.community_id)
-        if community_name:
-            community_name = community_name.name
-        else:
-            community_name = None
-
     # Save the cookie to the user's browser
     user_cookie = ds_view_record_service.create_cookie(dataset=dataset)
     resp = make_response(
-        render_template("dataset/view_dataset.html", dataset=dataset, auth=auth, community_name=community_name)
+        render_template("dataset/view_dataset.html", dataset=dataset, auth=auth)
     )
     resp.set_cookie("view_cookie", user_cookie)
 

@@ -227,8 +227,8 @@
                         <span class="text-secondary"><b>Community</b></span>
                     </div>
                     <div class="row-md-8 col-12">
-                        {% if dataset.community_id and local_dataset.get_community_url() and local_dataset.get_community_url() != "#" %}
-                        <a href="{{ local_dataset.get_community_url() }}">{{ local_dataset.get_community_url().replace("/community/","") }}</a>
+                        {% if dataset.community_id and dataset.get_community_url() and dataset.get_community_url() != "#" %}
+                        <a href="{{ dataset.get_community_url() }}">{{ dataset.get_community_url().replace("/community/","") }}</a>
                         {% else %}
                         <strong style="margin-left:10px;">This dataset does not belong to any community
                             <a href="/community">
