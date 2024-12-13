@@ -1,0 +1,40 @@
+---
+- hosts: all
+  become: true
+
+  vars:
+    common_environment:
+      FLASK_APP_NAME: "{{ flask_app_name }}"
+      FLASK_ENV: "{{ flask_env }}"
+      DOMAIN: "{{ domain }}"
+      MARIADB_HOSTNAME: "{{ mariadb_hostname }}"
+      MARIADB_PORT: "{{ mariadb_port }}"
+      MARIADB_DATABASE: "{{ mariadb_database }}"
+      MARIADB_TEST_DATABASE: "{{ mariadb_test_database }}"
+      MARIADB_USER: "{{ mariadb_user }}"
+      MARIADB_PASSWORD: "{{ mariadb_password }}"
+      MARIADB_ROOT_PASSWORD: "{{ mariadb_root_password }}"
+      WORKING_DIR: "{{ working_dir }}"
+
+  tasks:
+    - name: Ejecutar tests unitarios
+      shell: |
+        source {{ working_dir }}/venv/bin/activate
+        rosemary test
+      args:
+        executable: /bin/bash
+      environment: "{{ common_environment }}"
+
+    - name: Instalar Locust
+      pip:
+        name: locust
+        state: present
+        virtualenv: "{{ working_dir }}/venv"
+
+    - name: Ejecutar pruebas de carga
+      shell: |
+        source {{ working_dir }}/venv/bin/activate
+        locust -f {{ working_dir }}core/bootstraps/locustfile_bootstrap.py --headless -u 100 -r 10 --run-time 10s --host http://localhost:5000 --csv={{ working_dir }}locustresults/locust || true
+      args:
+        executable: /bin/bash
+      environment: "{{ common_environment }}"
