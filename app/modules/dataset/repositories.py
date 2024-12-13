@@ -169,13 +169,15 @@ class DataSetRepository(BaseRepository):
             .all()
         )
 
-    def get_unsynchronized_by_community_id_and_user_id(self, community_id: int, current_user_id: int):
+    def get_unsynchronized_by_community_id_and_user_id(
+        self, community_id: int, current_user_id: int
+    ):
         return (
             self.model.query.join(DSMetaData)
             .filter(
                 DataSet.community_id == community_id,
                 DataSet.user_id == current_user_id,
-                DSMetaData.dataset_doi.is_(None)
+                DSMetaData.dataset_doi.is_(None),
             )
             .all()
         )

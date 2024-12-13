@@ -280,8 +280,11 @@ class DataSetService(BaseService):
 
         try:
             if current_user.id:
-                unsynchronized = self.repository.get_unsynchronized_by_community_id_and_user_id(
-                    community_id, current_user.id)
+                unsynchronized = (
+                    self.repository.get_unsynchronized_by_community_id_and_user_id(
+                        community_id, current_user.id
+                    )
+                )
         except Exception:
             unsynchronized = list()
         return datasets, unsynchronized

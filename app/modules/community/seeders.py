@@ -34,4 +34,4 @@ class CommunitySeeder(BaseSeeder):
 
         dataset.community_id = community.id
 
-        self.db.session.commit() #(dataset)
+        self.db.session.commit()  # (dataset)

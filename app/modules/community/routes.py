@@ -54,7 +54,9 @@ def get_community_by_name(community_name):
             )
         )
 
-    datasets, unsynchronized = dataset_service.get_by_community_id(community.id, current_user)
+    datasets, unsynchronized = dataset_service.get_by_community_id(
+        community.id, current_user
+    )
 
     return render_template(
         "community/community.html",

@@ -364,7 +364,7 @@ def test_create_community():
 def test_check_my_communities_after_creating_community():
     """
     Autor: Delfín Santana
-    Test para comprobar la ruta de mis comunidades DESPUES de haber creado 
+    Test para comprobar la ruta de mis comunidades DESPUES de haber creado
     una nueva comunidad. De este modo, se prueba la ruta de mis comunidades
     especificamente.
     """

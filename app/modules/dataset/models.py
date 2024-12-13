@@ -131,7 +131,7 @@ class DataSet(db.Model):
         try:
             if self.community_id:
                 community = Community.query.filter_by(id=self.community_id).first()
-                return "/community/"+community.name
+                return "/community/" + community.name
             else:
                 return "#"
         except Exception:
