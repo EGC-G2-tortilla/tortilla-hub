@@ -1,12 +1,13 @@
 from locust import HttpUser, TaskSet, task, between
 from core.locust.common import get_csrf_token
 from core.environment.host import get_host_for_locust_testing
-                
+
+
 class DownloadAllAuthBehavior(TaskSet):
     def on_start(self):
         """Simula el inicio de sesión antes de cualquier tarea."""
         self.login()
-        
+
     @task(1)
     def download_all_authenticated(self):
         "Simula la descarga de todos los datasets estando logueado."
@@ -15,7 +16,7 @@ class DownloadAllAuthBehavior(TaskSet):
                 response.success()
             else:
                 response.failure("Failed to download all datasets")
-    
+
     def login(self):
         """Simula el inicio de sesión."""
         with self.client.get(
@@ -37,7 +38,8 @@ class DownloadAllAuthBehavior(TaskSet):
                         response.failure("Login failed")
             else:
                 response.failure("Failed to get CSRF token")
-    
+
+
 class DownloadAllAuthUser(HttpUser):
     tasks = [DownloadAllAuthBehavior]
     wait_time = between(5, 9)
