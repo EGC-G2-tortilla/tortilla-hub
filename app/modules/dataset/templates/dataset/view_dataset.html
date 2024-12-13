@@ -104,16 +104,12 @@
                             </div>
                         </div>
                     </div>
-                    <!-- FM Fact Labels -->
-                    <div class="mt-2">
-                        <strong>Fact Labels:</strong>
-                        <ul>
-                            <li><strong>Size:</strong> {{ feature_model.fm_meta_data.fm_metrics.number_of_features }}</li>
-                            <li><strong>Depth:</strong> {{ feature_model.fm_meta_data.fm_metrics.max_depth }}</li>
-                            <li><strong>Constraints:</strong> {{ feature_model.fm_meta_data.fm_metrics.constraints_count }}</li>
-                            <li><strong>Variability:</strong> {{ feature_model.fm_meta_data.fm_metrics.variability }}</li>
-                        </ul>
-                    </div>
+                    <ul>
+                        <li><strong>Number of Features:</strong> {{ feature_model.fact_labels.number_of_features }}</li>
+                        <li><strong>Number of Constraints:</strong> {{ feature_model.fact_labels.constraints_count }}</li>
+                        <li><strong>Max Depth:</strong> {{ feature_model.fact_labels.max_depth }}</li>
+                        <li><strong>Variability:</strong> {{ feature_model.fact_labels.variability }}</li>
+                    </ul>
                 {% endfor %}
             {% endfor %}
         </div>
@@ -184,26 +180,17 @@
         </div>
     </div>
 
-    <!-- Dataset Fact Labels -->
-    <div class="row mb-4">
-        <div class="row-md-4 col-12">
-            <span class="text-secondary"><b>Fact Labels</b></span>
-        </div>
-        <div class="row-md-8 col-12">
-            <ul>
-                <li><strong>Number of Models:</strong> {{ dataset.get_fact_labels().dataset.number_of_models }}</li>
-                <li><strong>Total Features:</strong> {{ dataset.get_fact_labels().dataset.total_features }}</li>
-                <li><strong>Average Features:</strong> {{ dataset.get_fact_labels().dataset.average_features_per_model }}</li>
-                <li><strong>Constraints:</strong> {{ dataset.get_fact_labels().dataset.constraints_count }}</li>
-                <li><strong>Max Depth:</strong> {{ dataset.get_fact_labels().dataset.max_depth }}</li>
-            </ul>
-        </div>
-    </div>
     <!-- Right Column: Dataset Information -->
     <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
         <div class="card-transparent">
             <div class="card-body">
                 <div class="row mb-4">
+                    <ul>
+                        <li><strong>Total Models:</strong> {{ fact_labels.total_models }}</li>
+                        <li><strong>Total Features:</strong> {{ fact_labels.total_features }}</li>
+                        <li><strong>Total Constraints:</strong> {{ fact_labels.total_constraints }}</li>
+                        <li><strong>Max Depth:</strong> {{ fact_labels.max_depth }}</li>
+                    </ul>
                     <div class="row-md-4 col-12">
                         <span class="text-secondary"><b>About</b></span>
                     </div>
@@ -281,17 +268,13 @@
                 Download all ({{ dataset.get_file_total_size_for_human() }})
             </a>
             
-            <a href="/dataset/upload_repo/{{ dataset.id }}" class="btn btn-primary mt-3" style="border-radius: 5px; background-color: #333; color: white;">
-                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub logo" style="width: 20px; height: 20px; margin-right: 10px;">
-                <i data-feather="upload" class="center-button-icon"></i>
-                Upload from Github
-            </a>
-
-            <!-- Botón visible -->
-            <a href="#" id="uploadButton" class="btn btn-primary mt-3" style="border-radius: 5px;">
-                <i data-feather="upload" class="center-button-icon"></i>
-                Upload from ZIP
-            </a>
+            {% if current_user.is_authenticated %}
+                <!-- Botón visible -->
+                <a href="#" id="uploadButton" class="btn btn-primary mt-3" style="border-radius: 5px;">
+                    <i data-feather="upload" class="center-button-icon"></i>
+                    Upload from ZIP
+                </a>
+            {% endif %}
             <!-- Formulario oculto -->
             <form id="uploadForm" action="/dataset/upload_zip/{{ dataset.id }}" method="post" enctype="multipart/form-data" style="display: none;">
                 <input type="file" id="zipFileInput" name="zipFile" accept=".zip">
@@ -330,6 +313,12 @@
 
 {% if current_user.is_authenticated %}
 <script>
+    document.getElementById("uploadButton").addEventListener("click", function(event) {
+        event.preventDefault(); // Prevenir el comportamiento por defecto del enlace
+    
+        // Mostrar el mensaje en la consola
+        console.log("Cuadro de selección aparecido");
+    });
     document.getElementById('downloadZipButton').addEventListener('click', function() {
         const repoUrl = document.getElementById('repoUrlInput').value;
         document.getElementById('repoUrlHiddenInput').value = repoUrl;
