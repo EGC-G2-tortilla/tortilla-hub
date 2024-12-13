@@ -275,8 +275,16 @@ class DataSetService(BaseService):
         domain = os.getenv("DOMAIN", "localhost")
         return f"http://{domain}/doi/{dataset.ds_meta_data.dataset_doi}"
 
-    def get_by_community_id(self, community_id: int):
-        return self.repository.get_by_community_id(community_id)
+    def get_by_community_id(self, community_id: int, current_user):
+        datasets = self.repository.get_by_community_id(community_id)
+
+        try:
+            if current_user.id:
+                unsynchronized = self.repository.get_unsynchronized_by_community_id_and_user_id(
+                    community_id, current_user.id)
+        except Exception:
+            unsynchronized = list()
+        return datasets, unsynchronized
 
     def get_all_datasets(self):
         return self.repository.get_all_datasets()
