@@ -15,6 +15,11 @@ def wait_for_page_to_load(driver, timeout=4):
 
 
 def test_join_community():
+    """
+    Autor: Delfín Santana
+    Se prueba unirse a una comunidad y que salgan los botones bien
+    en las vistas que tengan que verse
+    """
     driver = initialize_driver()
 
     try:
@@ -39,7 +44,7 @@ def test_join_community():
         link.click()
         wait_for_page_to_load(driver)
 
-        dataset_expected = driver.find_element(By.LINK_TEXT, "Sample dataset 5")
+        dataset_expected = driver.find_element(By.LINK_TEXT, "Sample dataset 7")
 
         assert dataset_expected, "Test failed!"
 
@@ -132,6 +137,12 @@ def test_join_community():
 
 
 def test_check_my_communities_and_decline_or_accept_request(classname="decline-button"):
+    """
+    Autor: Delfín Santana
+    Test para comprobar que se puede aceptar o denegar una solicitud de unirse
+    a una comunidad. Se loguea con admin y acepta o deniega(se especifica como parametro)
+    una solicitud.
+    """
     driver = initialize_driver()
 
     try:
@@ -206,6 +217,11 @@ def test_check_my_communities_and_decline_or_accept_request(classname="decline-b
 
 
 def test_check_my_communities_and_check_content_displayed():
+    """
+    Autor: Delfín Santana
+    Test para comprobar la ruta de mis comunidades. Comprueba
+    tambien que el contenido que se muestra sea el esperado
+    """
     driver = initialize_driver()
 
     try:
@@ -242,7 +258,7 @@ def test_check_my_communities_and_check_content_displayed():
 
         assert community_expected, "Test failed!"
 
-        dataset_expected = driver.find_element(By.LINK_TEXT, "Sample dataset 5")
+        dataset_expected = driver.find_element(By.LINK_TEXT, "Sample dataset 7")
 
         assert dataset_expected, "Test failed!"
 
@@ -295,6 +311,11 @@ def test_check_my_communities_and_check_content_displayed():
 
 
 def test_create_community():
+    """
+    Autor: Delfín Santana
+    Test para comprobar que se puede crear una comunidad. Se crea una
+    comunidad para probarlo
+    """
     driver = initialize_driver()
 
     try:
@@ -340,7 +361,13 @@ def test_create_community():
         close_driver(driver)
 
 
-def test_check_my_communities():
+def test_check_my_communities_after_creating_community():
+    """
+    Autor: Delfín Santana
+    Test para comprobar la ruta de mis comunidades DESPUES de haber creado 
+    una nueva comunidad. De este modo, se prueba la ruta de mis comunidades
+    especificamente.
+    """
     driver = initialize_driver()
 
     try:
@@ -391,6 +418,10 @@ def test_check_my_communities():
 
 
 def test_upload_dataset_to_community():
+    """
+    Autor: Delfín Santana
+    Test para testear la subida de un dataset a una comunidad.
+    """
     driver = initialize_driver()
 
     try:
@@ -521,6 +552,6 @@ test_check_my_communities_and_check_content_displayed()
 
 test_create_community()
 
-test_check_my_communities()
+test_check_my_communities_after_creating_community()
 
 test_upload_dataset_to_community()
