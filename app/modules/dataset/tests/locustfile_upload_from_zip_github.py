@@ -3,12 +3,12 @@ from core.environment.host import get_host_for_locust_testing
 from core.locust.common import get_csrf_token
 from zipfile import ZipFile
 
+
 class UploadZipBehavior(TaskSet):
     def on_start(self):
         """Simula el inicio de sesión antes de cualquier tarea."""
         self.login()
-        
-        
+
     def login(self):
         """Simula el inicio de sesión."""
         with self.client.get(
@@ -30,8 +30,7 @@ class UploadZipBehavior(TaskSet):
                         response.failure("Login failed")
             else:
                 response.failure("Failed to get CSRF token")
-                
-                
+
     @task(1)
     def upload_from_zip(self):
         """Simula la subida de un dataset desde un archivo ZIP."""
@@ -55,7 +54,10 @@ class UploadZipBehavior(TaskSet):
                 if response.status_code == 200:
                     response.success()
                 else:
-                    response.failure(f"Failed to upload dataset: {response.status_code}, {response.text}")
+                    response.failure(
+                        f"Failed to upload dataset: {response.status_code}, {response.text}"
+                    )
+
 
 class UploadGitHubFilesBehavior(TaskSet):
     def on_start(self):
@@ -83,10 +85,12 @@ class UploadGitHubFilesBehavior(TaskSet):
                 response.success()
             else:
                 response.failure("Failed to upload GitHub repo URL")
-    
+
     def login(self):
         """Simula el inicio de sesión."""
-        with self.client.get("/login", name="Login Page", catch_response=True) as response:
+        with self.client.get(
+            "/login", name="Login Page", catch_response=True
+        ) as response:
             csrf_token = get_csrf_token(response)
             if csrf_token:
                 login_data = {
@@ -111,6 +115,7 @@ class UploadGitHubUser(HttpUser):
     tasks = [UploadGitHubFilesBehavior]
     wait_time = between(5, 9)
     host = get_host_for_locust_testing()
+
 
 class UploadZipUser(HttpUser):
     tasks = [UploadZipBehavior]
