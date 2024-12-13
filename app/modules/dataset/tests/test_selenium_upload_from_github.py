@@ -4,7 +4,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException
+from selenium.common.exceptions import (
+    ElementClickInterceptedException,
+    TimeoutException,
+)
 import shutil
 
 
@@ -57,14 +60,18 @@ def test_access_github_modal():
                 EC.element_to_be_clickable((By.ID, "downloadZipButton"))
             ).click()
         except ElementClickInterceptedException:
-            driver.execute_script("arguments[0].scrollIntoView(true);", download_zip_button)
+            driver.execute_script(
+                "arguments[0].scrollIntoView(true);", download_zip_button
+            )
             download_zip_button.click()
 
         # 8. Verificar que el modal se muestra correctamente
         github_modal = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.ID, "githubModal"))
         )
-        assert github_modal.is_displayed(), "El modal de GitHub no se mostró correctamente."
+        assert (
+            github_modal.is_displayed()
+        ), "El modal de GitHub no se mostró correctamente."
 
         shutil.rmtree("uploads/temp/")
     finally:
