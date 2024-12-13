@@ -397,8 +397,16 @@ def subdomain_index(doi):
 
     # Save the cookie to the user's browser
     user_cookie = ds_view_record_service.create_cookie(dataset=dataset)
+
+    fact_labels = dataset.get_fact_labels()
     resp = make_response(
-        render_template("dataset/view_dataset.html", dataset=dataset, auth=auth)
+        render_template(
+            "dataset/view_dataset.html",
+            dataset=dataset,
+            fact_labels=fact_labels["dataset"],
+            feature_models=fact_labels["feature_models"],
+            auth=auth
+        )
     )
     resp.set_cookie("view_cookie", user_cookie)
 
@@ -415,7 +423,15 @@ def get_unsynchronized_dataset(dataset_id):
     if not dataset:
         abort(404)
 
-    return render_template("dataset/view_dataset.html", dataset=dataset)
+    # Calcular fact_labels
+    fact_labels = dataset.get_fact_labels()
+
+    return render_template(
+        "dataset/view_dataset.html",
+        dataset=dataset,
+        fact_labels=fact_labels["dataset"],
+        feature_models=fact_labels["feature_models"],
+    )
 
 
 ZIP_FOLDER = os.path.join(os.getcwd(), "app", "modules", "dataset")
@@ -906,7 +922,7 @@ def download_repo_zip():
     if not repo_url.startswith("https://github.com/") or not repo_url.endswith(".git"):
         return jsonify({"error": "URL del repositorio no válida"}), 400
 
-    parts = repo_url[len("https://github.com/") : -len(".git")].split("/")
+    parts = repo_url[len("https://github.com/"): -len(".git")].split("/")
     if len(parts) != 2:
         return jsonify({"error": "URL del repositorio no válida"}), 400
 
