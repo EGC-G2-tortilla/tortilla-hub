@@ -222,6 +222,22 @@
                     </div>
                 </div>
                 {% endif %}
+                <div class="row mb-2">
+                    <div class="row-md-4 col-12">
+                        <span class="text-secondary"><b>Community</b></span>
+                    </div>
+                    <div class="row-md-8 col-12">
+                        {% if dataset.community_id and dataset.get_community_url() and dataset.get_community_url() != "#" %}
+                        <a href="{{ dataset.get_community_url() }}">{{ dataset.get_community_url().replace("/community/","") }}</a>
+                        {% else %}
+                        <strong style="margin-left:10px;">This dataset does not belong to any community
+                            <a href="/community">
+                                Go to communities
+                            </a>
+                        </strong>
+                        {% endif %}
+                    </div>
+                </div>
                 {% if dataset.ds_meta_data.dataset_doi %}
                 <div class="row mb-2">
                     <div class="row-md-4 col-12">
@@ -256,11 +272,13 @@
                 Download all ({{ dataset.get_file_total_size_for_human() }})
             </a>
             
-            <!-- Botón visible -->
-            <a href="#" id="uploadButton" class="btn btn-primary mt-3" style="border-radius: 5px;">
-                <i data-feather="upload" class="center-button-icon"></i>
-                Upload from ZIP
-            </a>
+            {% if current_user.is_authenticated %}
+                <!-- Botón visible -->
+                <a href="#" id="uploadButton" class="btn btn-primary mt-3" style="border-radius: 5px;">
+                    <i data-feather="upload" class="center-button-icon"></i>
+                    Upload from ZIP
+                </a>
+            {% endif %}
             <!-- Formulario oculto -->
             <form id="uploadForm" action="/dataset/upload_zip/{{ dataset.id }}" method="post" enctype="multipart/form-data" style="display: none;">
                 <input type="file" id="zipFileInput" name="zipFile" accept=".zip">
@@ -299,6 +317,12 @@
 
 {% if current_user.is_authenticated %}
 <script>
+    document.getElementById("uploadButton").addEventListener("click", function(event) {
+        event.preventDefault(); // Prevenir el comportamiento por defecto del enlace
+    
+        // Mostrar el mensaje en la consola
+        console.log("Cuadro de selección aparecido");
+    });
     document.getElementById('downloadZipButton').addEventListener('click', function() {
         const repoUrl = document.getElementById('repoUrlInput').value;
         document.getElementById('repoUrlHiddenInput').value = repoUrl;

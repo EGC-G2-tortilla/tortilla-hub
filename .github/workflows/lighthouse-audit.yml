@@ -1,0 +1,48 @@
+name: Lighthouse Audit with Authentication
+
+on:
+  workflow_dispatch:
+    inputs:
+      config_file:
+        description: 'Archivo JSON con las URLs y credenciales'
+        required: true
+
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: |
+          npm install lighthouse puppeteer
+
+      - name: Run Lighthouse Audit
+        run: |
+          node .github/configs/lighthouse-audit.mjs .github/configs/lighthouse-config.json
+        env:
+          LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+          LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+
+      - name: Upload Lighthouse Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-reports
+          path: reports/
+
+
+

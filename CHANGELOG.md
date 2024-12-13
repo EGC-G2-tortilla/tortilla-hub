@@ -1,3 +1,200 @@
+# [1.17.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.16.3...v1.17.0) (2024-12-12)
+
+
+### Bug Fixes
+
+* .mailmap añadido Daniel Fernandez Caballero <danfercab@alum.us.es>  Close [#188](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/188) ([1eaf319](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/1eaf319a91843ea02d529e850477aa15b4c2e125))
+* .mailmap añadido manbarjim2 <manbarjim2@gmail.com> y el correo que le genera github Close [#193](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/193) ([f35fe57](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/f35fe5746447ab459cd9a35d8f03563e3e9f0829))
+* Borrar botón upload from github ([627cee2](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/627cee2e61644b4850637aacee96bfb9f55f229b))
+* Fallo del enrutamiento del bot de discord ([ab97e39](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ab97e395467d8a48f15d5dd487d210dfb57a9a3a)), closes [#187](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/187)
+
+
+### Features
+
+* Inicialización bot discord ([7c27650](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7c27650b4424c28fa93b946f396d11d9a68efad3))
+* Integración del bot finalizada y comando para ejecutarlo en despliegue ([4d7cf89](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/4d7cf891dfbcec17509fce9d4fb2cb431a2207d7))
+* Primeros comandos del bot de discord ([81bd9e3](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/81bd9e34e2d808dfea7a2bbe4622b4f365afe061))
+
+## [1.16.3](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.16.2...v1.16.3) (2024-12-12)
+
+
+### Bug Fixes
+
+* Importado el playbook de monitorización ([da1d168](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/da1d1685355ce9006317f03286c6f8fae1648b06))
+
+## [1.16.2](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.16.1...v1.16.2) (2024-12-11)
+
+
+### Bug Fixes
+
+* Añadir variables de navegador que se habían borrado ([d1d5d2a](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/d1d5d2ae272d3bab1e59169b3cad0ff28bc2b79f))
+
+## [1.16.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.16.0...v1.16.1) (2024-12-11)
+
+
+### Bug Fixes
+
+* Modificar workflow lighthouse para que analice otras métricas. ([ffb1a61](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ffb1a618e0291a83cc757aa6e9524d148ce522f0))
+
+# [1.16.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.15.0...v1.16.0) (2024-12-10)
+
+
+### Bug Fixes
+
+* se ha solucionado un error en las solicitudes de entrar a una comunidad en el que se alteraba el id de user_profile sin querer ([63ad0a2](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/63ad0a225a55c5d0460ec3035884461d78f9e34d))
+* Sustituido distutils por setuptools por quedar obsoleto ([c1a2f6a](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/c1a2f6a07268ce48175e0b144e4f86f642c8493b))
+
+
+### Features
+
+* Añadido setup para monitorización con Grafana y Prometheus ([48abd8b](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/48abd8b508c28174e8511e076c92e8b2addd8081))
+
+# [1.15.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.14.2...v1.15.0) (2024-12-09)
+
+
+### Features
+
+* despliegue con vagrant arreglado ([ba7dfdb](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ba7dfdb18260f5355dd8f25a2cbcc988473a04ff))
+
+## [1.14.2](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.14.1...v1.14.2) (2024-12-08)
+
+
+### Bug Fixes
+
+* Cambio en los Secrets y añadir un argumento al navegador ([8d8241d](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/8d8241d8f48918d0242ecdc8f97f1597bc5d8ac7))
+
+## [1.14.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.14.0...v1.14.1) (2024-12-08)
+
+
+### Bug Fixes
+
+* Añadir argumentos para la compatibilidad del navegador ([b8e5a33](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b8e5a33009f2c6e5c8b5364faf07756edc919967))
+
+# [1.14.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.13.1...v1.14.0) (2024-12-08)
+
+
+### Features
+
+* Añadir workflow para medir la accesibilidad. ([a35ae36](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/a35ae3696a7924723a0a8e77e2a782cfe2f756fe))
+
+## [1.13.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.13.0...v1.13.1) (2024-12-07)
+
+
+### Bug Fixes
+
+* se introducido una solucion para que el workflow de crear issues si el autor no esta en el .mailmap no de falsos positivos Close [#176](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/176) ([7890dd7](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7890dd7b1bb3d619c99d124d70de7d5f34723ab6))
+
+# [1.13.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.12.0...v1.13.0) (2024-12-05)
+
+
+### Bug Fixes
+
+* Corrección de test_client en las pruebas de descarga de todos los datasets ([aa72d9f](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/aa72d9ff7d50237127c28150129228766ee57973))
+* Corregir del borrado de datos de las pruebas ([2258b28](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/2258b28deff36041f8ea655264cad3035f75b6f8))
+* Mejorar la gestión de directorios temporales ([22f49fa](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/22f49fabf18515ac97fee52d5b7acb087301d4f3))
+
+
+### Features
+
+* Establecer el directorio de trabajo en las pruebas de transformación de archivos ([391959a](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/391959ab034cab1b76afc5c4b7f987611c42351d))
+* nuevo workflow que crea una issue si detecta que se ha hecho push a main con un autor que no esta registrado en el archivo .mailmap ([4786e1d](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/4786e1defac54ae15c8d31914c9b6008707ed15d))
+
+# [1.12.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.11.0...v1.12.0) (2024-12-04)
+
+
+### Bug Fixes
+
+* Arreglos codacy ([8f40afb](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/8f40afbbc0d3cd2b6cc62b6a87cca989846d03c6))
+* Arreglos en tests para ejecución en rosemary ([e3986d8](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e3986d8b4665b15cf380a4ab00e7f670e839bce4))
+* Errores de codacy y localización del entrypoint ([318eb85](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/318eb85fd58f8113984b501693c4aa962466bce4))
+
+
+### Features
+
+* Añadir entrypoint e imagen nueva para datos de prueba en develop. ([ae81140](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ae811401c608cbeac46ec75c01a61fadd29b9ddb)), closes [#167](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/167)
+
+# [1.11.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.10.0...v1.11.0) (2024-12-03)
+
+
+### Bug Fixes
+
+* errores de estilo de linter solucionados ([eeb05a3](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/eeb05a3ba4faebaedd4d8abe07ad9904b8b0b918))
+* **rating:** prevent users from updating existing ratings ([4fee2ca](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/4fee2ca70e268ba563d7121ffc94a589f240cc97))
+
+
+### Features
+
+* añadida funcionalidad y vista para poder ver las comunidades a las que pertenezco ([087e6ee](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/087e6ee848c4b9b2d18fa84e71fc0a4d8fcb5b11))
+* añadido boton para poder acceder a mis comunidades desde el menu de la izquierda ([153eb82](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/153eb826370deb6fba19e7834de9d4e2eedb301c))
+* añadido el test de selenium  para stagear un dataset ([48cd79b](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/48cd79b5c7fb54de9a5c77548abb9d276b2194a5))
+* añadido el test de selenium para unstagear un dataset ([728cc6a](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/728cc6a4e984cfa40924ccf363aafc5de52f894e))
+* añadido poder unstagear todos los datasets simultánea ([e972103](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e972103e7b893814909914e9401c8f6363908179))
+* Añadido test de interfaz para subir archivos UVL ([66946a6](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/66946a65790b5def9db08a3427ca231c66928cf7))
+* añadidos los test para stagear todos los datasets y publicarlos ([e1999dd](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e1999dd79bf95ce0c16551b740afde6d5ea721d8))
+* añadidos los tests de carga para las operaciones de staging area closes [#104](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/104) ([6fe9889](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/6fe98897d9bffd6431a0fbea1a6aa47ed3ad0479))
+* añadidos tests de interfaz para stage all y unstage all datasets ([dad632d](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/dad632d2cd38da5d66658714f0529ef8b7a1d9e6))
+* añadidos tests unitarios de stage all y unstage all datasets ([496f230](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/496f230ef12eff9d32848f377291fb4ff11c283a))
+* **dataset:** add dataset rating functionality ([3aa8d47](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/3aa8d47f08c76a0683efb9ab0f82cb600c85d439))
+* **dataset:** add DatasetRating model, migration, and seeders ([50c207d](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/50c207d5df2b5626568a11a38dc5686eafd59427))
+* Mejoras en la UI al mostrar los mensajes de error de sintaxis ([d7ff6d4](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/d7ff6d41874b62d221032b068c2f776c16940bee))
+* **rating:** integrate dataset rating functionality in frontend and update logic for rating modifications closes [#58](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/58) ([f2f22a5](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/f2f22a569973f67cfb010c48168a4ba4229855a4))
+
+# [1.10.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.9.0...v1.10.0) (2024-12-02)
+
+
+### Bug Fixes
+
+* errores de estilos solucionados para que pase el test de codacy ([b40e240](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b40e2403b701e400b47557fbc82ee0c5b175a743))
+
+
+### Features
+
+*  vista para funcionalidad para poder ver si tu solicitud de acceso a una comunidad se ha enviado y está siendo revisada o no y así que el usuario tenga feedback añadida ([6d43179](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/6d431795a7c847293886cce2d11efa9debd0ef5c))
+* actualizadas rutas de CommunityJoinRequestService para que se pueda crear, aceptar y eliminar una solicitud para unirse a una comunidad ([e923ad4](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e923ad4cd0c5e2580f866ecd63a75794bbffb52d))
+* añadida funcionalidad al servicio de comunidades para poder buscar por id ([5ff5db2](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/5ff5db2925d08d3288307521e18b8a2b38b627e7))
+* añadido cambio para poder recibir solicitudes de unirse a comunidad desde el frontend ([b747088](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b747088f0745450bbbfe8087077af4ee8eae358d))
+* conseguida funcionalidad de aceptar y denegar solicitud para unirse a comunidad. ([d15d895](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/d15d8952f97dd665df0e49d2316a1606ac72bb68))
+* creado modelo para la solicitud de unirse a una comunidad ([103df8b](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/103df8b852e3c5040f1324ec7be94b285f202f4f))
+* funcionalidad para poder ver si tu solicitud de acceso a una comunidad se ha enviado y está siendo revisada o no y así que el usuario tenga feedback añadida ([77b380c](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/77b380c3bddae8a00ddf9043c2d48a168917cbf2))
+* inicializado modulo con rosemary para enviar solicitud de unirse a una comunidad ([1225972](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/1225972eac600b091d96b2d09c95a2e6a621485c))
+* migración de CommunityJoinRequestService creado ([0713888](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/071388843f04ab443457aae25fb2a1fe297d9d9b))
+* repositorio de CommunityJoinRequest actualizado ([914abb8](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/914abb85d1611e34dafe11647f4724461003949c))
+
+# [1.9.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.8.0...v1.9.0) (2024-12-01)
+
+
+### Bug Fixes
+
+* Agregar archivos faltantes en la carptea upload ([c6d057b](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/c6d057b153427a822bf187efa95dcf4ece088208))
+* workflow es lanzado correctamente en PRs closes [#50](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/50) ([d23ae14](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/d23ae143fc93d16e793f8701ccbb83d412043d34))
+
+
+### Features
+
+* Añadidos los tests unitarios closes [#104](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/104) ([080e992](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/080e9923966c9b4a1d1d78cb14e3c0a56332a657))
+
+# [1.8.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.7.0...v1.8.0) (2024-11-28)
+
+
+### Bug Fixes
+
+* ahora la url cuando subes un dataset a una comunidad está bien puesta. ([f262eaa](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/f262eaa117ac340e3265904d257104feeba1c563))
+* Añadida validación para UVLs vacíos. Closes [#94](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/94) ([77dcd95](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/77dcd953178be7d7b8b34bb9be1b0c933a77750b))
+* Arreglar errores codacy ([df8cad0](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/df8cad02c5ea6ba415d4af19d1165aac5b6c49b5))
+* solucionado el error de que no se vea el link para acceder a las comunidades si no estas logueado. Close [#86](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/86) ([3e3594f](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/3e3594ff20777b7fb1fa96d6ab3335e1f7d1af47))
+* solucionados errores de linter. Close [#69](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/69) ([afd5d20](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/afd5d20f47d7ce4bc91bd473d89a2651477f8a24))
+
+
+### Features
+
+* añadido boton para subir datasets a una comunidad ([db032f9](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/db032f92d433d90a0254cced97174b5b3e26c0e5))
+* Añadido test de rendimiento con locust ([5243e13](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/5243e13cbaeefc68f5d8921a0fe32e0a097a0c0d))
+* Añadido test de rendimiento con locust ([28f0813](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/28f0813440311a028dada1c8d5d494a83ceff8be))
+* Añadidos más tests unitarios para la validación de UVLs ([4c60615](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/4c6061561376e7c1d7111e2881f81f44bb1bef41))
+* Añadir funcionalidad para subir archivos desde GitHub ([475be15](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/475be158ca00e1aea08f9823242b0e25f9b20d64))
+* funcionalidad añadida para subir datasets a una comunidad ([ecc9519](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ecc9519f2eb4c29221f298baa2a969cbbb24459a))
+* Implementar vista de subida de archivo de github ([85fbb2c](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/85fbb2c16fbde2d0ab0b3cfc46cd319837a484a9))
+
 # [1.5.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.4.0...v1.5.0) (2024-11-19)
 
 

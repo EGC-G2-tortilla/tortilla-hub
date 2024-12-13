@@ -120,7 +120,7 @@ class DataSetSeeder(BaseSeeder):
         datasets.append(
             DataSet(
                 user_id=user3.id,
-                ds_meta_data_id=seeded_ds_meta_data[4].id,
+                ds_meta_data_id=seeded_ds_meta_data[6].id,
                 created_at=datetime.now(timezone.utc),
             )
         )
