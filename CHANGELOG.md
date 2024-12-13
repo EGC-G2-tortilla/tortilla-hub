@@ -1,3 +1,16 @@
+# [1.18.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.17.0...v1.18.0) (2024-12-13)
+
+
+### Bug Fixes
+
+* .mailmap añadido Antonio Macías <antmacfer1@alum.us.es>  Close [#197](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/197), Close [#198](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/198), Close [#199](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/199) ([67bcad7](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/67bcad7b525b104dbb8bf7b89ec38b9fe3278b03))
+* Arreglar errores codacy ([bc96201](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/bc962015a07c93fe5c7b3ae023cc1974aaf4dae8))
+
+
+### Features
+
+* Nuevo playbook de tests en Vagrant ([773e40f](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/773e40f70144007f50a92fb77482a386542b0296))
+
 # [1.17.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.16.3...v1.17.0) (2024-12-12)
 
 
