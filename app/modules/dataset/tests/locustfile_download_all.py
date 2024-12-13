@@ -44,3 +44,21 @@ class DownloadAllAuthUser(HttpUser):
     tasks = [DownloadAllAuthBehavior]
     wait_time = between(5, 9)
     host = get_host_for_locust_testing()
+
+
+class DownloadAllNoAuthBehavior(TaskSet):
+
+    @task(1)
+    def download_all_unauthenticated(self):
+        "Simula la descarga de todos los datasets sin estar logueado."
+        with self.client.get("/dataset/download_all", catch_response=True) as response:
+            if response.status_code == 200:
+                response.success()
+            else:
+                response.failure("Failed to download all datasets")
+
+
+class DownloadAllUser(HttpUser):
+    tasks = [DownloadAllNoAuthBehavior]
+    wait_time = between(5, 9)
+    host = get_host_for_locust_testing()
