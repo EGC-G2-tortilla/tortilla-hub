@@ -222,6 +222,16 @@
                     </div>
                 </div>
                 {% endif %}
+                {% if dataset.community_id and community_name %}
+                <div class="row mb-2">
+                    <div class="row-md-4 col-12">
+                        <span class="text-secondary"><b>Community</b></span>
+                    </div>
+                    <div class="row-md-8 col-12">
+                        <a href="/community/{{ community_name }}">{{ community_name }}</a>
+                    </div>
+                </div>
+                {% endif %}
                 {% if dataset.ds_meta_data.dataset_doi %}
                 <div class="row mb-2">
                     <div class="row-md-4 col-12">
