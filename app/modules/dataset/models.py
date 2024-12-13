@@ -42,39 +42,19 @@ class Author(db.Model):
     orcid = db.Column(db.String(120))
     ds_meta_data_id = db.Column(db.Integer, db.ForeignKey("ds_meta_data.id"))
     fm_meta_data_id = db.Column(db.Integer, db.ForeignKey("fm_meta_data.id"))
-    ds_meta_data_id = db.Column(db.Integer, db.ForeignKey("ds_meta_data.id"))
     fm_meta_data_id = db.Column(db.Integer, db.ForeignKey("fm_meta_data.id"))
 
     def to_dict(self):
-        return {"name": self.name, "affiliation": self.affiliation, "orcid": self.orcid}
         return {"name": self.name, "affiliation": self.affiliation, "orcid": self.orcid}
 
 
 class DSMetrics(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    number_of_models = db.Column(db.String(120))  # Número de modelos en el dataset
-    number_of_features = db.Column(db.String(120))  # Número total de features en todos los modelos
-    average_features_per_model = db.Column(db.Float)  # Promedio de features por modelo
-    constraints_count = db.Column(db.Integer)  # Número de restricciones totales
-    max_depth = db.Column(db.Integer)  # Profundidad máxima del árbol en los modelos del dataset
+    number_of_models = db.Column(db.String(120))
+    number_of_features = db.Column(db.String(120))
 
     def __repr__(self):
-        return (
-            f"DSMetrics<models={self.number_of_models}, "
-            f"features={self.number_of_features}, "
-            f"average_features={self.average_features_per_model}, "
-            f"constraints={self.constraints_count}, "
-            f"max_depth={self.max_depth}>"
-        )
-
-    def to_dict(self):
-        return {
-            "number_of_models": self.number_of_models,
-            "number_of_features": self.number_of_features,
-            "average_features_per_model": self.average_features_per_model,
-            "constraints_count": self.constraints_count,
-            "max_depth": self.max_depth,
-        }
+        return f"DSMetrics<models={self.number_of_models}, features={self.number_of_features}>"
 
 
 class DSMetaData(db.Model):
@@ -96,18 +76,6 @@ class DSMetaData(db.Model):
     authors = db.relationship(
         "Author", backref="ds_meta_data", lazy=True, cascade="all, delete"
     )
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "title": self.title,
-            "description": self.description,
-            "publication_type": self.publication_type.value,
-            "dataset_doi": self.dataset_doi,
-            "tags": self.tags.split(",") if self.tags else [],
-            "status": self.dataset_status.value,
-            "metrics": self.ds_metrics.to_dict() if self.ds_metrics else None,  # Añadido
-        }
 
 
 class DataSet(db.Model):
@@ -135,9 +103,8 @@ class DataSet(db.Model):
     feature_models = db.relationship(
         "FeatureModel", backref="data_set", lazy=True, cascade="all, delete"
     )
-    ratings = db.relationship(
-         "DatasetRating", backref="dataset", lazy=True
-    )
+
+    ratings = db.relationship("DatasetRating", backref="dataset", lazy=True)
 
     def name(self):
         return self.ds_meta_data.title
@@ -151,14 +118,8 @@ class DataSet(db.Model):
 
     def get_cleaned_publication_type(self):
         return self.ds_meta_data.publication_type.name.replace("_", " ").title()
-        return self.ds_meta_data.publication_type.name.replace("_", " ").title()
 
     def get_zenodo_url(self):
-        return (
-            f"https://zenodo.org/record/{self.ds_meta_data.deposition_id}"
-            if self.ds_meta_data.dataset_doi
-            else None
-        )
         return (
             f"https://zenodo.org/record/{self.ds_meta_data.deposition_id}"
             if self.ds_meta_data.dataset_doi
@@ -189,39 +150,31 @@ class DataSet(db.Model):
         return round(total / len(self.ratings), 2)
 
     def get_fact_labels(self):
-        return {
-            "dataset": {
-                "title": self.name(),
-                "number_of_models": len(self.feature_models),
-                "total_features": sum(
-                    fm.fm_meta_data.fm_metrics.number_of_features
-                    for fm in self.feature_models
-                    if fm.fm_meta_data and fm.fm_meta_data.fm_metrics
-                ),
-                "average_features_per_model": (
-                    sum(
-                        fm.fm_meta_data.fm_metrics.number_of_features
-                        for fm in self.feature_models
-                        if fm.fm_meta_data and fm.fm_meta_data.fm_metrics
-                    ) / len(self.feature_models)
-                    if self.feature_models else 0
-                ),
-                "constraints_count": sum(
-                    fm.fm_meta_data.fm_metrics.constraints_count
-                    for fm in self.feature_models
-                    if fm.fm_meta_data and fm.fm_meta_data.fm_metrics
-                ),
-                "max_depth": max(
-                    (fm.fm_meta_data.fm_metrics.max_depth
-                     for fm in self.feature_models
-                     if fm.fm_meta_data and fm.fm_meta_data.fm_metrics),
-                    default=0,
-                ),
-            },
-            "models": [
-                {"model_id": fm.id, **fm.get_fact_labels()} for fm in self.feature_models
-            ],
-        }
+        try:
+            total_features = 0
+            total_constraints = 0
+            max_depth = 0
+            total_models = len(self.feature_models)
+            feature_models_fact_labels = []  # Almacenar los fact labels de cada modelo individual
+
+            for feature_model in self.feature_models:
+                fact_labels = feature_model.get_fact_labels() or {}  # Manejar el caso en el que sea None
+                feature_models_fact_labels.append(fact_labels)
+                total_features += fact_labels.get("number_of_features", 0)
+                total_constraints += fact_labels.get("constraints_count", 0)
+                max_depth = max(max_depth, fact_labels.get("max_depth", 0))
+
+            return {
+                "dataset": {
+                    "total_models": total_models,
+                    "total_features": total_features,
+                    "total_constraints": total_constraints,
+                    "max_depth": max_depth,
+                },
+                "feature_models": feature_models_fact_labels,
+            }
+        except Exception as e:
+            raise RuntimeError(f"Error calculating dataset fact labels: {str(e)}")
 
     def to_dict(self):
         return {
@@ -244,6 +197,7 @@ class DataSet(db.Model):
             "files_count": self.get_files_count(),
             "total_size_in_bytes": self.get_file_total_size(),
             "total_size_in_human_format": self.get_file_total_size_for_human(),
+            "average_rating": self.get_average_rating(),
         }
 
     def __repr__(self):
@@ -285,12 +239,14 @@ class DOIMapping(db.Model):
 
 class DatasetRating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     dataset_id = db.Column(db.Integer, db.ForeignKey("data_set.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     rated_at = db.Column(db.DateTime, server_default=db.func.now())
 
-    __table_args__ = (db.UniqueConstraint("dataset_id", "user_id", name="unique_dataset_user"),)
+    __table_args__ = (
+        db.UniqueConstraint("dataset_id", "user_id", name="unique_dataset_user"),
+    )
 
     def __repr__(self):
-        return f"DatasetRating <dataset_id={self.dataset_id} user_id={self.user_id} rating={self.rating}>"
+        return f"DatasetRating<dataset_id={self.dataset_id}, user_id={self.user_id}, rating={self.rating}>"
