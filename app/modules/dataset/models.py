@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
+from app.modules.community.models import Community
 from flask import request
 from sqlalchemy import Enum as SQLAlchemyEnum
 
@@ -125,6 +126,16 @@ class DataSet(db.Model):
             if self.ds_meta_data.dataset_doi
             else None
         )
+
+    def get_community_url(self):
+        try:
+            if self.community_id:
+                community = Community.query.filter_by(id=self.community_id).first()
+                return "/community/"+community.name
+            else:
+                return "#"
+        except Exception:
+            return None
 
     def get_files_count(self):
         return sum(len(fm.files) for fm in self.feature_models)

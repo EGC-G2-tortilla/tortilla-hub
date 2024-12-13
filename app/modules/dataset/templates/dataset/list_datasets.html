@@ -29,6 +29,7 @@
                             <th>Description</th>
                             <th>Publication type</th>
                             <th>Dataset DOI</th>
+                            <th>Community</th>
                             <th>Options</th>
                         </tr>
                     </thead>
@@ -43,6 +44,15 @@
                                 <td>{{ dataset.ds_meta_data.description }}</td>
                                 <td>{{ dataset.ds_meta_data.publication_type.name.replace('_', ' ').title() }}</td>
                                 <td><a href="{{ dataset.get_uvlhub_doi() }}" target="_blank">{{ dataset.get_uvlhub_doi() }}</a></td>
+                                <td>
+                                    {% if dataset.get_community_url() and dataset.get_community_url() != "#" %}
+                                    <a href="{{ dataset.get_community_url() }}">
+                                        {{ dataset.get_community_url().replace("/community/","") }}
+                                    </a>
+                                    {% else %}
+                                    N/A
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <a href="{{ dataset.get_uvlhub_doi() }}">
                                         <i data-feather="eye"></i>
@@ -70,6 +80,7 @@
                             <th>Description</th>
                             <th>Publication type</th>
                             <th>Dataset DOI</th>
+                            <th>Community</th>
                             <th>Options</th>
                         </tr>
                     </thead>
@@ -84,6 +95,15 @@
                                 <td>{{ dataset.ds_meta_data.description }}</td>
                                 <td>{{ dataset.ds_meta_data.publication_type.name.replace('_', ' ').title() }}</td>
                                 <td><a href="{{ dataset.get_uvlhub_doi() }}" target="_blank">{{ dataset.get_uvlhub_doi() }}</a></td>
+                                <td>
+                                    {% if dataset.get_community_url() and dataset.get_community_url() != "#" %}
+                                    <a href="{{ dataset.get_community_url() }}">
+                                        {{ dataset.get_community_url().replace("/community/","") }}
+                                    </a>
+                                    {% else %}
+                                    N/A
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <a href="{{ dataset.get_uvlhub_doi() }}">
                                         <i data-feather="eye"></i>
@@ -128,6 +148,7 @@
                             <th>Description</th>
                             <th>Publication type</th>
                             <th>Dataset DOI</th>
+                            <th>Community</th>
                             <th>Options</th>
                         </tr>
                     </thead>
@@ -142,6 +163,15 @@
                                 <td>{{ dataset.ds_meta_data.description }}</td>
                                 <td>{{ dataset.ds_meta_data.publication_type.name.replace('_', ' ').title() }}</td>
                                 <td><a href="{{ dataset.get_uvlhub_doi() }}" target="_blank">{{ dataset.get_uvlhub_doi() }}</a></td>
+                                <td>
+                                    {% if dataset.get_community_url() and dataset.get_community_url() != "#" %}
+                                    <a href="{{ dataset.get_community_url() }}">
+                                        {{ dataset.get_community_url().replace("/community/","") }}
+                                    </a>
+                                    {% else %}
+                                    N/A
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <a href="{{ dataset.get_uvlhub_doi() }}">
                                         <i data-feather="eye"></i>
@@ -201,6 +231,7 @@
                                     <th>Title</th>
                                     <th>Description</th>
                                     <th>Publication type</th>
+                                    <th>Community</th>
                                     <th>Options</th>
                                 </tr>
                             </thead>
@@ -214,6 +245,15 @@
                                         </td>
                                         <td>{{ local_dataset.ds_meta_data.description }}</td>
                                         <td>{{ local_dataset.ds_meta_data.publication_type.name.replace('_', ' ').title() }}</td>
+                                        <td>
+                                            {% if local_dataset.get_community_url() and local_dataset.get_community_url() != "#" %}
+                                            <a href="{{ local_dataset.get_community_url() }}">
+                                                {{ local_dataset.get_community_url().replace("/community/","") }}
+                                            </a>
+                                            {% else %}
+                                            N/A
+                                            {% endif %}
+                                        </td>
                                         <td>
                                             <a href="{{ url_for('dataset.get_unsynchronized_dataset', dataset_id=local_dataset.id) }}">
                                                 <i data-feather="eye"></i>

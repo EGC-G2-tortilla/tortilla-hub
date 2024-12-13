@@ -222,16 +222,22 @@
                     </div>
                 </div>
                 {% endif %}
-                {% if dataset.community_id and community_name %}
                 <div class="row mb-2">
                     <div class="row-md-4 col-12">
                         <span class="text-secondary"><b>Community</b></span>
                     </div>
                     <div class="row-md-8 col-12">
-                        <a href="/community/{{ community_name }}">{{ community_name }}</a>
+                        {% if dataset.community_id and local_dataset.get_community_url() and local_dataset.get_community_url() != "#" %}
+                        <a href="{{ local_dataset.get_community_url() }}">{{ local_dataset.get_community_url().replace("/community/","") }}</a>
+                        {% else %}
+                        <strong style="margin-left:10px;">This dataset does not belong to any community
+                            <a href="/community">
+                                Go to communities
+                            </a>
+                        </strong>
+                        {% endif %}
                     </div>
                 </div>
-                {% endif %}
                 {% if dataset.ds_meta_data.dataset_doi %}
                 <div class="row mb-2">
                     <div class="row-md-4 col-12">
