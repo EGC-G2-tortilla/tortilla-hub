@@ -2,21 +2,13 @@ name: "Crear una Issue"
 description: "Plantilla para crear una nueva issue"
 labels: []
 assignees: []
+projects: []
 
 body:
   - type: markdown
     attributes:
       value: |
-        ## Título del Issue
-        (Usar el formato: Nombre WI / Fakenodo / Docs: título tarea)
-
-  - type: input
-    id: issue-title
-    attributes:
-      label: "Título del Issue"
-      description: "Descripción clara y concisa del problema o tarea. Usar el formato indicado."
-    validations:
-      required: true
+        ## Crear una nueva Issue
 
   - type: textarea
     id: description
@@ -34,35 +26,4 @@ body:
     validations:
       required: false
 
-  - type: textarea
-    id: steps-to-reproduce
-    attributes:
-      label: "Pasos para Reproducir (solo para bugs)"
-      description: "Lista detallada de pasos para reproducir el problema, en caso de tratarse de un error."
-    validations:
-      required: false
-
-  - type: dropdown
-    id: tags
-    attributes:
-      label: "Etiquetas"
-      description: "Seleccionar una o varias etiquetas para clasificar el issue."
-      multiple: true
-      options:
-        - bug
-        - WI
-        - fakenodo
-        - documentation
-        - workflow
-        - test
-    validations:
-      required: true
-
-  - type: input
-    id: deadline
-    attributes:
-      label: "Fecha Límite (si aplica)"
-      description: "Especificar una fecha límite para completar el issue, si corresponde."
-    validations:
-      required: false
 
