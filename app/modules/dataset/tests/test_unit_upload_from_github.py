@@ -72,3 +72,28 @@ def test_download_repo_zip_valid(test_client, setup_database):
             "error" in response.json
         ), "Debe existir un mensaje de error en la respuesta"
     logout(test_client)
+
+
+def test_upload_github_files_with_files(test_client, setup_database):
+    user = setup_database["user"]
+    dataset = setup_database["dataset"]
+    login_response = login(test_client, user.email, user.password)
+    assert (
+        login_response.status_code == 200
+    ), f"Login was unsuccessful: {login_response.data}"
+
+    # Simular archivos seleccionados
+    selected_files = ["/path/to/file1.uvl", "/path/to/file2.uvl"]
+    response = test_client.post(
+        "/dataset/upload_github_files",
+        data={
+            "dataset_id": dataset.id,
+            "files": selected_files,
+        },
+        content_type="application/x-www-form-urlencoded",
+        follow_redirects=True,
+    )
+
+    # Verificar respuesta
+    assert response.status_code == 200, "Debería manejar correctamente la solicitud con archivos seleccionados"
+    logout(test_client)
