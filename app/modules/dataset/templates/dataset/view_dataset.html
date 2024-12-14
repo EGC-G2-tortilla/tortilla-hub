@@ -53,7 +53,9 @@
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between align-items-center">
                         <h3 style="margin-bottom: 0px">UVL models</h3>
-                        <h4 style="margin-bottom: 0px;"><span class="badge bg-dark">{{ dataset.get_files_count() }}</span></h4>
+                        <h4 style="margin-bottom: 0px;">
+                            <span class="badge bg-dark">{{ dataset.get_files_count() }}</span>
+                        </h4>
                     </div>
                 </div>
             </div>
@@ -66,18 +68,17 @@
                                 <br>
                                 <small class="text-muted" style="margin-left: 10px;">({{ file.get_formatted_size() }})</small>
                             </div>
-                            <div class="col-2" id="check_{{ file.id }}">
-                            </div>
+                            <div class="col-2" id="check_{{ file.id }}"></div>
                             <div class="col-2 text-end d-flex justify-content-end">
                                 <div class="btn-group align-items-center flex-grow-1 mx-1" role="group">
                                     <button onclick="viewFile('{{ file.id }}')" class="btn btn-outline-secondary btn-sm d-flex align-items-center" style="border-radius: 5px; padding: 0.25rem 0.5rem;">
                                         <i data-feather="eye" class="me-1"></i> View
                                     </button>
-                                </div>                                
+                                </div>
                                 <div class="btn-group align-items-center flex-grow-1 mx-1" role="group">
                                     <button id="btnGroupDrop{{ file.id }}" type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 5px; padding: 0.25rem 0.5rem;">
                                         <i data-feather="check"></i> Check
-                                    </button>                                    
+                                    </button>
                                     <ul class="dropdown-menu" aria-labelledby="btnGroupDrop{{ file.id }}">
                                         <li>
                                             <a class="dropdown-item" href="javascript:void(0);" onclick="checkUVL('{{ file.id }}')">Syntax check</a>
@@ -87,7 +88,7 @@
                                 <div class="btn-group align-items-center flex-grow-1 mx-1" role="group">
                                     <button id="btnGroupDropExport{{ file.id }}" type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 5px; padding: 0.25rem 0.5rem;">
                                         <i data-feather="download"></i> Export
-                                    </button>                                    
+                                    </button>
                                     <ul class="dropdown-menu" aria-labelledby="btnGroupDropExport{{ file.id }}">
                                         <li>
                                             <a class="dropdown-item" href="{{ url_for('hubfile.download_file', file_id=file.id) }}">UVL</a>
@@ -101,18 +102,36 @@
                                         </li>
                                     </ul>
                                 </div>
+                                <div class="btn-group align-items-center flex-grow-1 mx-1" role="group">
+                                    <button id="btnGroupDropFMFactLabel{{ file.id }}" type="button" class="btn btn-outline-info btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 5px; padding: 0.25rem 0.5rem;">
+                                        <i data-feather="tag"></i> FM Fact Label
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="btnGroupDropFMFactLabel{{ file.id }}">
+                                        <li class="dropdown-item">
+                                            <strong>Number of Features:</strong>
+                                            <span class="badge bg-secondary">{{ feature_model.fact_labels.number_of_features }}</span>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <strong>Number of Constraints:</strong>
+                                            <span class="badge bg-secondary">{{ feature_model.fact_labels.constraints_count }}</span>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <strong>Max Depth:</strong>
+                                            <span class="badge bg-secondary">{{ feature_model.fact_labels.max_depth }}</span>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <strong>Variability:</strong>
+                                            <span class="badge bg-secondary">{{ feature_model.fact_labels.variability }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <ul>
-                        <li><strong>Number of Features:</strong> {{ feature_model.fact_labels.number_of_features }}</li>
-                        <li><strong>Number of Constraints:</strong> {{ feature_model.fact_labels.constraints_count }}</li>
-                        <li><strong>Max Depth:</strong> {{ feature_model.fact_labels.max_depth }}</li>
-                        <li><strong>Variability:</strong> {{ feature_model.fact_labels.variability }}</li>
-                    </ul>
                 {% endfor %}
             {% endfor %}
-        </div>
+        </div>        
+        
 
         <!-- Related Publication Section -->
         <div class="card">
@@ -185,12 +204,6 @@
         <div class="card-transparent">
             <div class="card-body">
                 <div class="row mb-4">
-                    <ul>
-                        <li><strong>Total Models:</strong> {{ fact_labels.total_models }}</li>
-                        <li><strong>Total Features:</strong> {{ fact_labels.total_features }}</li>
-                        <li><strong>Total Constraints:</strong> {{ fact_labels.total_constraints }}</li>
-                        <li><strong>Max Depth:</strong> {{ fact_labels.max_depth }}</li>
-                    </ul>
                     <div class="row-md-4 col-12">
                         <span class="text-secondary"><b>About</b></span>
                     </div>
@@ -259,6 +272,17 @@
                         <span class="badge bg-secondary">{{ tag.strip() }}</span>
                         {% endfor %}
                     </div>
+                </div>
+                <div class="row-md-4 col-12">
+                    <span class="text-secondary"><b>Fact Labels</b></span>
+                </div>
+                <div class="row-md-8 col-12">
+                    <ul>
+                        <li><strong>Total Models:</strong><span class="badge bg-secondary"> {{ fact_labels.total_models }}</span></li>
+                        <li><strong>Total Features:</strong><span class="badge bg-secondary"> {{ fact_labels.total_features }}</span> </li>
+                        <li><strong>Total Constraints:</strong><span class="badge bg-secondary"> {{ fact_labels.total_constraints }}</span> </li>
+                        <li><strong>Max Depth:</strong><span class="badge bg-secondary"> {{ fact_labels.max_depth }}</span> </li>
+                    </ul>
                 </div>
             </div>
       </div>
