@@ -1,3 +1,60 @@
+# [1.19.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.18.1...v1.19.0) (2024-12-14)
+
+
+### Bug Fixes
+
+*  gestión de los datasets desincronizados ([8bd1e39](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/8bd1e3951e3828d9c800d43adbf850b0361e77ac))
+* .mailmap añadido Daniel Fernández <92794081+DaniFdezCab@users.noreply.github.com> Close [#225](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/225) ([30f71f4](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/30f71f4273867fa5cd085f348ad26bc85ae1eee9))
+* Actualizar secretos ([457e7bc](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/457e7bc6883fcfc4c438610c681874e456b87fb4))
+* Arreglar fallo en el login ([cb86990](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/cb8699089627ba460e76e5e4744d9c39f2acf190))
+* Arreglar modelo para fact labels ([fd0526f](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/fd0526fdd57a5b1dd9f9fe030107e8a27ccb1ac1))
+* Arreglar modelo y mejorar UVLParser ([b4d0ea0](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b4d0ea03f033d81adaabf96e43b0892049827328))
+* cambiado nombre a dataset en el seeder de dataset ([a0bab47](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/a0bab476ded99281ca7032159a31d3c512867485))
+* Cambiar la configuración del Process Dependabot Alerts ([06b1c22](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/06b1c225216e188ac86c79261c574a7eb5c3768e))
+* cambio en el formulario de subir dataset para que pueda saberse donde hay que introducir una url Close [#230](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/230) ([73a8028](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/73a80280e5bbbda8a84d29b70f1e9c9666d02e67))
+* cambios requeridos por actualizacion de la vista ([0f6f60e](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/0f6f60ed1addfb1cad8b333f148b0ee7bb817f9f))
+* comunidad test de selenium solucionando añadiendo un time.sleep Close [#205](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/205) ([15a6f58](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/15a6f58af9a71b45e30022b5132269c5f3495eb8))
+* Conflictos resueltos ([3e40af4](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/3e40af4ff83db631bff6abf3d10839e7f810341e))
+* Error Codacy ([8cfc7d9](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/8cfc7d9ae4b4166c29e251d8a05ef9dde127cd60))
+* Error COdacy ([7fc45be](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7fc45be5dbd1fb43ff65a977e48a1745aada07f7))
+* Error con models no usado ([d113d8f](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/d113d8fb951eb7987b3cb2d062867da4e2d69906))
+* mejorada la integracion con fakenodo ([f12b6d1](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/f12b6d1701a3fcb975b5545ed5f06a7e11626aca))
+* modificacion de test de selenium para evitar incompatibilidades ([757a807](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/757a8075bf81e1d25204b2b94171596f8eee2e43))
+* modificado el html para soportar la nueva integracion ([b4f61ad](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b4f61ad7967b80a4f5cd296175676fc245decf27))
+* modificado el seeder para adaptarse a la integración con fakenodo ([6e542f3](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/6e542f3ec6accad8cc82ae54fd856001a0ceb6ed))
+* Modificar Workflow para que corra cada vez que pusheamos a main o develop ([ae935bc](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ae935bc38fd2577ae0794b6c7d146597e3d5ed08))
+* Nombre closed [#115](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/115) ([0b93c66](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/0b93c66b55b10319c7b7cbc680be62d2673fca49))
+* resolve alert visibility issue when rating a dataset closes [#232](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/232) ([50fb753](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/50fb7537628b1e5974b53d29a5dc5b5c01142436))
+* Solucionada issue codacy para comando help bot de discord ([5132e4e](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/5132e4e183249e5989cc6d389a63b8d03e0eac3f))
+* solucionado error en dataset seeder que hacia que se le diera el mismo nombre a dos datasets distintos ([60d075c](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/60d075c75a4e69057a72af96ce655f52f048ad9d))
+* solucionado problema de comunidades que se podían ver datasets no subidos(wi de stating) de otros usuarios y se podia acceder y daba error Close [#206](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/206) ([2dcb96f](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/2dcb96f7541277a27028236ecbf32808f98a1b47))
+* Solucionando errores de flake8 ([1d0284e](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/1d0284e235c8a9dc87db391050dbfbf6fe82ad96))
+* Solucionar problema visual ante grandes datos ([3c3c7bc](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/3c3c7bcb94b0e53110bc3309790301e83fc973a0))
+
+
+### Features
+
+* Actualizar rutas módulo dataset ([9028f96](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/9028f96a90ab51b2334bbd3f598eb2795ef412f7))
+* Actualizar servicios varios ([0b649bd](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/0b649bd7aaf04d9e7f3aacb92103536a27ce5065))
+* ahora en stating area puedes ver la comunidad a la que pertenece un dataset ([0982e36](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/0982e36ee11158b0b86f0645062803b52cc2d1a8))
+* ampliado el modelo para admitir la relacion con dataset ([0584832](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/0584832e73ff8443e3477adbd815be16dfa8cc6b))
+* añadida posibilidad de ver que un dataset esta en una comunidad en la vista de dataset ([36d9baf](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/36d9bafc2e1aaaf1bc0aafcbe46ad72f7e7059cc))
+* Añadir función de cálculos en hubfile ([1bb7307](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/1bb730749313bf209dcbb702ef89fc264c3805da))
+* Añadir funciones de cálculo de etiquetas ([fab6db9](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/fab6db9c6f5f1155acd292af19aed570218fbda8))
+* Añadir lógica de fact labels en flamapy ([7288592](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7288592dd743e59c0e0bc2adea76a6914b8efbbe))
+* Añadir ruta fact_labels al módulo hubfile ([361e060](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/361e06010c50d9ee11b5699967bcbf4aaaea79ff))
+* busqueda de fakenodo deposition por dataset id ([d9f2d8e](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/d9f2d8ed0b3e345d6e6dd295cbfd4d2d0e161e84))
+* Cambio en modelos de Dataset y FeatureModel ([8b468ca](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/8b468cacb92fda9f433e7fdb474bd4575560cecc))
+* Cuando se sube un dataset aparecen los fact_labels ([dfe4b4f](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/dfe4b4f53ccf1880e283fcc403823aa961e7f38b))
+* Mejorar la forma en la que se ven las FM-Fact-Label ([7fbb639](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7fbb639f48b1532342bae98f271d3b4c46379424))
+* migraciones correspondientes a la actualizacion de fakenodo ([1f5e182](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/1f5e182abb603eb5788718f6c78885adaec9279d))
+* Mostrar fact labels en la página ([e16cce0](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/e16cce0112e8d90631ffd14eb7dd1999f21cafcd))
+* Primera versión funcional test unitarios Discord-bot ([88ac3a3](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/88ac3a32613633966727127e2fc163c74d05259c))
+* Primeros dos test unitarios de Discord-bot ([691b3d4](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/691b3d4ec9cb1275c7444c165d4646067bf663d4))
+* publicación de datasets en fakenodo ([73111e2](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/73111e2c44be2e921176f17957a4e939a4f4f17f))
+* **rating:** tests for rate functionality and fix type validation in service ([88581c8](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/88581c85e5929da6c11fe717fc49a713e9798f97))
+* Workflow con Dependabot ([80d9534](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/80d9534c15ec974c6ed17cf2bbbcb455958ecbba))
+
 ## [1.18.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.18.0...v1.18.1) (2024-12-14)
 
 
