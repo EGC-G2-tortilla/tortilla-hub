@@ -9,7 +9,7 @@ from app.modules.discord_bot.bot import (
     feature_models_counter,
     total_feature_model_downloads,
     total_dataset_views,
-    total_feature_model_views
+    total_feature_model_views,
 )
 from app.modules.discord_bot.bot import DatasetView
 
@@ -102,7 +102,10 @@ async def test_total_feature_model_downloads(mock_feature_model_service):
     interaction_mock.response.send_message.assert_called_once()
 
     sent_message = interaction_mock.response.send_message.call_args[1]
-    assert "Total de Descargas de Modelos de Características" in sent_message["embed"].title
+    assert (
+        "Total de Descargas de Modelos de Características"
+        in sent_message["embed"].title
+    )
     assert "200" in sent_message["embed"].description
 
 
@@ -138,7 +141,9 @@ async def test_total_feature_model_views(mock_feature_model_service):
     interaction_mock.response.send_message.assert_called_once()
 
     sent_message = interaction_mock.response.send_message.call_args[1]
-    assert "Total de Vistas de Modelos de Características" in sent_message["embed"].title
+    assert (
+        "Total de Vistas de Modelos de Características" in sent_message["embed"].title
+    )
     assert "450" in sent_message["embed"].description
 
 
@@ -185,20 +190,16 @@ async def test_show_datasets(mock_dataset_service):
             ds_meta_data=Mock(
                 authors=[
                     Mock(to_dict=lambda: {"name": "Author 1"}),
-                    Mock(to_dict=lambda: {"name": "Author 2"})
+                    Mock(to_dict=lambda: {"name": "Author 2"}),
                 ]
-            )
+            ),
         ),
         Mock(
             id=2,
             name="Dataset 2",
             created_at=datetime(2024, 2, 2),
-            ds_meta_data=Mock(
-                authors=[
-                    Mock(to_dict=lambda: {"name": "Author 3"})
-                ]
-            )
-        )
+            ds_meta_data=Mock(authors=[Mock(to_dict=lambda: {"name": "Author 3"})]),
+        ),
     ]
 
     interaction_mock = AsyncMock()
@@ -223,14 +224,14 @@ async def test_dataset_view_navigation():
             "id": 1,
             "name": "Dataset 1",
             "created_at": "01/01/2024",
-            "authors": ["Author 1", "Author 2"]
+            "authors": ["Author 1", "Author 2"],
         },
         {
             "id": 2,
             "name": "Dataset 2",
             "created_at": "02/02/2024",
-            "authors": ["Author 3"]
-        }
+            "authors": ["Author 3"],
+        },
     ]
     view = DatasetView(datasets)
 
