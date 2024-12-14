@@ -456,11 +456,11 @@ class DatasetRatingService(BaseService):
 
     def rate_dataset(self, user_id: int, dataset_id: int, rating_value: int):
         """Allows registering or updating a rating for a dataset."""
-        try:
-            rating_value = int(rating_value)
-        except ValueError:
+        # Check if the rating is an integer
+        if not isinstance(rating_value, int):
             raise ValueError("Rating value must be an integer")
 
+        # Check if the rating is within the valid range
         if not (1 <= rating_value <= 5):
             raise ValueError("Rating value must be between 1 and 5")
 
