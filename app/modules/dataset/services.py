@@ -368,6 +368,13 @@ class DataSetService(BaseService):
             logger.error(f"Exception setting dataset to unstaged: {exc}")
             self.repository.session.rollback()
 
+    def get_fact_labels(self, dataset_id):
+        """
+        Devuelve los fact labels para un dataset dado.
+        """
+        dataset = self.get_by_id(dataset_id)
+        return dataset.get_fact_labels()
+
 
 class AuthorService(BaseService):
     def __init__(self):
