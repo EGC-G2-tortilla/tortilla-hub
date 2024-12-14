@@ -2,7 +2,9 @@ import os
 from unittest.mock import MagicMock, patch
 import pytest
 from flask import url_for
-
+from werkzeug.security import generate_password_hash
+from app import db
+from app.modules.auth.models import OAuthProvider, User
 from app.modules.auth.services import AuthenticationService
 from app.modules.auth.repositories import UserRepository
 from app.modules.profile.repositories import UserProfileRepository
@@ -548,3 +550,92 @@ def test_create_with_profile_and_oauth_provider_success(clean_database):
     assert user.email == data["email"]
     assert user.orcid == data["orcid"]
     assert user.oauth_providers[0].provider_name == "orcid"
+
+
+def test_set_password_and_check_password():
+    user = User(email="test@example.com")
+    user.set_password("secure_password")
+    assert user.check_password("secure_password") is True
+    assert user.check_password("wrong_password") is False
+
+
+def test_is_oauth_user_false():
+    user = User(email="test@example.com", password=generate_password_hash("password"))
+    assert user.is_oauth_user() is False
+
+
+def test_is_oauth_user_true():
+    user = User(email="test@example.com", password=generate_password_hash("password"))
+    oauth_provider = OAuthProvider(provider_name="google", provider_user_id="12345")
+    user.oauth_providers.append(oauth_provider)
+    db.session.add(user)
+    db.session.add(oauth_provider)
+    db.session.commit()
+    assert user.is_oauth_user() is True
+
+
+@patch("app.modules.auth.routes.google")
+@patch("app.modules.auth.routes.authentication_service")
+@patch("app.modules.auth.routes.current_user")
+def test_login_google_success(mock_current_user, mock_auth_service, mock_google, test_client):
+    mock_current_user.is_authenticated = False
+
+    with test_client.session_transaction() as sess:
+        sess["login_state"] = "test_state"
+
+    mock_google.authorize_access_token.return_value = {"access_token": "fake_token"}
+    mock_google.get.return_value.json.return_value = {
+        "email": "test@example.com",
+        "sub": "google_id",
+    }
+
+    mock_user = MagicMock()
+    mock_user.is_active = True
+    mock_user.get_id.return_value = "mock_user_id"
+    mock_auth_service.get_by_email.return_value = mock_user
+
+    response = test_client.get("/authorize/login/google?state=test_state")
+
+    assert response.status_code == 302
+    assert response.location == "/"
+    mock_auth_service.get_by_email.assert_called_once_with("test@example.com")
+
+
+@patch("app.modules.auth.routes.google")
+@patch("app.modules.auth.routes.authentication_service")
+@patch("app.modules.auth.routes.current_user")
+def test_signup_google_new_user(mock_current_user, mock_auth_service, mock_google, test_client):
+    # Simula que el usuario no está autenticado
+    mock_current_user.is_authenticated = False
+
+    # Configura el estado de la sesión para signup
+    with test_client.session_transaction() as sess:
+        sess["signup_state"] = "test_state"
+
+    # Mock del flujo de OAuth con Google
+    mock_google.authorize_access_token.return_value = {"access_token": "fake_token"}
+    mock_google.get.return_value.json.return_value = {
+        "email": "newuser@example.com",
+        "sub": "google_id",
+        "given_name": "John",
+        "family_name": "Doe",
+    }
+
+    # Simula que el usuario no existe
+    mock_auth_service.get_by_email.return_value = None
+
+    # Configura el objeto devuelto por el método de creación
+    mock_user = MagicMock()
+    mock_user.get_id.return_value = "mock_user_id"
+    mock_user.is_active = True
+    mock_user.email = "newuser@example.com"
+    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = mock_user
+
+    # Prueba el endpoint
+    response = test_client.get("/authorize/signup/google?state=test_state")
+
+    # Verificaciones
+    assert response.status_code == 302
+    assert response.location == "/"  # Redirige a la página principal
+    mock_auth_service.get_by_email.assert_called_once_with("newuser@example.com")
+    assert mock_auth_service.create_with_profile_and_oauth_provider_appended.called
