@@ -69,7 +69,7 @@ async def on_guild_join(guild):
 
 
 @bot.slash_command(name="help", description="Muestra los comandos disponibles")
-async def help(interaction: nextcord.Interaction):
+async def help_command(interaction: nextcord.Interaction):
     # Define las categorías de comandos
     commands_info = {
         "📂 Gestión de Datasets": [
