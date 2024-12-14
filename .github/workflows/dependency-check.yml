@@ -86,25 +86,29 @@ jobs:
       # 7. Procesar alertas si el archivo es válido y tiene contenido
       - name: Process Dependabot Alerts
         run: |
-          alerts=$(jq -c '.[]' dependabot_alerts.json)
-          if [ -z "$alerts" ]; then
-            echo "No alerts found. Generating default report."
+          echo "Processing Dependabot Alerts..."
+          
+          if ! jq -e '.' dependabot_alerts.json > /dev/null 2>&1; then
+            echo "Invalid or empty JSON file. Generating default report."
             echo "# Dependabot Alert Summary" > dependabot_report.md
-            echo "No hay alertas de seguridad detectadas." >> dependabot_report.md
+            echo "No hay alertas de seguridad detectadas o el archivo está vacío." >> dependabot_report.md
             exit 0
           fi
 
+          # Genera el informe en Markdown
           echo "# Dependabot Alert Summary" > dependabot_report.md
-          for alert in $alerts; do
-            severity=$(echo $alert | jq -r '.security_advisory.severity')
-            package=$(echo $alert | jq -r '.dependency.package.name')
-            description=$(echo $alert | jq -r '.security_advisory.description')
-            url=$(echo $alert | jq -r '.html_url')
-            fixed_version=$(echo $alert | jq -r '.security_advisory.fixed_version')
+
+          # Procesa cada alerta línea por línea
+          jq -c '.[]' dependabot_alerts.json | while read -r alert; do
+            severity=$(echo "$alert" | jq -r '.security_advisory.severity')
+            package=$(echo "$alert" | jq -r '.dependency.package.name')
+            description=$(echo "$alert" | jq -r '.security_advisory.summary')
+            url=$(echo "$alert" | jq -r '.html_url')
+            fixed_version=$(echo "$alert" | jq -r '.security_advisory.vulnerabilities[0].first_patched_version.identifier')
 
             echo "## Dependency: $package" >> dependabot_report.md
             echo "**Severity:** $severity" >> dependabot_report.md
-            echo "**Description:** $description" >> dependabot_report.md
+            echo "**Summary:** $description" >> dependabot_report.md
             echo "**Fixed Version:** $fixed_version" >> dependabot_report.md
             echo "**Details:** [View Alert]($url)" >> dependabot_report.md
             echo "" >> dependabot_report.md
