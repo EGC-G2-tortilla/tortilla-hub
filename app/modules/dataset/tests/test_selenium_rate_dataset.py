@@ -42,9 +42,7 @@ def test_rate_dataset_authenticated():
         wait_for_page_to_load(driver)
 
         # 3. Navigate to the dataset page
-        driver.get(
-            f"{host}{SAMPLE_DATASET_ROUTE}"
-        )  # Use the correct route for the dataset
+        driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")  # Use the correct route for the dataset
         wait_for_page_to_load(driver)
 
         # 4. Ensure the stars container is displayed
@@ -60,9 +58,7 @@ def test_rate_dataset_authenticated():
         alert_box = WebDriverWait(driver, 5).until(
             EC.presence_of_element_located((By.CLASS_NAME, "toast-alert"))
         )
-        assert (
-            "Thank you for your rating!" in alert_box.text
-        ), "Rating confirmation message not displayed!"
+        assert "Thank you for your rating!" in alert_box.text, "Rating confirmation message not displayed!"
 
         print("Rating submission test passed!")
 
@@ -80,18 +76,14 @@ def test_rate_dataset_unauthenticated():
         wait_for_page_to_load(driver)
 
         # 1. Navigate to the dataset page
-        driver.get(
-            f"{host}{SAMPLE_DATASET_ROUTE}"
-        )  # Use the correct route for the dataset
+        driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")  # Use the correct route for the dataset
         wait_for_page_to_load(driver)
 
         # 2. Try to find the stars container
         try:
             stars_container = driver.find_element(By.ID, "stars")
-            assert (
-                stars_container.is_displayed()
-            ), "The stars container is displayed for an unauthenticated user!"
-        except Exception as e:
+            assert stars_container.is_displayed(), "The stars container is displayed for an unauthenticated user!"
+        except:
             print("Stars container not visible for unauthenticated users, as expected.")
 
         print("Unauthenticated user cannot rate dataset test passed!")
@@ -122,9 +114,7 @@ def test_rating_persistence_authenticated():
         wait_for_page_to_load(driver)
 
         # 2. Navigate to the dataset page
-        driver.get(
-            f"{host}{SAMPLE_DATASET_ROUTE}"
-        )  # Use the correct route for the dataset
+        driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")  # Use the correct route for the dataset
         wait_for_page_to_load(driver)
 
         # 3. Select a rating (e.g., 4 stars)
@@ -147,9 +137,7 @@ def test_rating_persistence_authenticated():
         if match:
             average_rating = float(match.group(1))
         else:
-            raise ValueError(
-                f"Could not extract a valid rating from text: {average_rating_text}"
-            )
+            raise ValueError(f"Could not extract a valid rating from text: {average_rating_text}")
 
         # Verify that the average rating is within the valid range
         assert 0 <= average_rating <= 5, "The average rating displayed is not valid!"
@@ -159,9 +147,6 @@ def test_rating_persistence_authenticated():
 
     finally:
         close_driver(driver)
-
-
-import re
 
 
 def test_average_rating_update():
@@ -186,9 +171,7 @@ def test_average_rating_update():
         wait_for_page_to_load(driver)
 
         # 2. Navigate to the dataset page
-        driver.get(
-            f"{host}{SAMPLE_DATASET_ROUTE}"
-        )  # Use the correct route for the dataset
+        driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")  # Use the correct route for the dataset
         wait_for_page_to_load(driver)
 
         # 3. Get initial average rating and total ratings
@@ -225,18 +208,14 @@ def test_average_rating_update():
         if updated_count == initial_count:
             print("The user already rated this dataset, rating count did not increase.")
         elif updated_count == initial_count + 1:
-            print(
-                "The user rated this dataset for the first time, rating count increased."
-            )
+            print("The user rated this dataset for the first time, rating count increased.")
         else:
             raise AssertionError(
                 f"Unexpected rating count behavior! Initial count: {initial_count}, Updated count: {updated_count}."
             )
 
         # Ensure the average rating has updated
-        assert (
-            updated_average != initial_average
-        ), "Average rating did not update correctly!"
+        assert updated_average != initial_average, "Average rating did not update correctly!"
 
         print("Test passed: Rating count and average rating updated as expected!")
 
