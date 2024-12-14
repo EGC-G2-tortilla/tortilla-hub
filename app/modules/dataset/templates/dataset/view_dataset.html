@@ -441,6 +441,11 @@
     
         return ax.length - bx.length;
     }
+
+    document.getElementById('uploadButton').addEventListener('click', function(event) {
+        event.preventDefault();
+        document.getElementById('zipFileInput').click();
+    });
 </script>
 {%endif%}
 
@@ -584,11 +589,6 @@
             }
         });
     }
-
-    document.getElementById('uploadButton').addEventListener('click', function(event) {
-        event.preventDefault();
-        document.getElementById('zipFileInput').click();
-    });
 
     document.getElementById('zipFileInput').addEventListener('change', function() {
         if (this.files.length > 0) {
