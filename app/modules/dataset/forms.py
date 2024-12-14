@@ -40,7 +40,9 @@ class FeatureModelForm(FlaskForm):
         ],
         validators=[Optional()],
     )
-    publication_doi = StringField("Publication DOI (URL)", validators=[Optional(), URL()])
+    publication_doi = StringField(
+        "Publication DOI (URL)", validators=[Optional(), URL()]
+    )
     tags = StringField("Tags (separated by commas)")
     version = StringField("UVL Version")
     authors = FieldList(FormField(AuthorForm))
@@ -73,7 +75,9 @@ class DataSetForm(FlaskForm):
         ],
         validators=[DataRequired()],
     )
-    publication_doi = StringField("Publication DOI (URL)", validators=[Optional(), URL()])
+    publication_doi = StringField(
+        "Publication DOI (URL)", validators=[Optional(), URL()]
+    )
     dataset_doi = StringField("Dataset DOI (URL)", validators=[Optional(), URL()])
     tags = StringField("Tags (separated by commas)")
     authors = FieldList(FormField(AuthorForm))
