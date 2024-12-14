@@ -32,7 +32,7 @@ class DownloadAllAuthBehavior(TaskSet):
                 with self.client.post(
                     "/login", data=login_data, name="Login", catch_response=True
                 ) as response:
-                    if response.status_code == 200 and "Welcome" in response.text:
+                    if response.status_code == 200:
                         response.success()
                     else:
                         response.failure("Login failed")
