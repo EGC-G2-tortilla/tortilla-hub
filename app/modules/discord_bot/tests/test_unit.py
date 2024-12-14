@@ -1,26 +1,54 @@
 import pytest
+from unittest.mock import AsyncMock, patch
+from app.modules.discord_bot.bot import total_dataset_downloads, datasets_counter, feature_models_counter
 
 
-@pytest.fixture(scope="module")
-def test_client(test_client):
-    """
-    Extends the test_client fixture to add additional specific data for module testing.
-    """
-    with test_client.application.app_context():
-        # Add HERE new elements to the database that you want to exist in the test context.
-        # DO NOT FORGET to use db.session.add(<element>) and db.session.commit() to save the data.
-        pass
+# Test for total_dataset_downloads
+@patch("app.modules.discord_bot.bot.dataset_service")
+@pytest.mark.asyncio
+async def test_total_dataset_downloads(mock_dataset_service):
+    mock_dataset_service.total_dataset_downloads.return_value = 150
 
-    yield test_client
+    interaction_mock = AsyncMock()
+    interaction_mock.response.send_message = AsyncMock()
+
+    await total_dataset_downloads(interaction_mock)
+
+    mock_dataset_service.total_dataset_downloads.assert_called_once()
+    interaction_mock.response.send_message.assert_called_once()
+    args, kwargs = interaction_mock.response.send_message.call_args
+    assert "Total de Descargas de Datasets" in kwargs.get("content", "")
 
 
-def test_sample_assertion(test_client):
-    """
-    Sample test to verify that the test framework and environment are working correctly.
-    It does not communicate with the Flask application; it only performs a simple assertion to
-    confirm that the tests in this module can be executed.
-    """
-    greeting = "Hello, World!"
-    assert (
-        greeting == "Hello, World!"
-    ), "The greeting does not coincide with 'Hello, World!'"
+# Test for datasets_counter
+@patch("app.modules.discord_bot.bot.dataset_service")
+@pytest.mark.asyncio
+async def test_datasets_counter(mock_dataset_service):
+    mock_dataset_service.count_synchronized_datasets.return_value = 42
+
+    interaction_mock = AsyncMock()
+    interaction_mock.response.send_message = AsyncMock()
+
+    await datasets_counter(interaction_mock)
+
+    mock_dataset_service.count_synchronized_datasets.assert_called_once()
+    interaction_mock.response.send_message.assert_called_once()
+    args, kwargs = interaction_mock.response.send_message.call_args
+    assert "Total de Datasets Sincronizados" in kwargs.get("content", "")
+
+
+# Test for feature_models_counter
+@patch("app.modules.discord_bot.bot.feature_model_service")
+@pytest.mark.asyncio
+async def test_feature_models_counter(mock_feature_model_service):
+    mock_feature_model_service.count_feature_models.return_value = 10
+
+    interaction_mock = AsyncMock()
+    interaction_mock.response.send_message = AsyncMock()
+
+    await feature_models_counter(interaction_mock)
+
+    mock_feature_model_service.count_feature_models.assert_called_once()
+    interaction_mock.response.send_message.assert_called_once()
+    args, kwargs = interaction_mock.response.send_message.call_args
+    assert "Total de Modelos de Características" in kwargs.get("content", "")
