@@ -5,7 +5,7 @@ from core.services.BaseService import BaseService
 
 class FlamapyService(BaseService):
     def __init__(self):
-        self.repository = FlamapyRepository()
+        super().__init__(FlamapyRepository())
 
     def calculate_fact_labels_from_uvl(self, uvl_file_path):
         """
