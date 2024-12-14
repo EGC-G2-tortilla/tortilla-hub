@@ -1,3 +1,10 @@
+## [1.18.1](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.18.0...v1.18.1) (2024-12-14)
+
+
+### Bug Fixes
+
+* Aumentar tiempo de espera en el login ([2fee5ed](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/2fee5ed067f32bee2f16d174bab7fca06255798d))
+
 # [1.18.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.17.0...v1.18.0) (2024-12-13)
 
 
