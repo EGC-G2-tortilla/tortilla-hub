@@ -161,7 +161,26 @@ class DataSetRepository(BaseRepository):
         )
 
     def get_by_community_id(self, community_id: int):
-        return self.model.query.filter_by(community_id=community_id)
+        return (
+            self.model.query.join(DSMetaData)
+            .filter(
+                DataSet.community_id == community_id, DSMetaData.dataset_doi.isnot(None)
+            )
+            .all()
+        )
+
+    def get_unsynchronized_by_community_id_and_user_id(
+        self, community_id: int, current_user_id: int
+    ):
+        return (
+            self.model.query.join(DSMetaData)
+            .filter(
+                DataSet.community_id == community_id,
+                DataSet.user_id == current_user_id,
+                DSMetaData.dataset_doi.is_(None),
+            )
+            .all()
+        )
 
     def get_all_datasets(self):
         return self.model.query.all()
@@ -172,6 +191,7 @@ class DataSetRepository(BaseRepository):
             .filter(
                 DataSet.user_id == current_user_id,
                 DSMetaData.dataset_status == DatasetStatus.STAGED,
+                DSMetaData.dataset_doi.is_(None),
             )
             .all()
         )
@@ -182,6 +202,7 @@ class DataSetRepository(BaseRepository):
             .filter(
                 DataSet.user_id == current_user_id,
                 DSMetaData.dataset_status == DatasetStatus.UNSTAGED,
+                DSMetaData.dataset_doi.is_(None),
             )
             .all()
         )
@@ -192,6 +213,7 @@ class DataSetRepository(BaseRepository):
             .filter(
                 DataSet.user_id == current_user_id,
                 DSMetaData.dataset_status == DatasetStatus.PUBLISHED,
+                DSMetaData.dataset_doi.isnot(None),
             )
             .all()
         )

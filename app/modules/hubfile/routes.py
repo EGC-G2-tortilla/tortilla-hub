@@ -98,3 +98,10 @@ def view_file(file_id):
             return jsonify({"success": False, "error": "File not found"}), 404
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+@hubfile_bp.route("/hubfile/<int:hubfile_id>/fact_labels", methods=["GET"])
+def get_hubfile_fact_labels(hubfile_id):
+    hubfile_service = HubfileService()
+    fact_labels = hubfile_service.get_fact_labels(hubfile_id)
+    return jsonify(fact_labels)

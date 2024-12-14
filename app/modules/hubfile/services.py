@@ -45,6 +45,13 @@ class HubfileService(BaseService):
         hubfile_download_record_repository = HubfileDownloadRecordRepository()
         return hubfile_download_record_repository.total_hubfile_downloads()
 
+    def get_fact_labels(self, hubfile_id):
+        """
+        Devuelve los fact labels de un archivo UVL dado.
+        """
+        hubfile = self.get_by_id(hubfile_id)
+        return hubfile.get_fact_labels()
+
 
 class HubfileDownloadRecordService(BaseService):
     def __init__(self):

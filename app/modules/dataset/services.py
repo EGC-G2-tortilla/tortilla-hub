@@ -222,12 +222,10 @@ class DataSetService(BaseService):
                     ds_meta_data_id=dsmetadata.id,
                     community_id=community.id,
                 )
-                print("\n\tcommunity is not none\n")
             else:
                 dataset = self.create(
                     commit=False, user_id=current_user.id, ds_meta_data_id=dsmetadata.id
                 )
-                print("\n\tcommunity is none\n")
 
             for feature_model in form.feature_models:
                 uvl_filename = feature_model.uvl_filename.data
@@ -275,8 +273,19 @@ class DataSetService(BaseService):
         domain = os.getenv("DOMAIN", "localhost")
         return f"http://{domain}/doi/{dataset.ds_meta_data.dataset_doi}"
 
-    def get_by_community_id(self, community_id: int):
-        return self.repository.get_by_community_id(community_id)
+    def get_by_community_id(self, community_id: int, current_user):
+        datasets = self.repository.get_by_community_id(community_id)
+
+        try:
+            if current_user.id:
+                unsynchronized = (
+                    self.repository.get_unsynchronized_by_community_id_and_user_id(
+                        community_id, current_user.id
+                    )
+                )
+        except Exception:
+            unsynchronized = list()
+        return datasets, unsynchronized
 
     def get_all_datasets(self):
         return self.repository.get_all_datasets()
@@ -317,8 +326,12 @@ class DataSetService(BaseService):
             datasets = self.repository.get_user_staged_datasets(current_user_id)
             for dataset in datasets:
                 if dataset.ds_meta_data.dataset_status == DatasetStatus.STAGED:
-                    fakenodo.test_full_connection()
+                    deposition = fakenodo.publish_dataset(dataset_id=dataset.id)
                     dataset.ds_meta_data.dataset_status = DatasetStatus.PUBLISHED
+                    dataset.ds_meta_data.dataset_doi = "12.1234/dataset" + str(
+                        dataset.id
+                    )
+                    dataset.deposition_id = deposition.id
                     self.repository.session.commit()
                 else:
                     raise ValueError("Dataset is not in 'STAGED' status")
@@ -352,6 +365,13 @@ class DataSetService(BaseService):
         except Exception as exc:
             logger.error(f"Exception setting dataset to unstaged: {exc}")
             self.repository.session.rollback()
+
+    def get_fact_labels(self, dataset_id):
+        """
+        Devuelve los fact labels para un dataset dado.
+        """
+        dataset = self.get_by_id(dataset_id)
+        return dataset.get_fact_labels()
 
 
 class AuthorService(BaseService):
@@ -445,11 +465,11 @@ class DatasetRatingService(BaseService):
 
     def rate_dataset(self, user_id: int, dataset_id: int, rating_value: int):
         """Allows registering or updating a rating for a dataset."""
-        try:
-            rating_value = int(rating_value)
-        except ValueError:
+        # Check if the rating is an integer
+        if not isinstance(rating_value, int):
             raise ValueError("Rating value must be an integer")
 
+        # Check if the rating is within the valid range
         if not (1 <= rating_value <= 5):
             raise ValueError("Rating value must be between 1 and 5")
 

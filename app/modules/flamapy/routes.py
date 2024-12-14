@@ -1,4 +1,5 @@
 import logging
+from app.modules.flamapy.services import FlamapyService
 from app.modules.hubfile.services import HubfileService
 from flask import send_file, jsonify, request
 from app.modules.flamapy import flamapy_bp
@@ -199,3 +200,26 @@ def to_cnf(file_id):
     finally:
         # Clean up the temporary file
         os.remove(temp_file.name)
+
+
+@flamapy_bp.route("/flamapy/calculate_fact_labels", methods=["POST"])
+def calculate_fact_labels():
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
+
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+        temp_file.write(file.read())
+        temp_path = temp_file.name
+
+    flamapy_service = FlamapyService()
+    try:
+        fact_labels = flamapy_service.calculate_fact_labels_from_uvl(temp_path)
+        os.remove(temp_path)
+        return jsonify(fact_labels)
+    except Exception as e:
+        os.remove(temp_path)
+        return jsonify({"error": str(e)}), 500

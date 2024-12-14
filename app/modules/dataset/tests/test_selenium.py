@@ -71,7 +71,7 @@ def test_data_display():
         close_driver(driver)
 
 
-# WI: Stagin area
+# WI: Staging area
 def test_stage_dataset():
     driver = initialize_driver()
 
@@ -97,8 +97,8 @@ def test_stage_dataset():
 
         # Find the "Unstaged Datasets" table
         unstaged_table = driver.find_element(
-            By.XPATH,
-            "//h5[contains(text(), 'Unstaged Datasets')]/following-sibling::table",
+            By.ID,
+            "unstaged-datasets",
         )
 
         # Count the unstaged datasets
@@ -122,8 +122,8 @@ def test_stage_dataset():
 
         # Re-locate the table after the action
         unstaged_table = driver.find_element(
-            By.XPATH,
-            "//h5[contains(text(), 'Unstaged Datasets')]/following-sibling::table",
+            By.ID,
+            "unstaged-datasets",
         )
         unstaged_rows_after = unstaged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
 
@@ -164,8 +164,8 @@ def test_unstage_dataset():
 
         # Find the "Staged Datasets" table
         staged_table = driver.find_element(
-            By.XPATH,
-            "//h5[contains(text(), 'Staged Datasets')]/following-sibling::table",
+            By.ID,
+            "staged-datasets",
         )
 
         # Count the staged datasets
@@ -188,10 +188,7 @@ def test_unstage_dataset():
         wait_for_page_to_load(driver)
 
         # Re-locate the table after the action
-        staged_table = driver.find_element(
-            By.XPATH,
-            "//h5[contains(text(), 'Staged Datasets')]/following-sibling::table",
-        )
+        staged_table = driver.find_element(By.ID, "staged-datasets")
         staged_rows_after = staged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
 
         # Verify that the dataset has been removed from the "Staged Datasets" table
@@ -231,8 +228,8 @@ def test_stage_all_datasets():
 
         # Verify that all datasets are in the "Unstaged" section
         unstaged_table = driver.find_element(
-            By.XPATH,
-            "//h5[contains(text(), 'Unstaged Datasets')]/following-sibling::table",
+            By.ID,
+            "unstaged-datasets",
         )
         unstaged_rows = unstaged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
         num_unstaged_before = len(unstaged_rows)
@@ -261,8 +258,8 @@ def test_stage_all_datasets():
 
         # Verify that now all datasets are in the "Staged" section
         staged_table = driver.find_element(
-            By.XPATH,
-            "//h5[contains(text(), 'Staged Datasets')]/following-sibling::table",
+            By.ID,
+            "staged-datasets",
         )
         staged_rows = staged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
         num_staged_after = len(staged_rows)
@@ -302,8 +299,8 @@ def test_unstage_all_datasets():
 
         # Verify that all datasets are in the "Staged" section
         staged_table = driver.find_element(
-            By.XPATH,
-            "//h5[contains(text(), 'Staged Datasets')]/following-sibling::table",
+            By.ID,
+            "staged-datasets",
         )
         staged_rows = staged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
         num_staged_before = len(staged_rows)
@@ -332,8 +329,8 @@ def test_unstage_all_datasets():
 
         # Verify that now all datasets are back in the "Unstaged" section
         unstaged_table = driver.find_element(
-            By.XPATH,
-            "//h5[contains(text(), 'Unstaged Datasets')]/following-sibling::table",
+            By.ID,
+            "unstaged-datasets",
         )
         unstaged_rows = unstaged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
         num_unstaged_after = len(unstaged_rows)
@@ -373,8 +370,8 @@ def test_publish_datasets():
 
         # Verify that all datasets are in the "Staged" section before publishing
         staged_table = driver.find_element(
-            By.XPATH,
-            "//h5[contains(text(), 'Staged Datasets')]/following-sibling::table",
+            By.ID,
+            "staged-datasets",
         )
         staged_rows = staged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
         num_staged_before = len(staged_rows)
@@ -403,8 +400,8 @@ def test_publish_datasets():
 
         # Verify that all datasets are now in the "Published" section
         published_table = driver.find_element(
-            By.XPATH,
-            "//h5[contains(text(), 'Published Datasets')]/following-sibling::table",
+            By.ID,
+            "published-datasets",
         )
         published_rows = published_table.find_elements(By.CSS_SELECTOR, "tbody tr")
         num_published_after = len(published_rows)
@@ -428,29 +425,37 @@ def test_buttons_upload_and_download():
 
     try:
         host = get_host_for_selenium_testing()
+        driver.get(f"{host}/login")
+        wait_for_page_to_load(driver)
 
-        # Open the dataset view page
+        username_input = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.NAME, "email"))
+        )
+        password_input = driver.find_element(By.NAME, "password")
+        username_input.send_keys("user1@example.com")
+        password_input.send_keys("1234")
+        password_input.send_keys(Keys.RETURN)
+        wait_for_page_to_load(driver)
+
         driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")
         wait_for_page_to_load(driver)
 
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
         # Verify the "Download all" button
-        download_button = driver.find_element(
-            By.XPATH, "//a[contains(., 'Download all')]"
-        )
+        download_button = driver.find_element(By.ID, "download-all-button")
         assert download_button.is_displayed(), "Download all button is not displayed!"
 
-        # Verify the "Upload from Github" button
-        github_button = driver.find_element(
-            By.XPATH, "//a[contains(., 'Upload from Github')]"
+        # Verify "Upload from Github" button
+        github_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "repoUrlInput"))
         )
         assert (
             github_button.is_displayed()
         ), "Upload from Github button is not displayed!"
 
         # Verify the "Upload from ZIP" button
-        zip_button = driver.find_element(
-            By.XPATH, "//a[contains(., 'Upload from ZIP')]"
-        )
+        zip_button = driver.find_element(By.ID, "uploadButton")
         assert zip_button.is_displayed(), "Upload from ZIP button is not displayed!"
 
         print("Button layout test passed!")
