@@ -9,6 +9,7 @@ from app.modules.dataset.models import (
     DataSet,
 )
 
+
 @pytest.fixture(scope="module")
 def test_client(test_client):
     with test_client.application.app_context():
@@ -16,7 +17,8 @@ def test_client(test_client):
     yield test_client
     with test_client.application.app_context():
         db.session.remove()
-        db.drop_all() 
+        db.drop_all()
+
 
 @pytest.fixture(scope="function")
 def setup_database(test_client):
@@ -24,7 +26,7 @@ def setup_database(test_client):
     user_test = User(email="user101@example.com", password="test1234")
     db.session.add(user_test)
     db.session.commit()
-    
+
     dataset_test = DataSet(
         user_id=user_test.id,
         ds_meta_data=DSMetaData(
@@ -44,6 +46,7 @@ def setup_database(test_client):
     db.session.delete(user_test)
     db.session.commit()
 
+
 def test_download_repo_zip_valid(test_client, setup_database):
     user = setup_database["user"]
     login_response = login(test_client, user.email, user.password)
@@ -61,7 +64,11 @@ def test_download_repo_zip_valid(test_client, setup_database):
     )
 
     # Verificar respuesta
-    assert response.status_code == 200, "La solicitud debería tener una respuesta válida"
+    assert (
+        response.status_code == 200
+    ), "La solicitud debería tener una respuesta válida"
     if response.status_code == 400:
-        assert "error" in response.json, "Debe existir un mensaje de error en la respuesta"
+        assert (
+            "error" in response.json
+        ), "Debe existir un mensaje de error en la respuesta"
     logout(test_client)
