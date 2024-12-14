@@ -57,7 +57,9 @@ class Hubfile(db.Model):
                 "variability": model_data.get("variability", 0.0),
             }
         except Exception as e:
-            raise RuntimeError(f"Error calculating fact labels for Hubfile {self.id}: {str(e)}")
+            raise RuntimeError(
+                f"Error calculating fact labels for Hubfile {self.id}: {str(e)}"
+            )
 
     def to_dict(self):
         return {
