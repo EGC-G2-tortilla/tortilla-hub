@@ -1,8 +1,0 @@
-version: 2
-updates:
-  - package-ecosystem: "pip"        # Ecosistema Python
-    directory: "/"                 # Directorio donde está requirements.txt
-    schedule:
-      interval: "daily"            # Cambia a daily, weekly o monthly según prefieras
-    ignore:
-      - dependency-name: "*"       # No actualiza automáticamente, solo analiza

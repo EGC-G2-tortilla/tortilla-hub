@@ -1,9 +1,17 @@
 name: Daily Dependency Check and Graph Generation
 
 on:
-  schedule:
-    - cron: '0 0 * * *' # Corre todos los días a medianoche
   workflow_dispatch: # Permite ejecutarlo manualmente
+  push:
+    branches:
+      - main
+      - develop
+      - task/dependabot
+  pull_request:
+    branches:
+      - main
+      - develop
+      - task/dependabot
 
 permissions:
   contents: read
