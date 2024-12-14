@@ -20,12 +20,19 @@ async def test_help_command(mock_help):
     # Verifica el contenido del embed
     embed = interaction_mock.response.send_message.call_args[1]["embed"]
     assert embed.title == "📖 Ayuda del Bot"
-    assert "Aquí tienes la lista de comandos disponibles para interactuar con este bot." in embed.description
+    assert (
+        "Aquí tienes la lista de comandos disponibles para interactuar con este bot."
+        in embed.description
+    )
     assert len(embed.fields) == 4
 
     for field in embed.fields:
-        assert field.name in ["📂 Gestión de Datasets", "📊 Estadísticas Generales",
-                              "🔧 Modelos de Características", "📚 Autores"]
+        assert field.name in [
+            "📂 Gestión de Datasets",
+            "📊 Estadísticas Generales",
+            "🔧 Modelos de Características",
+            "📚 Autores",
+        ]
         assert field.value != ""
 
 
