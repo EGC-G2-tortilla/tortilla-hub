@@ -1,8 +1,11 @@
 from app.modules.featuremodel.models import UVLParser
+from app.modules.flamapy.repositories import FlamapyRepository
 from core.services.BaseService import BaseService
 
 
 class FlamapyService(BaseService):
+    def __init__(self):
+        self.repository = FlamapyRepository()
 
     def calculate_fact_labels_from_uvl(self, uvl_file_path):
         """
