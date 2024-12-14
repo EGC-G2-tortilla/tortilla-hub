@@ -97,7 +97,8 @@ def test_stage_dataset():
 
         # Find the "Unstaged Datasets" table
         unstaged_table = driver.find_element(
-            By.ID, "unstaged-datasets",
+            By.ID,
+            "unstaged-datasets",
         )
 
         # Count the unstaged datasets
@@ -163,7 +164,9 @@ def test_unstage_dataset():
 
         # Find the "Staged Datasets" table
         staged_table = driver.find_element(
-            By.ID,"staged-datasets",)
+            By.ID,
+            "staged-datasets",
+        )
 
         # Count the staged datasets
         staged_rows = staged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
@@ -185,7 +188,7 @@ def test_unstage_dataset():
         wait_for_page_to_load(driver)
 
         # Re-locate the table after the action
-        staged_table = driver.find_element(By.ID,"staged-datasets")
+        staged_table = driver.find_element(By.ID, "staged-datasets")
         staged_rows_after = staged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
 
         # Verify that the dataset has been removed from the "Staged Datasets" table
@@ -225,7 +228,9 @@ def test_stage_all_datasets():
 
         # Verify that all datasets are in the "Unstaged" section
         unstaged_table = driver.find_element(
-            By.ID, "unstaged-datasets",        )
+            By.ID,
+            "unstaged-datasets",
+        )
         unstaged_rows = unstaged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
         num_unstaged_before = len(unstaged_rows)
         assert (
@@ -253,7 +258,8 @@ def test_stage_all_datasets():
 
         # Verify that now all datasets are in the "Staged" section
         staged_table = driver.find_element(
-            By.ID, "staged-datasets",
+            By.ID,
+            "staged-datasets",
         )
         staged_rows = staged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
         num_staged_after = len(staged_rows)
@@ -293,7 +299,8 @@ def test_unstage_all_datasets():
 
         # Verify that all datasets are in the "Staged" section
         staged_table = driver.find_element(
-            By.ID,"staged-datasets",
+            By.ID,
+            "staged-datasets",
         )
         staged_rows = staged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
         num_staged_before = len(staged_rows)
@@ -322,7 +329,8 @@ def test_unstage_all_datasets():
 
         # Verify that now all datasets are back in the "Unstaged" section
         unstaged_table = driver.find_element(
-            By.ID, "unstaged-datasets",
+            By.ID,
+            "unstaged-datasets",
         )
         unstaged_rows = unstaged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
         num_unstaged_after = len(unstaged_rows)
@@ -362,7 +370,8 @@ def test_publish_datasets():
 
         # Verify that all datasets are in the "Staged" section before publishing
         staged_table = driver.find_element(
-            By.ID, "staged-datasets",
+            By.ID,
+            "staged-datasets",
         )
         staged_rows = staged_table.find_elements(By.CSS_SELECTOR, "tbody tr")
         num_staged_before = len(staged_rows)

@@ -6,6 +6,7 @@ from app.modules.dataset.repositories import DataSetRepository
 
 logger = logging.getLogger(__name__)
 
+
 class FakenodoService(BaseService):
     def __init__(self):
         super().__init__(FakenodoRepository())
@@ -118,9 +119,11 @@ class FakenodoService(BaseService):
         """
         try:
             dataset = self.dataset_repository.get_or_404(dataset_id)
-            publication = self.create(title = dataset.ds_meta_data.title,
-                description = dataset.ds_meta_data.description,
-                dataset_id = dataset.id)
+            publication = self.create(
+                title=dataset.ds_meta_data.title,
+                description=dataset.ds_meta_data.description,
+                dataset_id=dataset.id,
+            )
             return publication
         except Exception as e:
             return e
