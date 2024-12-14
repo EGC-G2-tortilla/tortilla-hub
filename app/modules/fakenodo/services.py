@@ -2,6 +2,7 @@ import logging
 from flask import jsonify, Response
 from app.modules.fakenodo.repositories import FakenodoRepository
 from core.services.BaseService import BaseService
+from app.modules.dataset.repositories import DataSetRepository
 
 logger = logging.getLogger(__name__)
 
@@ -9,6 +10,7 @@ logger = logging.getLogger(__name__)
 class FakenodoService(BaseService):
     def __init__(self):
         super().__init__(FakenodoRepository())
+        self.dataset_repository = DataSetRepository()
         self.headers = {"Content-Type": "application/json"}
         self.mock_data = {}
         self.next_id = 1  # Aumentar el ID en las incrementaciones falsas
@@ -110,3 +112,18 @@ class FakenodoService(BaseService):
         Simula la obtención del DOI de un depósito.
         """
         return f"10.1234/fake-doi-{deposition_id}"
+
+    def publish_dataset(self, dataset_id: int):
+        """
+        Publicación de un dataset.
+        """
+        try:
+            dataset = self.dataset_repository.get_or_404(dataset_id)
+            publication = self.create(
+                title=dataset.ds_meta_data.title,
+                description=dataset.ds_meta_data.description,
+                dataset_id=dataset.id,
+            )
+            return publication
+        except Exception as e:
+            return e

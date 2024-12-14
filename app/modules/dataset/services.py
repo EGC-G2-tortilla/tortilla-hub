@@ -328,8 +328,12 @@ class DataSetService(BaseService):
             datasets = self.repository.get_user_staged_datasets(current_user_id)
             for dataset in datasets:
                 if dataset.ds_meta_data.dataset_status == DatasetStatus.STAGED:
-                    fakenodo.test_full_connection()
+                    deposition = fakenodo.publish_dataset(dataset_id=dataset.id)
                     dataset.ds_meta_data.dataset_status = DatasetStatus.PUBLISHED
+                    dataset.ds_meta_data.dataset_doi = "12.1234/dataset" + str(
+                        dataset.id
+                    )
+                    dataset.deposition_id = deposition.id
                     self.repository.session.commit()
                 else:
                     raise ValueError("Dataset is not in 'STAGED' status")

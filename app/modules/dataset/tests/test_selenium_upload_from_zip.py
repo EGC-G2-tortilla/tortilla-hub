@@ -13,7 +13,7 @@ def wait_for_page_to_load(driver, timeout=4):
     )
 
 
-SAMPLE_DATASET_ROUTE = "/doi/10.1234/dataset1/"  # Route for Sample Dataset 1
+SAMPLE_DATASET_ROUTE = "/doi/10.1234/dataset2/"  # Route for Sample Dataset 1
 
 
 def test_exists_button():
@@ -31,7 +31,7 @@ def test_exists_button():
         # Login
         username_input = driver.find_element(By.NAME, "email")
         password_input = driver.find_element(By.NAME, "password")
-        username_input.send_keys("user1@example.com")
+        username_input.send_keys("user2@example.com")
         password_input.send_keys("1234")
         password_input.send_keys(Keys.RETURN)
         wait_for_page_to_load(driver)
