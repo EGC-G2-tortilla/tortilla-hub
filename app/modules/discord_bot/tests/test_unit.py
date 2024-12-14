@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, patch
 from app.modules.discord_bot.bot import (
-    help,
+    help_command,
     most_downloaded,
     total_dataset_downloads,
     datasets_counter,
@@ -16,7 +16,7 @@ async def test_help_command(mock_help):
     interaction_mock = AsyncMock()
     interaction_mock.response.send_message = AsyncMock()
 
-    await help(interaction_mock)
+    await help_command(interaction_mock)
     # Verifica el contenido del embed
     embed = interaction_mock.response.send_message.call_args[1]["embed"]
     assert embed.title == "📖 Ayuda del Bot"
