@@ -372,3 +372,179 @@ def test_get_gitlab_repositories_failure(mock_get, test_client):
     response = test_client.get("/gitlab/repositories")
     assert response.status_code == 500
     assert response.json == {"error": "Failed to fetch repositories"}
+
+
+@patch("app.modules.auth.routes.orcid")
+@patch("app.modules.auth.routes.authentication_service")
+@patch("app.modules.auth.routes.current_user")
+def test_authorize_signup_orcid_with_email(mock_current_user, mock_auth_service, mock_orcid, test_client):
+    # Simula que el usuario no está autenticado
+    mock_current_user.is_authenticated = False
+
+    # Simula la autorización del token con ORCID
+    mock_orcid.authorize_access_token.return_value = {
+        "access_token": "fake_token",
+        "orcid": "0000-0002-1825-0097",
+    }
+
+    # Simula las respuestas de los endpoints de ORCID
+    mock_orcid.get.side_effect = [
+        MagicMock(
+            json=lambda: {
+                "person": {
+                    "name": {
+                        "given-names": {"value": "John"},
+                        "family-name": {"value": "Doe"}
+                    }
+                }
+            }
+        ),
+        MagicMock(
+            json=lambda: {
+                "email": [
+                    {"email": "test@example.com", "primary": True, "verified": True}
+                ]
+            }
+        ),
+    ]
+
+    # Mock del servicio para verificar el email
+    mock_user = None  # Simula que el usuario no existe
+    mock_auth_service.get_by_email.return_value = mock_user
+
+    # Crea un mock de usuario que no cause problemas de serialización
+    mock_created_user = MagicMock()
+    mock_created_user.get_id.return_value = "mock_user_id"
+    mock_created_user.is_active = True
+    mock_created_user.email = "test@example.com"
+    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = mock_created_user
+
+    # Simula el estado de la sesión
+    with test_client.session_transaction() as sess:
+        sess["signup_state"] = "test_state"
+
+    # Ejecuta la solicitud
+    response = test_client.get("/authorize/signup/orcid?state=test_state")
+
+    # Verificaciones
+    assert response.status_code == 302
+    assert response.location == "/"  # Redirige a la página principal
+
+    # Verifica que los servicios fueron llamados correctamente
+    assert mock_auth_service.get_by_email.called
+    assert mock_auth_service.create_with_profile_and_oauth_provider_appended.called
+
+
+@patch("app.modules.auth.routes.orcid")
+@patch("app.modules.auth.routes.authentication_service")
+@patch("app.modules.auth.routes.current_user")
+def test_authorize_signup_orcid_no_email(mock_current_user, mock_auth_service, mock_orcid, test_client):
+    # Simula que el usuario no está autenticado
+    mock_current_user.is_authenticated = False
+
+    # Simula la autorización del token con ORCID
+    mock_orcid.authorize_access_token.return_value = {
+        "access_token": "fake_token",
+        "orcid": "0000-0002-1825-0097",
+    }
+
+    # Simula las respuestas de ORCID
+    mock_orcid.get.side_effect = [
+        MagicMock(
+            json=lambda: {
+                "person": {
+                    "name": {
+                        "given-names": {"value": "John"},
+                        "family-name": {"value": "Doe"}
+                    }
+                }
+            }
+        ),
+        MagicMock(json=lambda: {"email": []}),  # Email vacío
+    ]
+
+    # Simula el estado de la sesión
+    with test_client.session_transaction() as sess:
+        sess["signup_state"] = "test_state"
+
+    # Ejecuta la solicitud
+    response = test_client.get("/authorize/signup/orcid?state=test_state")
+
+    # Verificaciones
+    assert response.status_code == 302
+    assert response.location == "/provide_email"
+
+
+@patch("app.modules.auth.routes.orcid")
+@patch("app.modules.auth.routes.authentication_service")
+@patch("app.modules.auth.routes.current_user")
+def test_authorize_login_orcid_success(mock_current_user, mock_auth_service, mock_orcid, test_client):
+    # Simula que el usuario no está autenticado
+    mock_current_user.is_authenticated = False
+
+    # Simula la autorización del token con ORCID
+    mock_orcid.authorize_access_token.return_value = {
+        "access_token": "fake_token",
+        "orcid": "0000-0002-1825-0097",
+    }
+
+    # Mock del usuario existente en la base de datos
+    mock_user = MagicMock()
+    mock_user.get_id.return_value = "mock_user_id"
+    mock_user.is_active = True  # Necesario para Flask-Login
+    mock_user.email = "test@example.com"
+    mock_auth_service.get_by_orcid.return_value = mock_user
+
+    # Simula el estado de la sesión
+    with test_client.session_transaction() as sess:
+        sess["login_state"] = "test_state"
+
+    # Ejecuta la solicitud al endpoint
+    response = test_client.get("/authorize/login/orcid?state=test_state")
+
+    # Verificaciones
+    assert response.status_code == 302
+    assert response.location == "/"  # Redirige a la página principal
+    mock_auth_service.get_by_orcid.assert_called_once_with("0000-0002-1825-0097")
+
+
+@patch("app.modules.auth.routes.authentication_service")
+def test_provide_email_success(mock_auth_service, test_client):
+    mock_user = MagicMock()
+    mock_user.is_active = True
+    mock_user.get_id.return_value = "mock_user_id"
+
+    mock_auth_service.get_by_email.return_value = None
+    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = mock_user
+
+    with test_client.session_transaction() as sess:
+        sess["orcid_id"] = "0000-0002-1825-0097"
+        sess["profile_data"] = {"given_name": "John", "family_name": "Doe"}
+
+    response = test_client.post(
+        "/provide_email",
+        data={"email": "test@example.com"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert mock_auth_service.create_with_profile_and_oauth_provider_appended.called
+
+
+def test_create_with_profile_and_oauth_provider_success(clean_database):
+    data = {
+        "email": "test@example.com",
+        "password": "fake_password",
+        "name": "John",
+        "surname": "Doe",
+        "oauth_provider": "orcid",
+        "oauth_provider_user_id": "0000-0002-1825-0097",
+        "orcid": "0000-0002-1825-0097",
+    }
+
+    auth_service = AuthenticationService()
+    user = auth_service.create_with_profile_and_oauth_provider_appended(**data)
+
+    assert user.email == data["email"]
+    assert user.orcid == data["orcid"]
+    assert user.oauth_providers[0].provider_name == "orcid"
