@@ -91,8 +91,8 @@ def test_rate_dataset_unauthenticated():
             assert (
                 stars_container.is_displayed()
             ), "The stars container is displayed for an unauthenticated user!"
-        except:
-            print("Stars container not visible for unauthenticated users, as expected.")
+        except Exception as e:
+            print(f"Expected behavior: Stars container not visible for unauthenticated users. Error: {e}")
 
         print("Unauthenticated user cannot rate dataset test passed!")
 
