@@ -443,21 +443,19 @@ def test_buttons_upload_and_download():
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
         # Verify the "Download all" button
-        download_button = driver.find_element(
-            By.ID, "download-all-button"
-        )
+        download_button = driver.find_element(By.ID, "download-all-button")
         assert download_button.is_displayed(), "Download all button is not displayed!"
 
         # Verify "Upload from Github" button
         github_button = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID, "repoUrlInput"))
         )
-        assert github_button.is_displayed(), "Upload from Github button is not displayed!"
+        assert (
+            github_button.is_displayed()
+        ), "Upload from Github button is not displayed!"
 
         # Verify the "Upload from ZIP" button
-        zip_button = driver.find_element(
-            By.ID, "uploadButton"
-        )
+        zip_button = driver.find_element(By.ID, "uploadButton")
         assert zip_button.is_displayed(), "Upload from ZIP button is not displayed!"
 
         print("Button layout test passed!")
