@@ -33,7 +33,9 @@ class FeatureModel(db.Model):
             # Obtener el primer archivo asociado y calcular sus métricas
             return self.files[0].get_fact_labels()
         except Exception as e:
-            logger.error(f"Error calculating fact labels for FeatureModel {self.id}: {str(e)}")
+            logger.error(
+                f"Error calculating fact labels for FeatureModel {self.id}: {str(e)}"
+            )
             return {
                 "number_of_features": 0,
                 "constraints_count": 0,
@@ -48,7 +50,9 @@ class FeatureModel(db.Model):
         try:
             return self.files[0].get_fact_labels() if self.files else {}
         except Exception as e:
-            raise RuntimeError(f"Error calculating fact labels for FeatureModel {self.id}: {str(e)}")
+            raise RuntimeError(
+                f"Error calculating fact labels for FeatureModel {self.id}: {str(e)}"
+            )
 
     def __repr__(self):
         return f"FeatureModel<{self.id}>"
@@ -102,7 +106,7 @@ class UVLParser:
             constraints = []
 
             # Leer el archivo UVL
-            with open(file_path, 'r') as file:
+            with open(file_path, "r") as file:
                 lines = file.readlines()
 
             if not lines:
@@ -183,7 +187,9 @@ class UVLParser:
             # Procesar solo líneas en la sección de características
             if in_features_section and stripped_line:
                 leading_spaces = len(line) - len(line.lstrip())
-                depth = leading_spaces // 4  # Suponemos que 4 espacios equivalen a un nivel
+                depth = (
+                    leading_spaces // 4
+                )  # Suponemos que 4 espacios equivalen a un nivel
 
                 # Manejar la pila de profundidad
                 while len(depth_stack) > depth:
@@ -191,7 +197,9 @@ class UVLParser:
                 depth_stack.append(stripped_line)
 
                 # Actualizar profundidad máxima
-                max_depth = max(max_depth, len(depth_stack) - 1)  # Restar 1 para excluir la raíz
+                max_depth = max(
+                    max_depth, len(depth_stack) - 1
+                )  # Restar 1 para excluir la raíz
 
         # Si no se encontró la sección "features", devolver profundidad 0
         if not found_features_section:
