@@ -95,5 +95,7 @@ def test_upload_github_files_with_files(test_client, setup_database):
     )
 
     # Verificar respuesta
-    assert response.status_code == 200, "Debería manejar correctamente la solicitud con archivos seleccionados"
+    assert (
+        response.status_code == 200
+    ), "Debería manejar correctamente la solicitud con archivos seleccionados"
     logout(test_client)
