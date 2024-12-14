@@ -184,7 +184,8 @@ async def most_downloaded(interaction: nextcord.Interaction):
         embed = nextcord.Embed(
             title="Gráfico de descargas 📊",
             description=(
-                "A continuación se muestra un gráfico de los **4 datasets más populares** según el número de descargas totales:\n\n"
+                "A continuación se muestra un gráfico de los **4 datasets más populares** "
+                "según el número de descargas totales:\n\n"
                 "• Cada barra representa un dataset con un color único.\n"
                 "• Los nombres de los datasets están ajustados para encajar.\n"
                 "• Los valores en la parte superior de cada barra muestran el total de descargas.\n\n"
@@ -251,7 +252,8 @@ async def total_dataset_downloads(interaction: nextcord.Interaction):
             title="Total de Descargas de Datasets 📊",
             description=(
                 f"En total, los datasets han sido descargados **{total_downloads} veces**.\n\n"
-                "📥 Las descargas de datasets son una medida importante para ver qué tan populares son los recursos disponibles.\n"
+                "📥 Las descargas de datasets son una medida importante para ver qué tan populares "
+                "son los recursos disponibles.\n"
                 "🔍 Explora más comandos para conocer detalles adicionales sobre los datasets."
             ),
             color=nextcord.Color.orange(),
@@ -270,8 +272,11 @@ async def total_feature_model_downloads(interaction: nextcord.Interaction):
         total_downloads = feature_model_service.total_feature_model_downloads()
         embed = Embed(
             title="📊 Total de Descargas de Modelos de Características",
-            description=f"Nuestros modelos de características han sido descargados un total de **{total_downloads} veces**. ¡Gracias por tu interés! 🌟",
-            colour=Colour.green(),
+            description=(
+                f"Nuestros modelos de características han sido descargados un total de **{total_downloads} veces**. "
+                "¡Gracias por tu interés! 🌟"
+            ),
+            colour=nextcord.Color.green(),
         )
         await interaction.response.send_message(embed=embed)
 
@@ -285,7 +290,10 @@ async def total_dataset_views(interaction: nextcord.Interaction):
         total_views = dataset_service.total_dataset_views()
         embed = Embed(
             title="👀 Total de Vistas de Datasets",
-            description=f"Nuestros datasets han sido vistos un total de **{total_views} veces**. ¡Estamos felices de que explores nuestros datos! 🔍",
+            description=(
+                f"Nuestros datasets han sido vistos un total de **{total_views} veces**. "
+                "¡Estamos felices de que explores nuestros datos! 🔍"
+            ),
             colour=Colour.orange(),
         )
         await interaction.response.send_message(embed=embed)
@@ -301,7 +309,10 @@ async def total_feature_model_views(interaction: nextcord.Interaction):
         total_views = feature_model_service.total_feature_model_views()
         embed = Embed(
             title="🔍 Total de Vistas de Modelos de Características",
-            description=f"Nuestros modelos de características han sido vistos **{total_views} veces**. ¡Nos encanta compartir conocimiento contigo! 📘",
+            description=(
+                f"Nuestros modelos de características han sido vistos **{total_views} veces**. "
+                "¡Nos encanta compartir conocimiento contigo! 📘"
+            ),
             colour=Colour.green(),
         )
         await interaction.response.send_message(embed=embed)
