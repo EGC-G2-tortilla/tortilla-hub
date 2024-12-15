@@ -125,9 +125,9 @@ async def help_command(interaction: nextcord.Interaction):
     embed.set_footer(text="Gracias por usar el bot. ¡Disfruta explorando tus datos!")
 
     # Añadir comandos por categoría
-    for category, commands in commands_info.items():
+    for category, command in commands_info.items():
         commands_list = "\n".join(
-            [f"**{cmd['name']}**: {cmd['description']}" for cmd in commands]
+            [f"**{cmd['name']}**: {cmd['description']}" for cmd in command]
         )
         embed.add_field(name=category, value=commands_list, inline=False)
 
@@ -140,6 +140,15 @@ async def most_downloaded(interaction: nextcord.Interaction):
     with app.app_context():
         # Consulta de los datasets más descargados
         consult = dataset_service.most_downloaded()
+
+        if consult is None:
+            await interaction.response.send_message(
+                "No hay datos sobre los datasets más descargados en este momento. 😔\n"
+                "Prueba a descargar alguno en la web de UVLHub: "
+                "[UVLHub](https://tortilla-hub-development.onrender.com).",
+                ephemeral=True,
+            )
+            return
         # Obtén los 4 más descargados
         top_datasets = sorted(consult, key=lambda x: x["downloads"], reverse=True)[:4]
 
@@ -356,7 +365,7 @@ class DatasetView(nextcord.ui.View):
         dataset = self.datasets[self.current_page]
         download_url = DOMAIN + f"/dataset/download/{dataset['id']}"
         await interaction.response.send_message(
-            f"📥 [Haz clic aquí para descargar el dataset]({download_url})",
+            content=f"📥 [Haz clic aquí para descargar el dataset]({download_url})",
             ephemeral=True,
         )
 
@@ -364,7 +373,7 @@ class DatasetView(nextcord.ui.View):
     async def download_all(self, button, interaction):
         download_url = DOMAIN + "/dataset/download_all"
         await interaction.response.send_message(
-            f"📥 [Haz clic aquí para descargar todos los datasets disponibles]({download_url})",
+            content=f"📥 [Haz clic aquí para descargar todos los datasets disponibles]({download_url})",
             ephemeral=True,
         )
 
