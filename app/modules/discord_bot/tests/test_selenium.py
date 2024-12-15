@@ -107,7 +107,7 @@ def test_discord_bot_commands():
             ("/total_dataset_downloads", "Total de Descargas de Datasets"),
             (
                 "/total_feature_model_downloads",
-                "Total de descargas de modelos de características",
+                "Total de Descargas de Modelos de Características",
             ),
             ("/total_dataset_views", "Total de Descargas de Datasets"),
             (
@@ -121,6 +121,9 @@ def test_discord_bot_commands():
         for command, expected_text in commands:
             message_box.send_keys(command)
             time.sleep(0.5)
+            if command == "/datasets":
+                message_box.send_keys(Keys.DOWN)
+                time.sleep(0.5)
             message_box.send_keys(Keys.RETURN)
             time.sleep(0.5)
             message_box.send_keys(Keys.RETURN)
@@ -129,7 +132,8 @@ def test_discord_bot_commands():
                 EC.presence_of_element_located(
                     (
                         By.XPATH,
-                        f"//div[@class='embedTitle_b0068a embedMargin_b0068a']//span[contains(text(), '{expected_text}')]",
+                        f"//div[@class='embedTitle_b0068a embedMargin_b0068a']"
+                        f"//span[contains(text(), '{expected_text}')]",
                     )
                 )
             )
