@@ -60,8 +60,29 @@ class AuthBehavior(TaskSet):
                     print("Login con Google completado.")
                 else:
                     print(f"Login con Google fallido: {response.status_code}")
+                    
+    @task(1)
+    def signup_orcid(self):
+        response = self.client.get("/signup/orcid")
+        if response.status_code == 302:
+            redirect_url = response.headers.get("Location", "")
+            if "orcid.org" in redirect_url:
+                print("Signup con ORCID redirige correctamente.")
+            else:
+                print(f"Unexpected redirect during ORCID signup: {redirect_url}")
+
+    @task(1)
+    def login_orcid(self):
+        response = self.client.get("/login/orcid")
+        if response.status_code == 302:
+            redirect_url = response.headers.get("Location", "")
+            if "orcid.org" in redirect_url:
+                print("Login con ORCID redirige correctamente.")
+            else:
+                print(f"Unexpected redirect during ORCID login: {redirect_url}")
 
     def ensure_logged_out(self):
+        self.client.cookies.clear()
         self.client.get("/logout")
 
 
