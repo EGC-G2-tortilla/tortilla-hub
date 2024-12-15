@@ -81,6 +81,32 @@ class AuthBehavior(TaskSet):
             else:
                 print(f"Unexpected redirect during ORCID login: {redirect_url}")
 
+    @task(1)
+    def signup_github(self):
+        self.client.cookies.clear()
+        response = self.client.get("/signup/github")
+        if response.status_code == 302:
+            redirect_url = response.headers.get("Location", "")
+            if "github.com" in redirect_url:
+                print("Signup con GitHub redirige correctamente.")
+            else:
+                print(f"Unexpected redirect during GitHub signup: {redirect_url}")
+        else:
+            print(f"Signup con GitHub fallido: {response.status_code}")
+
+    @task(1)
+    def login_github(self):
+        self.client.cookies.clear()
+        response = self.client.get("/login/github")
+        if response.status_code == 302:
+            redirect_url = response.headers.get("Location", "")
+            if "github.com" in redirect_url:
+                print("Login con GitHub redirige correctamente.")
+            else:
+                print(f"Unexpected redirect during GitHub login: {redirect_url}")
+        else:
+            print(f"Login con GitHub fallido: {response.status_code}")
+
     def ensure_logged_out(self):
         self.client.cookies.clear()
         self.client.get("/logout")
