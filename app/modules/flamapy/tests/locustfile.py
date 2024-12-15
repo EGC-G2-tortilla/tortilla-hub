@@ -63,8 +63,13 @@ constraints
                 # Procesar el cuerpo de la respuesta como JSON
                 json_data = response.json()
                 if "errors" not in json_data or len(json_data["errors"]) == 0:
-                    print("❌ Validation failed, but no error details provided in response.")
-                elif json_data["errors"][0] != "The UVL file is empty and cannot be processed.":
+                    print(
+                        "❌ Validation failed, but no error details provided in response."
+                    )
+                elif (
+                    json_data["errors"][0]
+                    != "The UVL file is empty and cannot be processed."
+                ):
                     print(f"❌ Unexpected error message: {json_data['errors'][0]}")
                 else:
                     print("✅ Validation of empty UVL returned expected error.")
