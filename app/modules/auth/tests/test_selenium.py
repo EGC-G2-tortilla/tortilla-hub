@@ -31,22 +31,24 @@ def test_authorize_orcid_signup():
     driver = initialize_driver()
 
     try:
-        base_url = "https://tortilla-hub-production.onrender.com"  # Cambia según tu entorno
+        base_url = (
+            "https://tortilla-hub-production.onrender.com"  # Cambia según tu entorno
+        )
         driver.get(f"{base_url}/signup")
         wait_for_page_to_load(driver)
 
         github_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((
-                By.XPATH,
-                "//a[contains(@href, '/signup/orcid') and contains(., 'Sign Up with ORCID')]"
-            ))
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//a[contains(@href, '/signup/orcid') and contains(., 'Sign Up with ORCID')]",
+                )
+            )
         )
         github_button.click()
         wait_for_page_to_load(driver)
 
-        WebDriverWait(driver, 10).until(
-            EC.url_contains("orcid.org/signin")
-        )
+        WebDriverWait(driver, 10).until(EC.url_contains("orcid.org/signin"))
         print("Redirección a ORCID exitosa:", driver.current_url)
 
         username_field = WebDriverWait(driver, 10).until(
@@ -86,22 +88,24 @@ def test_authorize_orcid_login():
     driver = initialize_driver()
 
     try:
-        base_url = "https://tortilla-hub-production.onrender.com"  # Cambia según tu entorno
+        base_url = (
+            "https://tortilla-hub-production.onrender.com"  # Cambia según tu entorno
+        )
         driver.get(f"{base_url}/login")
         wait_for_page_to_load(driver)
 
         github_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((
-                By.XPATH,
-                "//a[contains(@href, '/login/orcid') and contains(., 'Sign In with ORCID')]"
-            ))
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//a[contains(@href, '/login/orcid') and contains(., 'Sign In with ORCID')]",
+                )
+            )
         )
         github_button.click()
         wait_for_page_to_load(driver)
 
-        WebDriverWait(driver, 10).until(
-            EC.url_contains("orcid.org/signin")
-        )
+        WebDriverWait(driver, 10).until(EC.url_contains("orcid.org/signin"))
         print("Redirección a ORCID exitosa:", driver.current_url)
 
         username_field = WebDriverWait(driver, 10).until(
