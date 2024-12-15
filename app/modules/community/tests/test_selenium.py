@@ -17,8 +17,13 @@ def wait_for_page_to_load(driver, timeout=4):
 def test_join_community():
     """
     Autor: Delfín Santana
-    Se prueba unirse a una comunidad y que salgan los botones bien
-    en las vistas que tengan que verse
+    Se prueba unirse a una comunidad haciendo el flow de usuario
+    para unirse a una comunidad(irse a la pagina de las comunidades,
+    seleccionar una comunidad, ver los datasets y la información
+    de una comunidad, etc.) y que salgan los botones bien
+    en las vistas que tengan que verse. De este modo, se pueba
+    una de las funcionaliades principales al mismo tiempo que
+    se comprueba la interfaz de comunidades en general.
     """
     driver = initialize_driver()
 
@@ -228,7 +233,9 @@ def test_check_my_communities_and_check_content_displayed():
     """
     Autor: Delfín Santana
     Test para comprobar la ruta de mis comunidades. Comprueba
-    tambien que el contenido que se muestra sea el esperado
+    tambien que el contenido que se muestra sea el esperado.
+    Para hacer la prueba, se hace el flow de usuario(irse a
+    la pagina de mis comunidades, seleccioanr la comunidad, etc.).
     """
     driver = initialize_driver()
 
@@ -330,7 +337,8 @@ def test_create_community():
     """
     Autor: Delfín Santana
     Test para comprobar que se puede crear una comunidad. Se crea una
-    comunidad para probarlo
+    comunidad para probarlo y se entra en la comunidad y se
+    comprueban los elmentos.
     """
     driver = initialize_driver()
 
@@ -369,6 +377,36 @@ def test_create_community():
         link = driver.find_element(By.LINK_TEXT, "sample sample community")
         link.click()
         wait_for_page_to_load(driver)
+
+        try:
+            dataset_not_expected = driver.find_element(By.LINK_TEXT, "Sample dataset 7")
+            assert not dataset_not_expected, "Test failed!"
+        except Exception:
+            pass
+
+        link = driver.find_element(By.LINK_TEXT, "Info")
+        link.click()
+        wait_for_page_to_load(driver)
+
+        possible_urls = {
+            f"{host}/community/sample sample community/info",
+            f"{host}/community/sample%20sample%20community/info",
+            f"{host}/community/sample sample community/info/",
+            f"{host}/community/sample%20sample%20community/info/",
+        }
+        assert driver.current_url in possible_urls, "Test failed!"
+
+        card_body = driver.find_element(
+            By.CSS_SELECTOR, "div.row > div.card > div.card-body"
+        )
+        info_to_find = "sample sample description"
+
+        assert card_body.text.strip() == info_to_find, "Test failed!"
+
+        link = driver.find_element(By.LINK_TEXT, "Members")
+        link.click()
+        wait_for_page_to_load(driver)
+
         print("Test create_community passed!")
 
     finally:
@@ -432,7 +470,7 @@ def test_check_my_communities_after_creating_community():
 
         assert community_expected, "Test failed!"
 
-        print("Test test_check_my_communities passed!")
+        print("Test test_check_my_communities_after_creating_community passed!")
 
     finally:
 
