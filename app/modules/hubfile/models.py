@@ -79,7 +79,9 @@ class Hubfile(db.Model):
                 "variability": 0.0,
             }
         except Exception as e:
-            logger.error(f"Error calculating fact labels for Hubfile {self.id}: {str(e)}")
+            logger.error(
+                f"Error calculating fact labels for Hubfile {self.id}: {str(e)}"
+            )
             # Manejar cualquier otro error y devolver valores predeterminados
             return {
                 "number_of_features": 0,

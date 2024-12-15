@@ -11,7 +11,7 @@ def calculate_checksum(file_content):
     """
     Calcula un checksum MD5 basado en el contenido del archivo.
     """
-    return hashlib.md5(file_content.encode('utf-8')).hexdigest()
+    return hashlib.md5(file_content.encode("utf-8")).hexdigest()
 
 
 @pytest.fixture(scope="module")
@@ -56,10 +56,16 @@ def test_fm_fact_labels_empty_model(test_client):
 
         response = feature_model.fact_labels
 
-        assert response["number_of_features"] == 0, "Expected 0 features for empty model"
-        assert response["constraints_count"] == 0, "Expected 0 constraints for empty model"
+        assert (
+            response["number_of_features"] == 0
+        ), "Expected 0 features for empty model"
+        assert (
+            response["constraints_count"] == 0
+        ), "Expected 0 constraints for empty model"
         assert response["max_depth"] == 0, "Expected 0 max depth for empty model"
-        assert response["variability"] == 0.0, "Expected 0.0 variability for empty model"
+        assert (
+            response["variability"] == 0.0
+        ), "Expected 0.0 variability for empty model"
 
 
 def test_fm_fact_labels_empty_dataset(test_client):
@@ -121,7 +127,7 @@ def test_fm_fact_labels_invalid_file(test_client):
             name="invalid.uvl",
             feature_model_id=feature_model.id,
             size=1024,
-            checksum=calculate_checksum(uvl_content)
+            checksum=calculate_checksum(uvl_content),
         )
         db.session.add(hubfile)
         db.session.commit()
@@ -173,7 +179,7 @@ constraints
             name="constraints_fm.uvl",
             feature_model_id=feature_model.id,
             size=2048,
-            checksum=calculate_checksum(uvl_content)
+            checksum=calculate_checksum(uvl_content),
         )
         db.session.add(hubfile)
         db.session.commit()
@@ -182,7 +188,9 @@ constraints
 
         response = feature_model.fact_labels
 
-        assert response["number_of_features"] == 2, "Expected 2 features for model with constraints."
+        assert (
+            response["number_of_features"] == 2
+        ), "Expected 2 features for model with constraints."
         assert response["constraints_count"] == 1, "Expected 1 constraint."
         assert response["max_depth"] == 1, "Expected max depth of 1 for flat features."
         assert response["variability"] > 0.0, "Expected non-zero variability."
