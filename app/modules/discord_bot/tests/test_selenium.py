@@ -54,7 +54,9 @@ def test_discord_bot_commands():
 
         time.sleep(10)
 
-        server_url = "https://discord.com/channels/1317900109542985738/1317900109542985741"
+        server_url = (
+            "https://discord.com/channels/1317900109542985738/1317900109542985741"
+        )
         driver.get(server_url)
         wait_for_page_to_load(driver)
 
@@ -63,20 +65,24 @@ def test_discord_bot_commands():
 
         # Crear el canal de prueba
         create_channel_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((
-                By.XPATH,
-                "//button[@class='addButton_a08117 forceVisible_a08117 button_dd4f85 lookBlank_dd4f85 "
-                "colorBrand_dd4f85 grow_dd4f85']"
-            ))
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//button[@class='addButton_a08117 forceVisible_a08117 button_dd4f85 lookBlank_dd4f85 "
+                    "colorBrand_dd4f85 grow_dd4f85']",
+                )
+            )
         )
 
         create_channel_button.click()
 
         channel_name_field = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((
-                By.XPATH,
-                "//input[@class='inputDefault_f8bc55 input_f8bc55 inputInner_b545d5']"
-            ))
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//input[@class='inputDefault_f8bc55 input_f8bc55 inputInner_b545d5']",
+                )
+            )
         )
 
         channel_name_field.send_keys("testing")
@@ -86,10 +92,12 @@ def test_discord_bot_commands():
         time.sleep(3)
 
         message_box = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((
-                By.XPATH,
-                "//div[@class='markup_f8f345 editor_a552a6 slateTextArea_e52116 fontSize16Padding_bdf0de']"
-            ))
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[@class='markup_f8f345 editor_a552a6 slateTextArea_e52116 fontSize16Padding_bdf0de']",
+                )
+            )
         )
 
         commands = [
@@ -97,11 +105,17 @@ def test_discord_bot_commands():
             ("/datasets_counter", "Total de Datasets Sincronizados"),
             ("/feature_models_counter", "Total de Modelos de Características"),
             ("/total_dataset_downloads", "Total de Descargas de Datasets"),
-            ("/total_feature_model_downloads", "Total de descargas de modelos de características"),
+            (
+                "/total_feature_model_downloads",
+                "Total de descargas de modelos de características",
+            ),
             ("/total_dataset_views", "Total de Descargas de Datasets"),
-            ("/total_feature_model_views", "Total de Vistas de Modelos de Características"),
+            (
+                "/total_feature_model_views",
+                "Total de Vistas de Modelos de Características",
+            ),
             ("/datasets", "Dataset:"),
-            ("/most_popular_authors", "Autores Más Populares")
+            ("/most_popular_authors", "Autores Más Populares"),
         ]
 
         for command, expected_text in commands:
@@ -112,10 +126,12 @@ def test_discord_bot_commands():
             message_box.send_keys(Keys.RETURN)
 
             response_message = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((
-                    By.XPATH,
-                    f"//div[@class='embedTitle_b0068a embedMargin_b0068a']//span[contains(text(), '{expected_text}')]"
-                ))
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        f"//div[@class='embedTitle_b0068a embedMargin_b0068a']//span[contains(text(), '{expected_text}')]",
+                    )
+                )
             )
             print(f"Bot respondió correctamente: {response_message.text}")
 
@@ -124,33 +140,41 @@ def test_discord_bot_commands():
         scroll_to_top(driver)
 
         options_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((
-                By.XPATH,
-                "//button[@class='button_ccfa44 button_dd4f85 lookBlank_dd4f85 colorBrand_dd4f85 sizeMin_dd4f85 "
-                "grow_dd4f85']"
-            ))
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//button[@class='button_ccfa44 button_dd4f85 lookBlank_dd4f85 colorBrand_dd4f85 sizeMin_dd4f85 "
+                    "grow_dd4f85']",
+                )
+            )
         )
         options_button.click()
         wait_for_page_to_load(driver)
 
         delete_channel_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((
-                By.XPATH,
-                "//div[@class='item_a0 themed_a0'][@aria-label='Eliminar canal']"
-            ))
-            or EC.presence_of_element_located((
-                By.XPATH,
-                "//div[@class='item_a0 themed_a0'][@aria-label='Delete channel']"
-            ))
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[@class='item_a0 themed_a0'][@aria-label='Eliminar canal']",
+                )
+            )
+            or EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[@class='item_a0 themed_a0'][@aria-label='Delete channel']",
+                )
+            )
         )
         delete_channel_button.click()
         wait_for_page_to_load(driver)
 
         confirm_delete_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((
-                By.XPATH,
-                "//button[@class='button_dd4f85 lookFilled_dd4f85 colorRed_dd4f85 sizeMedium_dd4f85 grow_dd4f85']"
-            ))
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//button[@class='button_dd4f85 lookFilled_dd4f85 colorRed_dd4f85 sizeMedium_dd4f85 grow_dd4f85']",
+                )
+            )
         )
 
         confirm_delete_button.click()
