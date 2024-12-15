@@ -379,7 +379,9 @@ def test_get_gitlab_repositories_failure(mock_get, test_client):
 @patch("app.modules.auth.routes.orcid")
 @patch("app.modules.auth.routes.authentication_service")
 @patch("app.modules.auth.routes.current_user")
-def test_authorize_signup_orcid_with_email(mock_current_user, mock_auth_service, mock_orcid, test_client):
+def test_authorize_signup_orcid_with_email(
+    mock_current_user, mock_auth_service, mock_orcid, test_client
+):
     # Simula que el usuario no está autenticado
     mock_current_user.is_authenticated = False
 
@@ -396,7 +398,7 @@ def test_authorize_signup_orcid_with_email(mock_current_user, mock_auth_service,
                 "person": {
                     "name": {
                         "given-names": {"value": "John"},
-                        "family-name": {"value": "Doe"}
+                        "family-name": {"value": "Doe"},
                     }
                 }
             }
@@ -419,7 +421,9 @@ def test_authorize_signup_orcid_with_email(mock_current_user, mock_auth_service,
     mock_created_user.get_id.return_value = "mock_user_id"
     mock_created_user.is_active = True
     mock_created_user.email = "test@example.com"
-    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = mock_created_user
+    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = (
+        mock_created_user
+    )
 
     # Simula el estado de la sesión
     with test_client.session_transaction() as sess:
@@ -440,7 +444,9 @@ def test_authorize_signup_orcid_with_email(mock_current_user, mock_auth_service,
 @patch("app.modules.auth.routes.orcid")
 @patch("app.modules.auth.routes.authentication_service")
 @patch("app.modules.auth.routes.current_user")
-def test_authorize_signup_orcid_no_email(mock_current_user, mock_auth_service, mock_orcid, test_client):
+def test_authorize_signup_orcid_no_email(
+    mock_current_user, mock_auth_service, mock_orcid, test_client
+):
     # Simula que el usuario no está autenticado
     mock_current_user.is_authenticated = False
 
@@ -457,7 +463,7 @@ def test_authorize_signup_orcid_no_email(mock_current_user, mock_auth_service, m
                 "person": {
                     "name": {
                         "given-names": {"value": "John"},
-                        "family-name": {"value": "Doe"}
+                        "family-name": {"value": "Doe"},
                     }
                 }
             }
@@ -480,7 +486,9 @@ def test_authorize_signup_orcid_no_email(mock_current_user, mock_auth_service, m
 @patch("app.modules.auth.routes.orcid")
 @patch("app.modules.auth.routes.authentication_service")
 @patch("app.modules.auth.routes.current_user")
-def test_authorize_login_orcid_success(mock_current_user, mock_auth_service, mock_orcid, test_client):
+def test_authorize_login_orcid_success(
+    mock_current_user, mock_auth_service, mock_orcid, test_client
+):
     # Simula que el usuario no está autenticado
     mock_current_user.is_authenticated = False
 
@@ -517,7 +525,9 @@ def test_provide_email_success(mock_auth_service, test_client):
     mock_user.get_id.return_value = "mock_user_id"
 
     mock_auth_service.get_by_email.return_value = None
-    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = mock_user
+    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = (
+        mock_user
+    )
 
     with test_client.session_transaction() as sess:
         sess["orcid_id"] = "0000-0002-1825-0097"
@@ -577,7 +587,9 @@ def test_is_oauth_user_true():
 @patch("app.modules.auth.routes.google")
 @patch("app.modules.auth.routes.authentication_service")
 @patch("app.modules.auth.routes.current_user")
-def test_login_google_success(mock_current_user, mock_auth_service, mock_google, test_client):
+def test_login_google_success(
+    mock_current_user, mock_auth_service, mock_google, test_client
+):
     mock_current_user.is_authenticated = False
 
     with test_client.session_transaction() as sess:
@@ -604,7 +616,9 @@ def test_login_google_success(mock_current_user, mock_auth_service, mock_google,
 @patch("app.modules.auth.routes.google")
 @patch("app.modules.auth.routes.authentication_service")
 @patch("app.modules.auth.routes.current_user")
-def test_signup_google_new_user(mock_current_user, mock_auth_service, mock_google, test_client):
+def test_signup_google_new_user(
+    mock_current_user, mock_auth_service, mock_google, test_client
+):
     # Simula que el usuario no está autenticado
     mock_current_user.is_authenticated = False
 
@@ -629,7 +643,9 @@ def test_signup_google_new_user(mock_current_user, mock_auth_service, mock_googl
     mock_user.get_id.return_value = "mock_user_id"
     mock_user.is_active = True
     mock_user.email = "newuser@example.com"
-    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = mock_user
+    mock_auth_service.create_with_profile_and_oauth_provider_appended.return_value = (
+        mock_user
+    )
 
     # Prueba el endpoint
     response = test_client.get("/authorize/signup/google?state=test_state")

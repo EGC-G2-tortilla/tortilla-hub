@@ -60,7 +60,7 @@ class AuthBehavior(TaskSet):
                     print("Login con Google completado.")
                 else:
                     print(f"Login con Google fallido: {response.status_code}")
-                    
+
     @task(1)
     def signup_orcid(self):
         response = self.client.get("/signup/orcid")
