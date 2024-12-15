@@ -47,9 +47,7 @@ def validate_fm_fact_labels(driver, dataset_doi, expected_labels):
     ), f"Total Constraints mismatch: Expected {expected_labels['total_constraints']}"
 
     # Validar profundidad máxima
-    max_depth_element = driver.find_element(
-        By.XPATH, "//li[contains(., 'Max Depth:')]"
-    )
+    max_depth_element = driver.find_element(By.XPATH, "//li[contains(., 'Max Depth:')]")
     assert (
         str(expected_labels["max_depth"]) in max_depth_element.text
     ), f"Max Depth mismatch: Expected {expected_labels['max_depth']}"
@@ -81,7 +79,9 @@ def test_validate_fm_fact_labels_invalid():
             "total_constraints": 5,
             "max_depth": 8,
         }
-        validate_fm_fact_labels(driver, dataset_doi="10.1234/dataset1", expected_labels=incorrect_labels)
+        validate_fm_fact_labels(
+            driver, dataset_doi="10.1234/dataset1", expected_labels=incorrect_labels
+        )
 
     except AssertionError as e:
         print(f"Test passed: {e}")
@@ -137,7 +137,9 @@ def test_fm_fact_labels_display_dataset():
             )
         )
         max_depth = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//li[contains(., 'Max Depth:')]"))
+            EC.presence_of_element_located(
+                (By.XPATH, "//li[contains(., 'Max Depth:')]")
+            )
         )
 
         # Validar que las Fact Labels están presentes
