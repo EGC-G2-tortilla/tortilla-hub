@@ -222,12 +222,10 @@ class DataSetService(BaseService):
                     ds_meta_data_id=dsmetadata.id,
                     community_id=community.id,
                 )
-                print("\n\tcommunity is not none\n")
             else:
                 dataset = self.create(
                     commit=False, user_id=current_user.id, ds_meta_data_id=dsmetadata.id
                 )
-                print("\n\tcommunity is none\n")
 
             for feature_model in form.feature_models:
                 uvl_filename = feature_model.uvl_filename.data
@@ -367,6 +365,13 @@ class DataSetService(BaseService):
         except Exception as exc:
             logger.error(f"Exception setting dataset to unstaged: {exc}")
             self.repository.session.rollback()
+
+    def get_fact_labels(self, dataset_id):
+        """
+        Devuelve los fact labels para un dataset dado.
+        """
+        dataset = self.get_by_id(dataset_id)
+        return dataset.get_fact_labels()
 
 
 class AuthorService(BaseService):

@@ -425,29 +425,37 @@ def test_buttons_upload_and_download():
 
     try:
         host = get_host_for_selenium_testing()
+        driver.get(f"{host}/login")
+        wait_for_page_to_load(driver)
 
-        # Open the dataset view page
+        username_input = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.NAME, "email"))
+        )
+        password_input = driver.find_element(By.NAME, "password")
+        username_input.send_keys("user1@example.com")
+        password_input.send_keys("1234")
+        password_input.send_keys(Keys.RETURN)
+        wait_for_page_to_load(driver)
+
         driver.get(f"{host}{SAMPLE_DATASET_ROUTE}")
         wait_for_page_to_load(driver)
 
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
         # Verify the "Download all" button
-        download_button = driver.find_element(
-            By.XPATH, "//a[contains(., 'Download all')]"
-        )
+        download_button = driver.find_element(By.ID, "download-all-button")
         assert download_button.is_displayed(), "Download all button is not displayed!"
 
-        # Verify the "Upload from Github" button
-        github_button = driver.find_element(
-            By.XPATH, "//a[contains(., 'Upload from Github')]"
+        # Verify "Upload from Github" button
+        github_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "repoUrlInput"))
         )
         assert (
             github_button.is_displayed()
         ), "Upload from Github button is not displayed!"
 
         # Verify the "Upload from ZIP" button
-        zip_button = driver.find_element(
-            By.XPATH, "//a[contains(., 'Upload from ZIP')]"
-        )
+        zip_button = driver.find_element(By.ID, "uploadButton")
         assert zip_button.is_displayed(), "Upload from ZIP button is not displayed!"
 
         print("Button layout test passed!")

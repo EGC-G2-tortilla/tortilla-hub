@@ -35,15 +35,8 @@ class CommunityBehavior(TaskSet):
             print(f"Community members failed: {response.status_code}")
 
     @task
-    def community_my_communities(self):
-        response = self.client.get("/my_communities")
-
-        if response.status_code != 200:
-            print(f"Community my_communities view failed: {response.status_code}")
-
-    @task
     def community_create(self):
-        response = self.client.get("/create")
+        response = self.client.get("/community/create")
 
         if response.status_code != 200:
             print(f"Community create GET view failed: {response.status_code}")

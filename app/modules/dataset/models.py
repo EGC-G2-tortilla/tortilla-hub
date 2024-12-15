@@ -160,6 +160,37 @@ class DataSet(db.Model):
         total = sum(rating.rating for rating in self.ratings)
         return round(total / len(self.ratings), 2)
 
+    def get_fact_labels(self):
+        try:
+            total_features = 0
+            total_constraints = 0
+            max_depth = 0
+            total_models = len(self.feature_models)
+            feature_models_fact_labels = (
+                []
+            )  # Almacenar los fact labels de cada modelo individual
+
+            for feature_model in self.feature_models:
+                fact_labels = (
+                    feature_model.get_fact_labels() or {}
+                )  # Manejar el caso en el que sea None
+                feature_models_fact_labels.append(fact_labels)
+                total_features += fact_labels.get("number_of_features", 0)
+                total_constraints += fact_labels.get("constraints_count", 0)
+                max_depth = max(max_depth, fact_labels.get("max_depth", 0))
+
+            return {
+                "dataset": {
+                    "total_models": total_models,
+                    "total_features": total_features,
+                    "total_constraints": total_constraints,
+                    "max_depth": max_depth,
+                },
+                "feature_models": feature_models_fact_labels,
+            }
+        except Exception as e:
+            raise RuntimeError(f"Error calculating dataset fact labels: {str(e)}")
+
     def to_dict(self):
         return {
             "title": self.ds_meta_data.title,

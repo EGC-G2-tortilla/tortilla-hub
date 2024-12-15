@@ -1,0 +1,123 @@
+name: Daily Dependency Check and Graph Generation
+
+on:
+  workflow_dispatch: # Permite ejecutarlo manualmente
+  push:
+    branches:
+      - main
+      - develop
+      - task/dependabot
+  pull_request:
+    branches:
+      - main
+      - develop
+      - task/dependabot
+
+permissions:
+  contents: read
+  security-events: read
+
+jobs:
+  analyze-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout del código
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Instalar Python, Graphviz y herramientas necesarias
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y graphviz
+          python -m pip install --upgrade pip
+          pip install pipdeptree graphviz jq
+
+      # 3. Generar el grafo de dependencias
+      - name: Generate Dependency Graph
+        run: |
+          pipdeptree --graph-output dot > dependency-graph.dot
+          dot -Tpng dependency-graph.dot -o dependency-graph.png
+
+      - name: Upload Dependency Graph
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-graph
+          path: dependency-graph.png
+
+      # 4. Obtener alertas de Dependabot
+      - name: Fetch Dependabot Alerts
+        run: |
+          echo "Fetching Dependabot Alerts..."
+          curl -s -H "Accept: application/vnd.github+json" \
+               -H "Authorization: Bearer ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+               https://api.github.com/repos/${{ github.repository }}/dependabot/alerts \
+               -o dependabot_alerts.json
+
+      # 5. Depurar el contenido del JSON
+      - name: Debug Dependabot JSON
+        run: |
+          echo "Inspecting JSON file:"
+          if [ -s dependabot_alerts.json ]; then
+            echo "JSON file is not empty. Displaying contents:"
+            cat dependabot_alerts.json
+          else
+            echo "JSON file is empty. No alerts found."
+          fi
+
+      # 6. Validar el archivo dependabot_alerts.json
+      - name: Validate Dependabot Alerts JSON
+        run: |
+          if [ ! -s dependabot_alerts.json ]; then
+            echo "File is empty. Generating default report."
+            echo "# Dependabot Alert Summary" > dependabot_report.md
+            echo "No hay alertas de seguridad en las dependencias." >> dependabot_report.md
+            exit 0
+          fi
+
+          if ! jq empty dependabot_alerts.json > /dev/null 2>&1; then
+            echo "Invalid JSON format in dependabot_alerts.json."
+            echo "# Dependabot Alert Summary" > dependabot_report.md
+            echo "Error al procesar las alertas. Verifique el archivo JSON." >> dependabot_report.md
+            exit 1
+          fi
+
+      # 7. Procesar alertas si el archivo es válido y tiene contenido
+      - name: Process Dependabot Alerts
+        run: |
+          echo "Processing Dependabot Alerts..."
+          
+          if ! jq -e '.' dependabot_alerts.json > /dev/null 2>&1; then
+            echo "Invalid or empty JSON file. Generating default report."
+            echo "# Dependabot Alert Summary" > dependabot_report.md
+            echo "No hay alertas de seguridad detectadas o el archivo está vacío." >> dependabot_report.md
+            exit 0
+          fi
+
+          # Genera el informe en Markdown
+          echo "# Dependabot Alert Summary" > dependabot_report.md
+
+          # Procesa cada alerta línea por línea
+          jq -c '.[]' dependabot_alerts.json | while read -r alert; do
+            severity=$(echo "$alert" | jq -r '.security_advisory.severity')
+            package=$(echo "$alert" | jq -r '.dependency.package.name')
+            description=$(echo "$alert" | jq -r '.security_advisory.summary')
+            url=$(echo "$alert" | jq -r '.html_url')
+            fixed_version=$(echo "$alert" | jq -r '.security_advisory.vulnerabilities[0].first_patched_version.identifier')
+
+            echo "## Dependency: $package" >> dependabot_report.md
+            echo "**Severity:** $severity" >> dependabot_report.md
+            echo "**Summary:** $description" >> dependabot_report.md
+            echo "**Fixed Version:** $fixed_version" >> dependabot_report.md
+            echo "**Details:** [View Alert]($url)" >> dependabot_report.md
+            echo "" >> dependabot_report.md
+          done
+        shell: bash
+
+      # 8. Subir el informe de alertas
+      - name: Upload Dependabot Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependabot-report
+          path: dependabot_report.md

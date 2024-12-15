@@ -29,7 +29,8 @@ services:
       - uvlhub_network
 
   db:
-    container_name: mariadb_container
+    image: yobasystems/alpine-mariadb:latest  # Compatible con aarch64
+    platform: linux/arm64
     environment:
       MARIADB_DATABASE: uvlhubdb
       MARIADB_TEST_DATABASE: uvlhubdb_test
