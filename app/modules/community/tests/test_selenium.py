@@ -89,7 +89,8 @@ def test_join_community():
         card_body = driver.find_element(
             By.CSS_SELECTOR, "div.row > div.card > div.card-body"
         )
-        info_to_find = "Very very important because this community was created by very important people in a very important place in a very important date."
+        info_to_find = "Very very important because this community was created"
+        info_to_find += " by very important people in a very important place in a very important date."
 
         assert card_body.text.strip() == info_to_find, "Test failed!"
 
@@ -160,12 +161,19 @@ def test_check_my_communities_and_decline_or_accept_request(classname="decline-b
         password_field.send_keys(Keys.RETURN)
         wait_for_page_to_load(driver)
 
-        sidebar_icon = driver.find_element(By.CLASS_NAME, "hamburger")
-        sidebar_icon.click()
-        time.sleep(2)
+        #  Se comprueba que el menu esta desplegado
+        #  y se pueda hacer click a my communities
+        #  Si no esta desplegado el menu, se despliega
+        try:
+            my_communities_link = driver.find_element(By.LINK_TEXT, "My communities")
+            my_communities_link.click()
+        except Exception:
+            sidebar_icon = driver.find_element(By.CLASS_NAME, "hamburger")
+            sidebar_icon.click()
+            time.sleep(2)
 
-        my_communities_link = driver.find_element(By.LINK_TEXT, "My communities")
-        my_communities_link.click()
+            my_communities_link = driver.find_element(By.LINK_TEXT, "My communities")
+            my_communities_link.click()
 
         assert driver.current_url == f"{host}/my_communities", "Test failed!"
 
@@ -239,12 +247,19 @@ def test_check_my_communities_and_check_content_displayed():
         password_field.send_keys(Keys.RETURN)
         wait_for_page_to_load(driver)
 
-        sidebar_icon = driver.find_element(By.CLASS_NAME, "hamburger")
-        sidebar_icon.click()
-        time.sleep(2)
+        #  Se comprueba que el menu esta desplegado
+        #  y se pueda hacer click a my communities
+        #  Si no esta desplegado el menu, se despliega
+        try:
+            my_communities_link = driver.find_element(By.LINK_TEXT, "My communities")
+            my_communities_link.click()
+        except Exception:
+            sidebar_icon = driver.find_element(By.CLASS_NAME, "hamburger")
+            sidebar_icon.click()
+            time.sleep(2)
 
-        my_communities_link = driver.find_element(By.LINK_TEXT, "My communities")
-        my_communities_link.click()
+            my_communities_link = driver.find_element(By.LINK_TEXT, "My communities")
+            my_communities_link.click()
 
         assert driver.current_url == f"{host}/my_communities", "Test failed!"
 
@@ -277,7 +292,8 @@ def test_check_my_communities_and_check_content_displayed():
         card_body = driver.find_element(
             By.CSS_SELECTOR, "div.row > div.card > div.card-body"
         )
-        info_to_find = "Very very important because this community was created by very important people in a very important place in a very important date."
+        info_to_find = "Very very important because this community was created"
+        info_to_find += " by very important people in a very important place in a very important date."
 
         assert card_body.text.strip() == info_to_find, "Test failed!"
 
@@ -385,12 +401,19 @@ def test_check_my_communities_after_creating_community():
         password_field.send_keys(Keys.RETURN)
         wait_for_page_to_load(driver)
 
-        sidebar_icon = driver.find_element(By.CLASS_NAME, "hamburger")
-        sidebar_icon.click()
-        time.sleep(2)
+        #  Se comprueba que el menu esta desplegado
+        #  y se pueda hacer click a my communities
+        #  Si no esta desplegado el menu, se despliega
+        try:
+            my_communities_link = driver.find_element(By.LINK_TEXT, "My communities")
+            my_communities_link.click()
+        except Exception:
+            sidebar_icon = driver.find_element(By.CLASS_NAME, "hamburger")
+            sidebar_icon.click()
+            time.sleep(2)
 
-        my_communities_link = driver.find_element(By.LINK_TEXT, "My communities")
-        my_communities_link.click()
+            my_communities_link = driver.find_element(By.LINK_TEXT, "My communities")
+            my_communities_link.click()
 
         assert driver.current_url == f"{host}/my_communities", "Test failed!"
 
