@@ -32,24 +32,26 @@ def test_authorize_github_signup():
 
     try:
         # Paso 1: Navegar a la página de registro
-        base_url = "https://tortilla-hub-production.onrender.com"  # Cambia según tu entorno
+        base_url = (
+            "https://tortilla-hub-production.onrender.com"  # Cambia según tu entorno
+        )
         driver.get(f"{base_url}/signup")
         wait_for_page_to_load(driver)
 
         # Paso 2: Hacer clic en el botón "Sign Up with GitHub"
         github_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((
-                By.XPATH,
-                "//a[contains(@href, '/signup/github') and contains(., 'Sign Up with GitHub')]"
-            ))
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//a[contains(@href, '/signup/github') and contains(., 'Sign Up with GitHub')]",
+                )
+            )
         )
         github_button.click()
         wait_for_page_to_load(driver)
 
         # Paso 3: Verificar redirección a GitHub
-        WebDriverWait(driver, 10).until(
-            EC.url_contains("github.com/login")
-        )
+        WebDriverWait(driver, 10).until(EC.url_contains("github.com/login"))
         print("Redirección a GitHub exitosa")
 
         # Paso 4: Completar credenciales de GitHub
@@ -82,24 +84,26 @@ def test_authorize_github_login():
 
     try:
         # Paso 1: Navegar a la página de registro
-        base_url = "https://tortilla-hub-production.onrender.com"  # Cambia según tu entorno
+        base_url = (
+            "https://tortilla-hub-production.onrender.com"  # Cambia según tu entorno
+        )
         driver.get(f"{base_url}/login")
         wait_for_page_to_load(driver)
 
         # Paso 2: Hacer clic en el botón "Sign Up with GitHub"
         github_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((
-                By.XPATH,
-                "//a[contains(@href, '/login/github') and contains(., 'Sign In with GitHub')]"
-            ))
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//a[contains(@href, '/login/github') and contains(., 'Sign In with GitHub')]",
+                )
+            )
         )
         github_button.click()
         wait_for_page_to_load(driver)
 
         # Paso 3: Verificar redirección a GitHub
-        WebDriverWait(driver, 10).until(
-            EC.url_contains("github.com/login")
-        )
+        WebDriverWait(driver, 10).until(EC.url_contains("github.com/login"))
         print("Redirección a GitHub exitosa")
 
         # Paso 4: Completar credenciales de GitHub
