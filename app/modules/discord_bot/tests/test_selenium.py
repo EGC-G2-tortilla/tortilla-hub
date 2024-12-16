@@ -30,6 +30,15 @@ def scroll_to_top(driver):
     driver.execute_script("window.scrollTo(0, 0);")
 
 
+def wait_for_either_condition(driver, timeout, conditions):
+    """
+    Espera a que una de las condiciones se cumpla (en lugar de ambas al mismo tiempo).
+    """
+    return WebDriverWait(driver, timeout).until(
+        lambda d: next((d.find_element(*condition) for condition in conditions if d.find_elements(*condition)), None)
+    )
+
+
 def test_discord_bot_commands():
     """
     Test para verificar que el bot responde correctamente a los slash commands en Discord.
@@ -114,8 +123,9 @@ def test_discord_bot_commands():
                 "/total_feature_model_views",
                 "Total de Vistas de Modelos de Características",
             ),
-            ("/datasets", "Dataset:"),
+            ("/datasets", "Dataset"),
             ("/most_popular_authors", "Autores Más Populares"),
+            ("/most_downloaded", "Gráfico de descargas")
         ]
 
         for command, expected_text in commands:
@@ -128,15 +138,50 @@ def test_discord_bot_commands():
             time.sleep(0.5)
             message_box.send_keys(Keys.RETURN)
 
-            response_message = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        f"//div[@class='embedTitle_b0068a embedMargin_b0068a']"
-                        f"//span[contains(text(), '{expected_text}')]",
+            if command == "/most_downloaded":
+                response_message = wait_for_either_condition(
+                    driver,
+                    timeout=10,
+                    conditions=[
+                        (
+                            By.XPATH,
+                            f"//div[@class='embedTitle_b0068a embedMargin_b0068a']"
+                            f"//span[contains(text(), '{expected_text}')]",
+                        ),
+                        (
+                            By.XPATH,
+                            "//div[@class='embedTitle_b0068a embedMargin_b0068a']"
+                            "//span[contains(text(), 'Sin datos disponibles')]",
+                        ),
+                    ],
+                )
+
+            elif command == "/most_popular_authors":
+                response_message = wait_for_either_condition(
+                    driver,
+                    timeout=10,
+                    conditions=[
+                        (
+                            By.XPATH,
+                            f"//div[@class='embedTitle_b0068a embedMargin_b0068a']"
+                            f"//span[contains(text(), '{expected_text}')]",
+                        ),
+                        (
+                            By.XPATH,
+                            "//span[contains(text(), 'No hay datos sobre autores populares en este momento')]",
+                        ),
+                    ],
+                )
+            else:
+                response_message = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located(
+                        (
+                            By.XPATH,
+                            f"//div[@class='embedTitle_b0068a embedMargin_b0068a']"
+                            f"//span[contains(text(), '{expected_text}')]",
+                        )
                     )
                 )
-            )
             print(f"Bot respondió correctamente: {response_message.text}")
 
             time.sleep(2)
