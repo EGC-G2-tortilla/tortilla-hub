@@ -9,27 +9,41 @@
     A fork of the UVLHub project by DiversoLab: tortilla-hub is a repository of feature models in UVL format integrated with Zenodo and flamapy following Open Science principles.
   </h3>
   <br><br>
+  
   <a href="">
-    <img src="https://github.com/diverso-lab/uvlhub/actions/workflows/tests.yml/badge.svg?branch=main" alt="Pytest Testing Suite">
+    <img src="https://github.com/EGC-G2-tortilla/tortilla-hub/actions/workflows/tests.yml/badge.svg?branch=main" alt="Pytest Testing Suite">
   </a>
   <a href="">
-    <img src="https://github.com/diverso-lab/uvlhub/actions/workflows/commits.yml/badge.svg?branch=main" alt="Commits Syntax Checker">
+    <img src="https://github.com/EGC-G2-tortilla/tortilla-hub/actions/workflows/commits.yml/badge.svg?branch=main" alt="Commits Syntax Checker">
   </a>
+  </code></em>
+</p>
+<p align="center">
+    <img src="https://img.shields.io/github/last-commit/EGC-G2-tortilla/tortilla-hub?style=default&logo=git&logoColor=white&color=0080ff" alt="last-commit">
+    <img src="https://img.shields.io/github/languages/top/EGC-G2-tortilla/tortilla-hub?style=default&color=0080ff" alt="repo-top-language">
+    <img src="https://img.shields.io/github/languages/count/EGC-G2-tortilla/tortilla-hub?style=default&color=0080ff" alt="repo-language-count">
+</p>
+<p align="center"><!-- default option, no dependency badges. -->
+</p>
+<p align="center">
+    <!-- default option, no dependency badges. -->
+</p>
+<br>
 </div>
 
 
 ##  Table of Contents
 
-- [ Overview](#-overview)
-- [ Project Structure](#-project-structure)
-  - [ Project Index](#-project-index)
-- [ Getting Started](#-getting-started)
-  - [ Prerequisites](#-prerequisites)
-  - [ Installation](#-installation)
-  - [ Usage](#-usage)
-  - [ Testing](#-testing)
-- [ Project Documentation](#-project-documentation)
-- [ Acknowledgments](#-acknowledgments)
+- [ Overview](#overview)
+- [ Project Structure](#project-structure)
+  - [ Project Index](#project-index)
+- [ Getting Started](#getting-started)
+  - [ Prerequisites](#prerequisites)
+  - [ Installation](#installation)
+  - [ Usage](#usage)
+  - [ Testing](#testing)
+- [ Project Documentation](#project-documentation)
+- [ Acknowledgments](#acknowledgments)
 
 ---
 
@@ -47,7 +61,7 @@ This project serves as a repository for feature models in UVL format, integrated
 
 Tortilla-hub is a proyect made by two teams: tortilla-hub-1 and tortilla-hub-2. You can find all our documentation on the ``/docs`` folder in our common proyect. 
 
-There you may find our commmon working policy checking ``/docs/Acta fundacional.md`` and our specific group documentation in our respective group folder.
+There you may find our commmon working policy checking ```/docs/Acta fundacional.md``` and our specific group documentation in our respective group folder.
 
 
 
@@ -287,31 +301,31 @@ There you may find our commmon working policy checking ``/docs/Acta fundacional.
       <table>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/scripts/restart_container.sh'>restart_container.sh</a></b></td>
-        <td><code>❯ ...</code></td>
+        <td><code>❯ Restarts the Docker container running the Flask app. </code></td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/scripts/wait-for-db.sh'>wait-for-db.sh</a></b></td>
-        <td><code>❯ ...</code></td>
+        <td><code>❯ Waits for the database service to be up before starting the Flask app. </code></td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/scripts/init-testing-db.sh'>init-testing-db.sh</a></b></td>
-        <td><code>❯ ...</code></td>
+        <td><code>❯ Waits for the database service to be up before starting the Flask app, likely using a connection check loop.</code></td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/scripts/ssl_renew.sh'>ssl_renew.sh</a></b></td>
-        <td><code>❯ ...</code></td>
+        <td><code>❯ Renews SSL certificates. </code></td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/scripts/git_update.sh'>git_update.sh</a></b></td>
-        <td><code>❯ ...</code></td>
+        <td><code>❯ Updates the project repository by pulling the latest changes from Git. </code></td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/scripts/ssl_setup.sh'>ssl_setup.sh</a></b></td>
-        <td><code>❯ ...</code></td>
+        <td><code>❯ Sets up SSL certificates and configures the Flask app with Nginx. </code></td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/scripts/clean_docker.sh'>clean_docker.sh</a></b></td>
-        <td><code>❯ ...</code></td>
+        <td><code>❯ Cleans up unused Docker containers, images, volumes, and networks.</code></td>
       </tr>
       </table>
     </blockquote>
@@ -411,23 +425,23 @@ There you may find our commmon working policy checking ``/docs/Acta fundacional.
           <table>
           <tr>
             <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/app/templates/base_template.html'>base_template.html</a></b></td>
-            <td><code>❯ ...</code></td>
+            <td><code>❯ The base template that provides the layout (e.g., navigation, header, footer) for other pages. Other templates extend this. </code></td>
           </tr>
           <tr>
             <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/app/templates/500.html'>500.html</a></b></td>
-            <td><code>❯ ...</code></td>
+            <td><code>❯ Displays the 500 Internal Server Error page, shown when the server encounters an unexpected condition. </code></td>
           </tr>
           <tr>
             <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/app/templates/404.html'>404.html</a></b></td>
-            <td><code>❯ ...</code></td>
+            <td><code>❯ Renders the 404 Not Found page, displayed when a resource (e.g., URL) does not exist. </code></td>
           </tr>
           <tr>
             <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/app/templates/401.html'>401.html</a></b></td>
-            <td><code>❯ ...</code></td>
+            <td><code>❯ A 401 Unauthorized error page, shown when the user is not authenticated. </code></td>
           </tr>
           <tr>
             <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/app/templates/400.html'>400.html</a></b></td>
-            <td><code>❯ ...</code></td>
+            <td><code>❯ Handles the 400 Bad Request error, usually caused by invalid client input. </code></td>
           </tr>
           </table>
         </blockquote>
@@ -1146,42 +1160,41 @@ Install tortilla-hub.git using one of the following methods:
 ❯ cd tortilla-hub
 ```
 
-3. Create a local environment:
-```sh
-❯ python -m venv .evn
-❯ cp .env.docker.example .env
-❯ source .env/bin/activate
-```
-
-4. Install the project dependencies:
-
+3. Install docker and docker-compose:
 **Using `pip`** &nbsp; [<img align="center" src="https://img.shields.io/badge/Pip-3776AB.svg?style={badge_style}&logo=pypi&logoColor=white" />](https://pypi.org/project/pip/)
 
 ```sh
-❯ pip install -r requirements.txt
-❯ deactivate
+❯ sudo apt update
+❯ sudo apt install docker-ce docker-ce-cli containerd.io -y
+❯ sudo apt install docker-compose-plugin -y
+❯ sudo docker --version
+❯ docker compose version
 ```
 
-5. Deploy in develop:
+4. Deploy in develop:
+**Using `Docker`** &nbsp; [<img align="center" src="https://img.shields.io/badge/Docker-2496ED.svg?style={badge_style}&logo=docker&logoColor=white" />](https://www.docker.com/)
 ```sh
 ❯ docker compose -f docker/docker-compose.dev.yml up -d 
 ```
+
+5. To shut down the project:
+**Using `Docker`** &nbsp; [<img align="center" src="https://img.shields.io/badge/Docker-2496ED.svg?style={badge_style}&logo=docker&logoColor=white" />](https://www.docker.com/)
+```sh
+❯ ddocker compose -f docker/docker-compose.dev.yml down
+```
+
+For more detailed information check https://docs.uvlhub.io/installation/installation_with_docker. 
+
 
 **Deploy locally:**
 
 For more detailed information check https://docs.uvlhub.io/installation/manual_installation.
 
 
-###  Usage
-Run tortilla-hub.git using the following command:
-**Using `pip`** &nbsp; [<img align="center" src="https://img.shields.io/badge/Pip-3776AB.svg?style={badge_style}&logo=pypi&logoColor=white" />](https://pypi.org/project/pip/)
-
-```sh
-❯ python {entrypoint}
-```
-
 
 ###  Testing
+
+To run the tests we should deploy the projcet locally: https://docs.uvlhub.io/installation/manual_installation.
 
 **Unit tests**
 Run the unit test suite using the following command:
