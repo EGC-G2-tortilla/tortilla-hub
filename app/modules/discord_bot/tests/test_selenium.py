@@ -35,7 +35,14 @@ def wait_for_either_condition(driver, timeout, conditions):
     Espera a que una de las condiciones se cumpla (en lugar de ambas al mismo tiempo).
     """
     return WebDriverWait(driver, timeout).until(
-        lambda d: next((d.find_element(*condition) for condition in conditions if d.find_elements(*condition)), None)
+        lambda d: next(
+            (
+                d.find_element(*condition)
+                for condition in conditions
+                if d.find_elements(*condition)
+            ),
+            None,
+        )
     )
 
 
@@ -125,7 +132,7 @@ def test_discord_bot_commands():
             ),
             ("/datasets", "Dataset"),
             ("/most_popular_authors", "Autores Más Populares"),
-            ("/most_downloaded", "Gráfico de descargas")
+            ("/most_downloaded", "Gráfico de descargas"),
         ]
 
         for command, expected_text in commands:
