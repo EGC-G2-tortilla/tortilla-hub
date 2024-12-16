@@ -1,53 +1,47 @@
+
 <div align="center">
   <img src="https://www.uvlhub.io/static/img/logos/logo-light.svg" alt="Logo">
 </div>
-
 
 <div align="center">
   <h1>TORTILLA-HUB</h1>
   <h3 style="font-style: italic; font-weight: normal;">
     A fork of the UVLHub project by DiversoLab: tortilla-hub is a repository of feature models in UVL format integrated with Zenodo and flamapy following Open Science principles.
   </h3>
-  <br><br>
-  
-  <a href="">
+  <br></br>
+
+<p>
+  <a>
     <img src="https://github.com/EGC-G2-tortilla/tortilla-hub/actions/workflows/tests.yml/badge.svg?branch=main" alt="Pytest Testing Suite">
   </a>
-  <a href="">
+  <a>
     <img src="https://github.com/EGC-G2-tortilla/tortilla-hub/actions/workflows/commits.yml/badge.svg?branch=main" alt="Commits Syntax Checker">
   </a>
-  </code></em>
 </p>
-<p align="center">
+
+<p>
     <img src="https://img.shields.io/github/last-commit/EGC-G2-tortilla/tortilla-hub?style=default&logo=git&logoColor=white&color=0080ff" alt="last-commit">
     <img src="https://img.shields.io/github/languages/top/EGC-G2-tortilla/tortilla-hub?style=default&color=0080ff" alt="repo-top-language">
     <img src="https://img.shields.io/github/languages/count/EGC-G2-tortilla/tortilla-hub?style=default&color=0080ff" alt="repo-language-count">
 </p>
-<p align="center"><!-- default option, no dependency badges. -->
-</p>
-<p align="center">
-    <!-- default option, no dependency badges. -->
-</p>
-<br>
-</div>
 
+</div>
 
 ##  Table of Contents
 
-- [ Overview](#overview)
-- [ Project Structure](#project-structure)
-  - [ Project Index](#project-index)
-- [ Getting Started](#getting-started)
-  - [ Prerequisites](#prerequisites)
-  - [ Installation](#installation)
-  - [ Usage](#usage)
-  - [ Testing](#testing)
-- [ Project Documentation](#project-documentation)
-- [ Acknowledgments](#acknowledgments)
+- [Overview](#overview)
+- [Project Documentation](#project-documentation)
+- [Project Structure](#project-structure)
+  - [Project Index](#project-index)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Testing](#testing)
+- [Acknowledgments](#acknowledgments)
 
 ---
 
-##  Overview
+# Overview
 
 Tortilla-hub is a fork of the UVLHub project by DiversoLab, created for the Evolution and Configuration Management (Evolución y Gestión de la configuración - EGC) course in the Software Engineering degree at the University of Seville.
 
@@ -57,7 +51,7 @@ This project serves as a repository for feature models in UVL format, integrated
 
 ---
 
-##  Project Documentation
+# Project Documentation
 
 Tortilla-hub is a proyect made by two teams: tortilla-hub-1 and tortilla-hub-2. You can find all our documentation on the ``/docs`` folder in our common proyect. 
 
@@ -68,7 +62,7 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
 
 ---
 
-##  Project Structure
+# Project Structure
 
 ```sh
 └── tortilla-hub.git/
@@ -102,7 +96,8 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
 ```
 
 
-###  Project Index
+## Project Index
+
 <details open>
   <summary><b><code>TORTILLA-HUB.GIT/</code></b></summary>
   <details> <!-- __root__ Submodule -->
@@ -111,11 +106,11 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
       <table>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/requirements.txt'>requirements.txt</a></b></td>
-        <td>- Requirements.txt specifies the project's dependencies<br>- It lists numerous Python packages, including Flask for web framework, SQLAlchemy for database interaction, pytest for testing, and several libraries related to  feature modeling (flamapy-*)<br>- These packages provide the necessary tools and components for building and running the application.</td>
+        <td>- Requirements.txt specifies the project's dependencies<br></br>- It lists numerous Python packages, including Flask for web framework, SQLAlchemy for database interaction, pytest for testing, and several libraries related to  feature modeling (flamapy-*)<br></br>- These packages provide the necessary tools and components for building and running the application.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/setup.py'>setup.py</a></b></td>
-        <td>- `setup.py` configures the Rosemary project for installation<br>- It defines the project's metadata, lists dependencies (Click and python-dotenv), and specifies the command-line interface (`rosemary`) entry point, enabling users to easily interact with the UVLHub development environment via the command line.</td>
+        <td>- `setup.py` configures the Rosemary project for installation<br></br>- It defines the project's metadata, lists dependencies (Click and python-dotenv), and specifies the command-line interface (`rosemary`) entry point, enabling users to easily interact with the UVLHub development environment via the command line.</td>
       </tr>
       </table>
     </blockquote>
@@ -134,7 +129,7 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/migrations/alembic.ini'>alembic.ini</a></b></td>
-        <td>- The `alembic.ini` file configures Alembic, a database migration tool, for the project<br></td>
+        <td>- The `alembic.ini` file configures Alembic, a database migration tool, for the project</td>
       </tr>
       </table>
       <details>
@@ -161,7 +156,7 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
       <table>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/rosemary/cli.py'>cli.py</a></b></td>
-        <td>- Rosemary/cli.py provides a command-line interface (CLI) for streamlining project development<br>- It integrates various commands, including database management, testing, environment setup, code quality checks, and deployment aids<br>- The CLI acts as a central access point, simplifying common development tasks and improving workflow efficiency within the larger Rosemary project.</td>
+        <td>- Rosemary/cli.py provides a command-line interface (CLI) for streamlining project development<br></br>- It integrates various commands, including database management, testing, environment setup, code quality checks, and deployment aids<br></br>- The CLI acts as a central access point, simplifying common development tasks and improving workflow efficiency within the larger Rosemary project.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/rosemary/__main__.py'>__main__.py</a></b></td>
@@ -188,19 +183,19 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
       <table>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/docker/docker-compose.prod.ssl.yml'>docker-compose.prod.ssl.yml</a></b></td>
-        <td>- The docker-compose.prod.ssl.yml file configures a production environment using Docker Compose<br>- It orchestrates the deployment of a web application, a MariaDB database, an Nginx reverse proxy, and Watchtower for automated container updates<br>- The configuration specifies container images, environment variables, port mappings, and volume mounts for persistent data and application resources.</td>
+        <td>- The docker-compose.prod.ssl.yml file configures a production environment using Docker Compose<br></br>- It orchestrates the deployment of a web application, a MariaDB database, an Nginx reverse proxy, and Watchtower for automated container updates<br></br>- The configuration specifies container images, environment variables, port mappings, and volume mounts for persistent data and application resources.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/docker/docker-compose.dev.yml'>docker-compose.dev.yml</a></b></td>
-        <td>- The `docker-compose.dev.yml` file configures a multi-container development environment<br>- It defines services for a web application, a MariaDB database, and an Nginx reverse proxy<br>- The configuration facilitates local development by linking these services, managing environment variables, and setting up necessary volumes and networks for seamless interaction<br>- The setup enables developers to run and test the application locally.</td>
+        <td>- The `docker-compose.dev.yml` file configures a multi-container development environment<br></br>- It defines services for a web application, a MariaDB database, and an Nginx reverse proxy<br></br>- The configuration facilitates local development by linking these services, managing environment variables, and setting up necessary volumes and networks for seamless interaction<br></br>- The setup enables developers to run and test the application locally.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/docker/docker-compose.prod.webhook.yml'>docker-compose.prod.webhook.yml</a></b></td>
-        <td>- The `docker-compose.prod.webhook.yml` file configures a production environment for a web application using Docker Compose<br>- It defines services for the application itself, a MariaDB database, and an Nginx web server, orchestrating their interactions and resource allocation<br>- The configuration includes environment variables, port mappings, volume mounts for persistent data and scripts, and ensures automatic restarts<br>- The setup facilitates deployment and management of the application within a containerized infrastructure.</td>
+        <td>- The `docker-compose.prod.webhook.yml` file configures a production environment for a web application using Docker Compose<br></br>- It defines services for the application itself, a MariaDB database, and an Nginx web server, orchestrating their interactions and resource allocation<br></br>- The configuration includes environment variables, port mappings, volume mounts for persistent data and scripts, and ensures automatic restarts<br></br>- The setup facilitates deployment and management of the application within a containerized infrastructure.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/docker/docker-compose.prod.yml'>docker-compose.prod.yml</a></b></td>
-        <td>- Docker Compose orchestrates a production environment<br>- It defines and manages four containers: a web application, a MariaDB database, an Nginx reverse proxy, and a Watchtower for automated container updates<br>- The configuration maps local directories to containers, enabling persistent storage and deployment of application code, scripts, and configurations<br>- The setup ensures high availability and simplified deployment.</td>
+        <td>- Docker Compose orchestrates a production environment<br></br>- It defines and manages four containers: a web application, a MariaDB database, an Nginx reverse proxy, and a Watchtower for automated container updates<br></br>- The configuration maps local directories to containers, enabling persistent storage and deployment of application code, scripts, and configurations<br></br>- The setup ensures high availability and simplified deployment.</td>
       </tr>
       </table>
       <details>
@@ -266,7 +261,7 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/vagrant/02_install_mariadb.yml'>02_install_mariadb.yml</a></b></td>
-        <td>- The Ansible playbook `02_install_mariadb.yml` sets up a MariaDB database server<br>- It installs MariaDB and the necessary Python library, starts and enables the service, configures the root password, and creates specified databases and a user with appropriate privileges<br>.</td>
+        <td>- The Ansible playbook `02_install_mariadb.yml` sets up a MariaDB database server<br></br>- It installs MariaDB and the necessary Python library, starts and enables the service, configures the root password, and creates specified databases and a user with appropriate privileges.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/vagrant/01_setup.yml'>01_setup.yml</a></b></td>
@@ -286,7 +281,7 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/vagrant/Vagrantfile'>Vagrantfile</a></b></td>
-        <td>- The Vagrantfile configures a virtual machine using Ubuntu, setting up network ports, syncing folders, and provisioning via Ansible<br>- It loads environment variables from a `.env` file, making them accessible to the Ansible playbook and the virtual machine's shell environment<br>- This ensures consistent configuration and deployment across different environments.</td>
+        <td>- The Vagrantfile configures a virtual machine using Ubuntu, setting up network ports, syncing folders, and provisioning via Ansible<br></br>- It loads environment variables from a `.env` file, making them accessible to the Ansible playbook and the virtual machine's shell environment<br></br>- This ensures consistent configuration and deployment across different environments.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/vagrant/05_run_app.yml'>05_run_app.yml</a></b></td>
@@ -1135,9 +1130,10 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
 </details>
 
 ---
-##  Getting Started
 
-###  Prerequisites
+# Getting Started
+
+## Prerequisites
 
 Before getting started with tortilla-hub.git, ensure your runtime environment meets the following requirements:
 
@@ -1145,7 +1141,7 @@ Before getting started with tortilla-hub.git, ensure your runtime environment me
 - **Package Manager:** Pip / Pip3
 
 
-###  Installation
+## Installation
 
 Install tortilla-hub.git using one of the following methods:
 
@@ -1192,7 +1188,7 @@ For more detailed information check https://docs.uvlhub.io/installation/manual_i
 
 
 
-###  Testing
+## Testing
 
 To run the tests we should deploy the projcet locally: https://docs.uvlhub.io/installation/manual_installation.
 
@@ -1232,7 +1228,7 @@ If you want to run specific test modules:
 ---
 
 
-##  Acknowledgments
+# Acknowledgments
 
 In this section you can find all the contributors of each team:
 
