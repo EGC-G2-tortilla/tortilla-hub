@@ -1,3 +1,24 @@
+# [1.20.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.19.0...v1.20.0) (2024-12-16)
+
+
+### Bug Fixes
+
+* Cambios en los hipervínculos del bot y eliminar locustfile ([c0eef8d](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/c0eef8d2e5627a02fc62f2f79ced9ce1a5912b95))
+* Contemplados casos erróneos en el test de rendimiento ([2bf9bd6](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/2bf9bd67ed2cd8640cbdd512dc8bfb4b13e8fbfd))
+* de community se borrado el test de carga que da error y se ha escrito bien la url del otro test Close [#241](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/241) ([7f6c01a](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7f6c01acd969d28a4cedcc11027021779c0b7351))
+* extracción y mejora de los tests de carga para el staging area ([291660c](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/291660c5842682353cd6c6889ee41223de483a86))
+* se ha solucionador el error de los tests de selenium de community de que de da error al probarse en otras pantallas Close [#234](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/234) ([b5c443d](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b5c443db7304e8373bb7a092ead8cb8b6be44a73))
+* solucionado error de codacy en test_selenium.py de community ([ebbd409](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ebbd4092a29e93bed8cd6fd1d0937f3a456a4a08))
+
+
+### Features
+
+* Añadir boton de invitación del bot y arreglar hipervinculos. ([7fc2e82](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/7fc2e82079a273d3689a23d7afa218449d4ee489)), closes [#252](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/252)
+* Testing Locust Github ([43518e2](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/43518e20d9a22579e3b76c7ccb5164f6aed27298)), closes [#239](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/239)
+* Tests selenium GitHub ([38ef4dc](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/38ef4dc3d0f2f4908f61fec382d28f52be4dd6b2)), closes [#82](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/82)
+* Tests Selenium OAuth GitHub ([4c6ceca](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/4c6ceca17ebb712784281458c3d558688ee89583))
+* Tests selenium oauth ORCID ([5ef0f65](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/5ef0f65368ba1ce5e21c6a2f52ea0620f65c4ad0)), closes [#83](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/83)
+
 # [1.19.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.18.1...v1.19.0) (2024-12-14)
 
 
