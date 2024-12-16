@@ -378,11 +378,15 @@ def test_create_community():
         link.click()
         wait_for_page_to_load(driver)
 
+        dataset_not_expected = False
         try:
             dataset_not_expected = driver.find_element(By.LINK_TEXT, "Sample dataset 7")
             assert not dataset_not_expected, "Test failed!"
+            dataset_not_expected = True
         except Exception:
-            pass
+            dataset_not_expected = False
+
+        assert not dataset_not_expected, "Test failed!"
 
         link = driver.find_element(By.LINK_TEXT, "Info")
         link.click()
