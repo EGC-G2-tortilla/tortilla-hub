@@ -3,7 +3,7 @@
 
 ### Bug Fixes
 
-*  gestión de los datasets desincronizados ([8bd1e39](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/8bd1e3951e3828d9c800d43adbf850b0361e77ac))
+* gestión de los datasets desincronizados ([8bd1e39](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/8bd1e3951e3828d9c800d43adbf850b0361e77ac))
 * .mailmap añadido Daniel Fernández <92794081+DaniFdezCab@users.noreply.github.com> Close [#225](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/225) ([30f71f4](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/30f71f4273867fa5cd085f348ad26bc85ae1eee9))
 * Actualizar secretos ([457e7bc](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/457e7bc6883fcfc4c438610c681874e456b87fb4))
 * Arreglar fallo en el login ([cb86990](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/cb8699089627ba460e76e5e4744d9c39f2acf190))
@@ -62,7 +62,7 @@
 
 * Aumentar tiempo de espera en el login ([2fee5ed](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/2fee5ed067f32bee2f16d174bab7fca06255798d))
 
-# [1.18.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.17.0...v1.18.0) (2024-12-13)
+## [1.18.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.17.0...v1.18.0) (2024-12-13)
 
 
 ### Bug Fixes
