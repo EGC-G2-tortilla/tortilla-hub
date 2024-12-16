@@ -8,13 +8,12 @@
   <h3 style="font-style: italic; font-weight: normal;">
     A fork of the UVLHub project by DiversoLab: tortilla-hub is a repository of feature models in UVL format integrated with Zenodo and flamapy following Open Science principles.
   </h3>
-  <br></br>
 
 <p>
-  <a>
+  <a href="#">
     <img src="https://github.com/EGC-G2-tortilla/tortilla-hub/actions/workflows/tests.yml/badge.svg?branch=main" alt="Pytest Testing Suite">
   </a>
-  <a>
+  <a href="#">
     <img src="https://github.com/EGC-G2-tortilla/tortilla-hub/actions/workflows/commits.yml/badge.svg?branch=main" alt="Commits Syntax Checker">
   </a>
 </p>
@@ -55,7 +54,7 @@ This project serves as a repository for feature models in UVL format, integrated
 
 Tortilla-hub is a proyect made by two teams: tortilla-hub-1 and tortilla-hub-2. You can find all our documentation on the ``/docs`` folder in our common proyect. 
 
-There you may find our commmon working policy checking ```/docs/Acta fundacional.md``` and our specific group documentation in our respective group folder.
+There you may find our commmon working policy checking ``/docs/Acta fundacional.md`` and our specific group documentation in our respective group folder.
 
 
 
@@ -106,11 +105,11 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
       <table>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/requirements.txt'>requirements.txt</a></b></td>
-        <td>- Requirements.txt specifies the project's dependencies<br></br>- It lists numerous Python packages, including Flask for web framework, SQLAlchemy for database interaction, pytest for testing, and several libraries related to  feature modeling (flamapy-*)<br></br>- These packages provide the necessary tools and components for building and running the application.</td>
+        <td>- Requirements.txt specifies the project's dependencies<br>- It lists numerous Python packages, including Flask for web framework, SQLAlchemy for database interaction, pytest for testing, and several libraries related to  feature modeling (flamapy-*)<br>- These packages provide the necessary tools and components for building and running the application.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/setup.py'>setup.py</a></b></td>
-        <td>- `setup.py` configures the Rosemary project for installation<br></br>- It defines the project's metadata, lists dependencies (Click and python-dotenv), and specifies the command-line interface (`rosemary`) entry point, enabling users to easily interact with the UVLHub development environment via the command line.</td>
+        <td>- <code>setup.py</code> configures the Rosemary project for installation<br>- It defines the project's metadata, lists dependencies (Click and python-dotenv), and specifies the command-line interface (<code>rosemary</code>) entry point, enabling users to easily interact with the UVLHub development environment via the command line.</td>
       </tr>
       </table>
     </blockquote>
@@ -125,11 +124,11 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/migrations/env.py'>env.py</a></b></td>
-        <td>- `env.py` configures Alembic, a database migration tool, within a Flask application</td>
+        <td>- <code>env.py</code> configures Alembic, a database migration tool, within a Flask application</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/migrations/alembic.ini'>alembic.ini</a></b></td>
-        <td>- The `alembic.ini` file configures Alembic, a database migration tool, for the project</td>
+        <td>- The <code>alembic.ini</code> file configures Alembic, a database migration tool, for the project</td>
       </tr>
       </table>
       <details>
@@ -156,11 +155,11 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
       <table>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/rosemary/cli.py'>cli.py</a></b></td>
-        <td>- Rosemary/cli.py provides a command-line interface (CLI) for streamlining project development<br></br>- It integrates various commands, including database management, testing, environment setup, code quality checks, and deployment aids<br></br>- The CLI acts as a central access point, simplifying common development tasks and improving workflow efficiency within the larger Rosemary project.</td>
+        <td>- Rosemary/cli.py provides a command-line interface (CLI) for streamlining project development<br>- It integrates various commands, including database management, testing, environment setup, code quality checks, and deployment aids<br>- The CLI acts as a central access point, simplifying common development tasks and improving workflow efficiency within the larger Rosemary project.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/rosemary/__main__.py'>__main__.py</a></b></td>
-        <td>- Rosemary's `__main__.py` serves as the application's entry point.</td>
+        <td>- Rosemary's <code>__main__.py</code> serves as the application's entry point.</td>
       </tr>
       </table>
       <details>
@@ -183,19 +182,19 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
       <table>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/docker/docker-compose.prod.ssl.yml'>docker-compose.prod.ssl.yml</a></b></td>
-        <td>- The docker-compose.prod.ssl.yml file configures a production environment using Docker Compose<br></br>- It orchestrates the deployment of a web application, a MariaDB database, an Nginx reverse proxy, and Watchtower for automated container updates<br></br>- The configuration specifies container images, environment variables, port mappings, and volume mounts for persistent data and application resources.</td>
+        <td>- The docker-compose.prod.ssl.yml file configures a production environment using Docker Compose<br>- It orchestrates the deployment of a web application, a MariaDB database, an Nginx reverse proxy, and Watchtower for automated container updates<br>- The configuration specifies container images, environment variables, port mappings, and volume mounts for persistent data and application resources.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/docker/docker-compose.dev.yml'>docker-compose.dev.yml</a></b></td>
-        <td>- The `docker-compose.dev.yml` file configures a multi-container development environment<br></br>- It defines services for a web application, a MariaDB database, and an Nginx reverse proxy<br></br>- The configuration facilitates local development by linking these services, managing environment variables, and setting up necessary volumes and networks for seamless interaction<br></br>- The setup enables developers to run and test the application locally.</td>
+        <td>- The <code>docker-compose.dev.yml</code> file configures a multi-container development environment<br>- It defines services for a web application, a MariaDB database, and an Nginx reverse proxy<br>- The configuration facilitates local development by linking these services, managing environment variables, and setting up necessary volumes and networks for seamless interaction<br>- The setup enables developers to run and test the application locally.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/docker/docker-compose.prod.webhook.yml'>docker-compose.prod.webhook.yml</a></b></td>
-        <td>- The `docker-compose.prod.webhook.yml` file configures a production environment for a web application using Docker Compose<br></br>- It defines services for the application itself, a MariaDB database, and an Nginx web server, orchestrating their interactions and resource allocation<br></br>- The configuration includes environment variables, port mappings, volume mounts for persistent data and scripts, and ensures automatic restarts<br></br>- The setup facilitates deployment and management of the application within a containerized infrastructure.</td>
+        <td>- The <code>docker-compose.prod.webhook.yml</code> file configures a production environment for a web application using Docker Compose<br>- It defines services for the application itself, a MariaDB database, and an Nginx web server, orchestrating their interactions and resource allocation<br>- The configuration includes environment variables, port mappings, volume mounts for persistent data and scripts, and ensures automatic restarts<br>- The setup facilitates deployment and management of the application within a containerized infrastructure.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/docker/docker-compose.prod.yml'>docker-compose.prod.yml</a></b></td>
-        <td>- Docker Compose orchestrates a production environment<br></br>- It defines and manages four containers: a web application, a MariaDB database, an Nginx reverse proxy, and a Watchtower for automated container updates<br></br>- The configuration maps local directories to containers, enabling persistent storage and deployment of application code, scripts, and configurations<br></br>- The setup ensures high availability and simplified deployment.</td>
+        <td>- Docker Compose orchestrates a production environment<br>- It defines and manages four containers: a web application, a MariaDB database, an Nginx reverse proxy, and a Watchtower for automated container updates<br>- The configuration maps local directories to containers, enabling persistent storage and deployment of application code, scripts, and configurations<br>- The setup ensures high availability and simplified deployment.</td>
       </tr>
       </table>
       <details>
@@ -261,19 +260,19 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/vagrant/02_install_mariadb.yml'>02_install_mariadb.yml</a></b></td>
-        <td>- The Ansible playbook `02_install_mariadb.yml` sets up a MariaDB database server<br></br>- It installs MariaDB and the necessary Python library, starts and enables the service, configures the root password, and creates specified databases and a user with appropriate privileges.</td>
+        <td>- The Ansible playbook `02_install_mariadb.yml</code> sets up a MariaDB database server<br>- It installs MariaDB and the necessary Python library, starts and enables the service, configures the root password, and creates specified databases and a user with appropriate privileges.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/vagrant/01_setup.yml'>01_setup.yml</a></b></td>
-        <td>- `vagrant/01_setup.yml` prepares the system for provisioning by updating the apt package cache.</td>
+        <td>- `vagrant/01_setup.yml</code> prepares the system for provisioning by updating the apt package cache.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/vagrant/03_mariadb_scripts.yml'>03_mariadb_scripts.yml</a></b></td>
-        <td>- The `vagrant/03_mariadb_scripts.yml` Ansible playbook configures and initializes the MariaDB database.</td>
+        <td>- The <code>vagrant/03_mariadb_scripts.yml</code> Ansible playbook configures and initializes the MariaDB database.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/vagrant/06_utilities.yml'>06_utilities.yml</a></b></td>
-        <td>- Ansible's `06_utilities.yml` configures the Vagrant user environment.</td>
+        <td>- Ansible's `06_utilities.yml</code> configures the Vagrant user environment.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/vagrant/00_main.yml'>00_main.yml</a></b></td>
@@ -281,7 +280,7 @@ There you may find our commmon working policy checking ```/docs/Acta fundacional
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/vagrant/Vagrantfile'>Vagrantfile</a></b></td>
-        <td>- The Vagrantfile configures a virtual machine using Ubuntu, setting up network ports, syncing folders, and provisioning via Ansible<br></br>- It loads environment variables from a `.env` file, making them accessible to the Ansible playbook and the virtual machine's shell environment<br></br>- This ensures consistent configuration and deployment across different environments.</td>
+        <td>- The Vagrantfile configures a virtual machine using Ubuntu, setting up network ports, syncing folders, and provisioning via Ansible<br>- It loads environment variables from a `.env</code> file, making them accessible to the Ansible playbook and the virtual machine's shell environment<br>- This ensures consistent configuration and deployment across different environments.</td>
       </tr>
       <tr>
         <td><b><a href='https://github.com/EGC-G2-tortilla/tortilla-hub.git/blob/master/vagrant/05_run_app.yml'>05_run_app.yml</a></b></td>
@@ -1157,7 +1156,7 @@ Install tortilla-hub.git using one of the following methods:
 ```
 
 3. Install docker and docker-compose:
-**Using `pip`** &nbsp; [<img align="center" src="https://img.shields.io/badge/Pip-3776AB.svg?style={badge_style}&logo=pypi&logoColor=white" />](https://pypi.org/project/pip/)
+**Using <code>pip</code>** &nbsp; [<img align="center" src="https://img.shields.io/badge/Pip-3776AB.svg?style={badge_style}&logo=pypi&logoColor=white" />](https://pypi.org/project/pip/)
 
 ```sh
 ❯ sudo apt update
@@ -1168,13 +1167,13 @@ Install tortilla-hub.git using one of the following methods:
 ```
 
 4. Deploy in develop:
-**Using `Docker`** &nbsp; [<img align="center" src="https://img.shields.io/badge/Docker-2496ED.svg?style={badge_style}&logo=docker&logoColor=white" />](https://www.docker.com/)
+**Using <code>Docker</code>** &nbsp; [<img align="center" src="https://img.shields.io/badge/Docker-2496ED.svg?style={badge_style}&logo=docker&logoColor=white" />](https://www.docker.com/)
 ```sh
 ❯ docker compose -f docker/docker-compose.dev.yml up -d 
 ```
 
 5. To shut down the project:
-**Using `Docker`** &nbsp; [<img align="center" src="https://img.shields.io/badge/Docker-2496ED.svg?style={badge_style}&logo=docker&logoColor=white" />](https://www.docker.com/)
+**Using <code>Docker</code>** &nbsp; [<img align="center" src="https://img.shields.io/badge/Docker-2496ED.svg?style={badge_style}&logo=docker&logoColor=white" />](https://www.docker.com/)
 ```sh
 ❯ ddocker compose -f docker/docker-compose.dev.yml down
 ```
