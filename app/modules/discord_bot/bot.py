@@ -354,7 +354,7 @@ class DatasetView(nextcord.ui.View):
     @nextcord.ui.button(label="Descargar", style=nextcord.ButtonStyle.success)
     async def download(self, button, interaction):
         dataset = self.datasets[self.current_page]
-        download_url = DOMAIN + f"/dataset/download/{dataset['id']}"
+        download_url = "https://" + DOMAIN + f"/dataset/download/{dataset['id']}"
         await interaction.response.send_message(
             f"📥 [Haz clic aquí para descargar el dataset]({download_url})",
             ephemeral=True,
@@ -362,7 +362,7 @@ class DatasetView(nextcord.ui.View):
 
     @nextcord.ui.button(label="Descargar todos", style=nextcord.ButtonStyle.success)
     async def download_all(self, button, interaction):
-        download_url = DOMAIN + "/dataset/download_all"
+        download_url = "https://" + DOMAIN + "/dataset/download_all"
         await interaction.response.send_message(
             f"📥 [Haz clic aquí para descargar todos los datasets disponibles]({download_url})",
             ephemeral=True,
