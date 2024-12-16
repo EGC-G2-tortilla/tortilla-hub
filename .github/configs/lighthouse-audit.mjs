@@ -32,9 +32,9 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
     await page.type(config.login.passwordSelector, process.env.LOGIN_PASSWORD);
 
     console.log('Haciendo clic en el botón de login...');
-    await page.waitForSelector(config.login.submitButtonSelector, { visible: true, timeout: 60000 });
+    await page.waitForSelector(config.login.submitButtonSelector, { visible: true, timeout: 100000 });
     await page.click(config.login.submitButtonSelector);
-    await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 60000 });
+    await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 100000 });
 
     console.log('Login completado.');
 
