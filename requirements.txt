@@ -106,3 +106,4 @@ zstandard==0.22.0
 nextcord==2.6.0
 nextcord-ext-menus==1.5.7
 pytest-asyncio==0.25.0
+responses==0.25.3

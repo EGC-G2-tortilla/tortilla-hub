@@ -179,7 +179,7 @@ def test_unstage_all_datasets(test_client):
     dataset2 = db.session.get(DataSet, 2)
     assert dataset1.ds_meta_data.dataset_status == DatasetStatus.STAGED
     assert dataset2.ds_meta_data.dataset_status == DatasetStatus.STAGED
-    response = test_client.post(f"/dataset/unstage/all")
+    response = test_client.post("/dataset/unstage/all")
     # Check that the response is a redirect
     assert response.status_code == 302
     # Check that a flash message has been set
@@ -209,7 +209,7 @@ def test_stage_all_datasets(test_client):
     dataset2 = db.session.get(DataSet, 2)
     assert dataset1.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED
     assert dataset2.ds_meta_data.dataset_status == DatasetStatus.UNSTAGED
-    response = test_client.post(f"/dataset/stage/all")
+    response = test_client.post("/dataset/stage/all")
     # Check that the response is a redirect
     assert response.status_code == 302
     # Check that a flash message has been set

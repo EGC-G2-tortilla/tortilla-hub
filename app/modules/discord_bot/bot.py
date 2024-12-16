@@ -125,9 +125,9 @@ async def help_command(interaction: nextcord.Interaction):
     embed.set_footer(text="Gracias por usar el bot. ¡Disfruta explorando tus datos!")
 
     # Añadir comandos por categoría
-    for category, commands in commands_info.items():
+    for category, command in commands_info.items():
         commands_list = "\n".join(
-            [f"**{cmd['name']}**: {cmd['description']}" for cmd in commands]
+            [f"**{cmd['name']}**: {cmd['description']}" for cmd in command]
         )
         embed.add_field(name=category, value=commands_list, inline=False)
 
@@ -140,6 +140,20 @@ async def most_downloaded(interaction: nextcord.Interaction):
     with app.app_context():
         # Consulta de los datasets más descargados
         consult = dataset_service.most_downloaded()
+
+        if not consult:  # Manejo adecuado si consult es None o está vacío
+            embed = nextcord.Embed(
+                title="Sin datos disponibles 😔",
+                description=(
+                    "No hay datos sobre los **datasets más descargados** en este momento.\n"
+                    "Prueba a descargar alguno en la web de UVLHub: "
+                    "[UVLHub](https://tortilla-hub-development.onrender.com)."
+                ),
+                color=nextcord.Color.red(),
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+
         # Obtén los 4 más descargados
         top_datasets = sorted(consult, key=lambda x: x["downloads"], reverse=True)[:4]
 
@@ -242,14 +256,14 @@ async def feature_models_counter(interaction: nextcord.Interaction):
 
 
 @bot.slash_command(
-    name="total_dataset_downloads", description="Total de descargas de datasets"
+    name="total_dataset_downloads", description="📈 Total de descargas de datasets"
 )
 async def total_dataset_downloads(interaction: nextcord.Interaction):
     with app.app_context():
         total_downloads = dataset_service.total_dataset_downloads()
 
         embed = nextcord.Embed(
-            title="Total de Descargas de Datasets 📊",
+            title="📈 Total de Descargas de Datasets",
             description=(
                 f"En total, los datasets han sido descargados **{total_downloads} veces**.\n\n"
                 "📥 Las descargas de datasets son una medida importante para ver qué tan populares "
@@ -356,7 +370,7 @@ class DatasetView(nextcord.ui.View):
         dataset = self.datasets[self.current_page]
         download_url = DOMAIN + f"/dataset/download/{dataset['id']}"
         await interaction.response.send_message(
-            f"📥 [Haz clic aquí para descargar el dataset]({download_url})",
+            content=f"[Haz clic aquí para descargar el dataset]({download_url})",
             ephemeral=True,
         )
 
@@ -364,7 +378,7 @@ class DatasetView(nextcord.ui.View):
     async def download_all(self, button, interaction):
         download_url = DOMAIN + "/dataset/download_all"
         await interaction.response.send_message(
-            f"📥 [Haz clic aquí para descargar todos los datasets disponibles]({download_url})",
+            content=f"[Haz clic aquí para descargar todos los datasets disponibles]({download_url})",
             ephemeral=True,
         )
 
