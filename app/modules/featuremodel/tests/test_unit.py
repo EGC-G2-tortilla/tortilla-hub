@@ -11,7 +11,7 @@ def calculate_checksum(file_content):
     """
     Calcula un checksum MD5 basado en el contenido del archivo.
     """
-    return hashlib.md5(file_content.encode("utf-8")).hexdigest()
+    return hashlib.sha256(file_content.encode("utf-8")).hexdigest()
 
 
 @pytest.fixture(scope="module")
