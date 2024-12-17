@@ -9,13 +9,13 @@
 
 | **Miembro** | **Implicación M2** (Escala 1-10) | **Implicación M3** (Escala 1-10) |
 | :---- | :---- | :---- |
-| Fernández Pérez, Pablo | 10 | |
-| Iborra Conejo, José Miguel | 6 | |
-| Macías Ferrera, Antonio | 6 | |
-| Maureira Flores, Benjamín Ignacio | 6 | |
-| Ridruejo Pineda, Guadalupe | 6 | |
-| Santana Rubio, Delfín | 8 | |
-| Vela Camacho, Daniel | 8 | |
+| Fernández Pérez, Pablo | 10 |10 |
+| Iborra Conejo, José Miguel | 6 | 10|
+| Macías Ferrera, Antonio | 6 | 10|
+| Maureira Flores, Benjamín Ignacio | 6 |10 |
+| Ridruejo Pineda, Guadalupe | 6 | 10|
+| Santana Rubio, Delfín | 8 | 10|
+| Vela Camacho, Daniel | 8 | 10|
 
 ## Índice de Contenidos
 
