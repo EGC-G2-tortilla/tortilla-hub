@@ -76,7 +76,6 @@ def test_stage_dataset():
     driver = initialize_driver()
     driver.maximize_window()
 
-
     try:
         # Dynamically get the host if applicable (adjust if unnecessary)
         host = "http://localhost:5000"
@@ -145,7 +144,6 @@ def test_unstage_dataset():
     driver = initialize_driver()
     driver.maximize_window()
 
-
     try:
         # Dynamically get the host if applicable (adjust if unnecessary)
         host = "http://localhost:5000"
@@ -211,7 +209,6 @@ def test_stage_all_datasets():
     driver = initialize_driver()
     driver.maximize_window()
 
-
     try:
         host = "http://localhost:5000"
 
@@ -238,7 +235,10 @@ def test_stage_all_datasets():
 
         # Wait for all unstaged rows to disappear
         WebDriverWait(driver, 10).until(
-            lambda d: len(driver.find_elements(By.CSS_SELECTOR, "#unstaged-datasets tbody tr")) == 0
+            lambda d: len(
+                driver.find_elements(By.CSS_SELECTOR, "#unstaged-datasets tbody tr")
+            )
+            == 0
         )
         wait_for_page_to_load(driver)
 
@@ -247,10 +247,10 @@ def test_stage_all_datasets():
     finally:
         close_driver(driver)
 
+
 def test_unstage_all_datasets():
     driver = initialize_driver()
     driver.maximize_window()
-
 
     try:
         host = "http://localhost:5000"
@@ -273,7 +273,10 @@ def test_unstage_all_datasets():
 
         # Wait for the table to update
         WebDriverWait(driver, 10).until(
-            lambda d: len(driver.find_elements(By.CSS_SELECTOR, "#staged-datasets tbody tr")) == 0
+            lambda d: len(
+                driver.find_elements(By.CSS_SELECTOR, "#staged-datasets tbody tr")
+            )
+            == 0
         )
         wait_for_page_to_load(driver)
 
@@ -286,7 +289,6 @@ def test_unstage_all_datasets():
 def test_publish_datasets():
     driver = initialize_driver()
     driver.maximize_window()
-
 
     try:
         host = "http://localhost:5000"
@@ -311,7 +313,10 @@ def test_publish_datasets():
 
         # Wait for all staged datasets to disappear
         WebDriverWait(driver, 10).until(
-            lambda d: len(driver.find_elements(By.CSS_SELECTOR, "#staged-datasets tbody tr")) == 0
+            lambda d: len(
+                driver.find_elements(By.CSS_SELECTOR, "#staged-datasets tbody tr")
+            )
+            == 0
         )
         wait_for_page_to_load(driver)
 
