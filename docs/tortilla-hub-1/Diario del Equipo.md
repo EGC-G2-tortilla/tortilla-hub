@@ -9,13 +9,14 @@
 
 | **Miembro** | **Implicación M2** (Escala 1-10) | **Implicación M3** (Escala 1-10) |
 | :---- | :---- | :---- |
-| Fernández Pérez, Pablo | 10 | 10 |
-| Iborra Conejo, José Miguel | 6 | 6 |
-| Macías Ferrera, Antonio | 6 | 10 |
-| Maureira Flores, Benjamín Ignacio | 6 | 7 |
-| Ridruejo Pineda, Guadalupe | 6 | 10 |
-| Santana Rubio, Delfín | 8 | 10 |
-| Vela Camacho, Daniel | 8 | 10 |
+| Fernández Pérez, Pablo | 10 |10 |
+| Iborra Conejo, José Miguel | 6 | 10|
+| Macías Ferrera, Antonio | 6 | 10|
+| Maureira Flores, Benjamín Ignacio | 6 |10 |
+| Ridruejo Pineda, Guadalupe | 6 | 10|
+| Santana Rubio, Delfín | 8 | 10|
+| Vela Camacho, Daniel | 8 | 10|
+
 
 ## Índice de Contenidos
 
@@ -117,6 +118,7 @@ _**Nota**: Cabe destacar que, aunque se han llevado a cabo pocas reuniones forma
 - **Acuerdo 2024-03-01: Desarrollo de _tests_**
   - Se acordó que, dado que durante el desarrollo del proyecto cada miembro del equipo se encarga exclusivamente de un Work Item para el grupo tortilla-hub-1, las pruebas correspondientes a cada uno de ellos son también responsabilidad individual del desarrollador de la tarea. Esto implica que cada miembro del equipo solo desarrollará las pruebas que sean coherentes con su WI, es decir, que si el desarrollo de esa funcionalidad no require de pruebas de integración, por ejemplo, ese miembro del equipo no está obligado a realizarlas.
 
+
 ### ACTA 2024-04
 
 - **Fecha**: 14/12/2024
@@ -142,3 +144,4 @@ _**Nota**: Cabe destacar que, aunque se han llevado a cabo pocas reuniones forma
 
 - **Acuerdo 2024-04-02: Tests de Selenium**
   - Al desplegar la apliación en local para su revisión y comprobar la ejecución de las pruebas, se observó que dependiendo de la máquina algunos tests de selenium se ejecutaban y otros no. En concreto, el módulo con más problemas fue `dataset`. Se acordó hacer todo lo posible por subsanar estos errores y realizar las modificaciones pertinentes para el M3.
+
