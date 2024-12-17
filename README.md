@@ -1176,14 +1176,13 @@ For more detailed information check https://docs.uvlhub.io/installation/manual_i
 ## Testing
 
 To run the tests we should deploy the projcet locally: https://docs.uvlhub.io/installation/manual_installation.
-
-**Unit tests**
-
-Before any test case, you may need to run the following commands:
+**Before any test case, you may need to run the following commands:**
 ```sh
 ❯ rosemary db:reset
 ❯ rosemary db:seed
 ```
+**Unit tests**
+
 Run the unit test suite using the following command:
 ```sh
 ❯ rosemary test
@@ -1208,15 +1207,11 @@ If you want to run specific test modules:
 **Load tests using Locust**
 Run the unit test suite using the following command:
 ```sh
-❯ rosemary db:reset
-❯ rosemary db:seed
 ❯ rosemary locust
 ```
 
 If you want to run specific test modules:
 ```sh
-❯ rosemary db:reset
-❯ rosemary db:seed
 ❯ rosemary locust <module name>
 ```
 
