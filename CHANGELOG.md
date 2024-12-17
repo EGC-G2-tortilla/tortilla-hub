@@ -1,3 +1,21 @@
+# [1.21.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.20.0...v1.21.0) (2024-12-17)
+
+
+### Bug Fixes
+
+* Arreglo final de los hipervinculos ([af57380](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/af57380b3b34deb92f72bc45117c01dd0044e0e6))
+* Arreglo tests selenium datasets y total de descargas de modelos de características ([b21b85c](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b21b85c542abaf47c61f822cfd842f0674ba9ca5))
+* Despliegue de docker arreglado para diferentes arquitecturas. Closes [#258](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/258) ([6a5ccbe](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/6a5ccbe05b06638bc9121582315b55182b6a8684))
+* Error de seguridad ([274677a](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/274677a4f34d320d052022a47c51df31ca6ea742))
+* errores codacy ([0332173](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/0332173e7dcbaae9b4fe018ad2814f8b7df6f9ee))
+* tests de selenium para que funcione en todos los componentes closes [#260](https://github.com/EGC-G2-tortilla/tortilla-hub/issues/260) ([3faadb2](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/3faadb22b4e5b496cc3d234a008ee3699e48637c))
+* tests Selenium bot-discord completados ([b14a74b](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/b14a74b02d7d7f7d423ff81b029f0dbf59cd32ba))
+
+
+### Features
+
+* Test de fact label 1 ([ae7ef34](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/ae7ef3454193c6093d206255b983bda50ebe39c9))
+* Testing selenium comando help discord_bot ([06e5dab](https://github.com/EGC-G2-tortilla/tortilla-hub/commit/06e5dabcf062a912b6e146547cf2d58ecb067b5e))
 
 # [1.20.0](https://github.com/EGC-G2-tortilla/tortilla-hub/compare/v1.19.0...v1.20.0) (2024-12-16)
 
