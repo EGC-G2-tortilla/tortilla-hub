@@ -9,9 +9,9 @@
 | Miembro | Implicación |
 | :---- | :---- |
 | Fernández Pérez, Pablo | 10 |
-| Iborra Conejo, José Miguel | 6 |
+| Iborra Conejo, José Miguel | 10 |
 | Macías Ferrera, Antonio | 10 |
-| Maureira Flores, Benjamín Ignacio | 7 |
+| Maureira Flores, Benjamín Ignacio | 10 |
 | Ridruejo Pineda, Guadalupe | 10|
 | Santana Rubio, Delfín | 10 |
 | Vela Camacho, Daniel | 10 |
@@ -24,13 +24,13 @@
 
 [Integración con otros equipos](#integración-con-otros-equipos)
 
-[Resumen Ejecutivo (800 palabras)](#resumen-ejecutivo-\(800-palabras\))
+[Resumen Ejecutivo](#resumen-ejecutivo)
 
-[Descripción del sistema (1500 palabras)](#descripción-del-sistema-\(1500-palabras\))
+[Descripción del sistema](#descripción-del-sistema)
 
-[Visión global del proceso de desarrollo (1500 palabras)](#visión-global-del-proceso-de-desarrollo-\(1500-palabras\))
+[Visión global del proceso de desarrollo](#visión-global-del-proceso-de-desarrollo)
 
-[Entorno de desarrollo (800 palabras)](#entorno-de-desarrollo-\(800-palabras\))
+[Entorno de desarrollo](#entorno-de-desarrollo)
 
 [Ejercicio de propuesta de cambio](#ejercicio-de-propuesta-de-cambio)
 
@@ -39,15 +39,15 @@
 # Indicadores del Proyecto
 
 | Miembro del equipo | Horas | Commits | LoC | Test | Issues | Work Item |
-| ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| Fernández Pérez, Pablo | 13h | 40  |+1090 -322   |  | 16 | Upload, analyse and repair UVL |
-| Iborra Conejo, José Miguel | 14h 13min |24  |+4074 -823  |  |5  | Rate datasets / models |
-| Macías Ferrera, Antonio |28h 13min  |57  |+12940 -4462  |  |17  | Dashboard |
-| Maureira Flores, Benjamín Ignacio |20h 41min  |27  |+13418 -74  |  |8  | Sync with github/gitlab |
-| Ridruejo Pineda, Guadalupe | 36h 8min |  |  |  |  | Improve UI |
-| Santana Rubio, Delfín |16h 57min  |90  |+5833 -2684  | 52 |26  | Create communities |
-| Vela Camacho, Daniel |21h 3min  |58  |+2863 -1530  |  |25  | Staging area |
-| **TOTAL** |  |  |  |  |  |  |
+| :----- | :----- | :----- | :----- | :----- | :----- | :----- |
+| Fernández Pérez, Pablo | 18h | 42  | +1144 -322 | 10 | 16 | Upload, analyse and repair UVL |
+| Iborra Conejo, José Miguel | 14h 15min |24  | +4074 -823  | 10 | 5 | Rate datasets / models |
+| Macías Ferrera, Antonio |34h 30min  |67  | +14659 -6186  | 16 | 18 | Dashboard |
+| Maureira Flores, Benjamín Ignacio |21h |28  | +13418 -74  | 10 | 9 | Sync with github/gitlab |
+| Ridruejo Pineda, Guadalupe | 38h 30min | 54 | +1745 -668  | 9 | 9 | Improve UI |
+| Santana Rubio, Delfín |19h  | 94 | +5922 -2715 | 52 | 28 | Create communities |
+| Vela Camacho, Daniel |21h  | 64 | +2951 -1569 | 21 | 26 | Staging area |
+| **TOTAL** | 166h 15min| 373 | +43913 - 12357 | 128 | 111 |  |
 
 
 # Descripción de los Work Items implementados
@@ -97,7 +97,7 @@ Desde el inicio, se celebró una reunión conjunta en la que se definieron los a
 
 - **Asignación de Work Items:** Se estableció claramente qué _Work Items_ serían responsabilidad de cada equipo.
 - **Uso de un repositorio común:** Se decidió trabajar desde el principio en un repositorio compartido ([tortilla-hub](https://github.com/EGC-G2-tortilla/tortilla-hub)) para minimizar posibles errores y conflictos durante la integración de los subproyectos.
-- **Definición de pautas de trabajo:** Todas las normas y directrices relacionadas con la gestión del repositorio y del código fuente quedaron documentadas en el ([Acta de Constitución](https://github.com/EGC-G2-tortilla/tortilla-hub/blob/main/docs/Acta%20fundacional.md)), garantizando un desarrollo ordenado y coordinado. Estas pautas han sido cumplidas satisfactoriamente por ambos equipos.
+- **Definición de pautas de trabajo:** Todas las normas y directrices relacionadas con la gestión del repositorio y del código fuente quedaron documentadas en el ([Acta Fundacional](https://github.com/EGC-G2-tortilla/tortilla-hub/blob/main/docs/Acta%20fundacional.md)), garantizando un desarrollo ordenado y coordinado. Estas pautas han sido cumplidas satisfactoriamente por ambos equipos.
 
 Guadalupe Ridruejo Pineda asumió el rol de coordinadora, asegurando una correcta sincronización entre los equipos. Además, se mantuvo una comunicación diaria a través de un grupo común de **WhatsApp**, lo que facilitó una colaboración fluida y eficiente a lo largo de todo el proyecto. 
 
@@ -129,7 +129,7 @@ Esta nueva funcionalidad mejoró la calidad de los datos ingresados y agilizó l
 ### Pruebas realizadas
   - Test **unitarios** con Pytest (6): se rueban todas las posibles variantes de archivos UVL y sus casuísticas de error.
   - Test de **interfaz** con Selenium (1): se comprueba la presencia de las modificaciones realizadas en la UX.
-  - Test de **carga** con Locust (1): se comprueba el rendimiento del servidor de cara a un escenario de múltiples peticiones de subir archivo UVL.
+  - Test de **carga** con Locust (3): se comprueba el rendimiento del servidor de cara a un escenario de múltiples peticiones de subir archivo UVL.
 
 ### CI/CD: Integración Continua, Despliegue Continuo y contribuciones al proyecto
 
@@ -215,9 +215,11 @@ Integrando los módulos `auth` y `dataset`, se consiguió que al iniciar sesión
 
 Usando como base el trabajo de Ramón Gavira de Tortilla-Hub-2, que implementaban la opción _multiple login_, se añadieron unos botones en la vista mencionada anteriormente para poder loguearse en los servicios indicados si no se había hecho previaente. Una vez iniciada la sesión, se obtiene el _access_token_ y en la vista aparece un desplegable para marcar el repositorio destino donde subir los modelos UVL. Estos modelos se suben uno a uno al repositorio, para evitar problemas de compatibilidad con las API.
 
+**NOTA**: Al usar secrets para conectar la aplicación con los servicios de Github y Gitlab, dichos secrets no se pueden dejar en el código ni en el repositorio, sólo están en Render. Entonces, debido a las limitaciones de las variables de entorno y las limitaciones de los propios servicios (Github solo deja añadir una *redirect_uri*), se ha decidido que Github solo funciona en producción y Gitlab funciona tanto en producción como en desarrollo
+
 ### Pruebas realizadas
 
-- Tests **unitarios** con Pytest (10): se han probado el _signup_ y el _login_ de Github y Gitlab y la obtención de los repositorios destino, mockeando respuestas de la API y probando casos positivos y negativos. 
+- Tests **de integración** con Pytest y Unittest (10): se han probado el _signup_ y el _login_ de Github y Gitlab y la obtención de los repositorios destino, mockeando respuestas de la API y probando casos positivos y negativos. 
 
 ### CI/CD: Integración Continua, Despliegue Continuo y contribuciones al proyecto
 
@@ -282,7 +284,7 @@ El problema se da cuando trabajamos con varias ramas y creamos migraciones en es
 
 #### 3. Workflow de sincronización de ramas (*PR main <- develop*) (junto con Pablo Ferández Pérez)
 
-(explicado más detalladamente en el apartado de ([Pablo Fernández Pérez](#pablo-fernández-pérez)))
+(explicado más detalladamente en el apartado de [Pablo Fernández Pérez](#pablo-fernández-pérez))
 
 ## Daniel Vela Camacho
 
@@ -292,7 +294,6 @@ Esta tarea tuvo como resultado la creación de una zona específica para la prep
 A nivel de servicio, se definieron operaciones para cambiar el estado de los datasets individualmente o en bloque, así como su publicación en plataformas externas. 
 
 ### Pruebas realizadas
-Se desarrollaron pruebas para validar estos cambios, evitar acciones redundantes y garantizar la correcta gestión de los estados. Además, se realizaron pruebas de carga para evaluar el rendimiento del sistema bajo solicitudes concurrentes, asegurando una gestión eficiente y robusta de los procesos.
 
 - Tests de **integración** (9):  los casos de prueba desarrollados abarcan diferentes escenarios para garantizar una cobertura integral de las funcionalidades relacionadas con la gestión del estado de los datasets. Estos incluyen pruebas para verificar que un usuario no pueda cambiar el estado de un dataset que no le pertenece validar que no se pueda cambiar el estado de un dataset a uno en el que ya se encuentra, además de pruebas para confirmar que un usuario pueda cambiar correctamente el estado de un dataset entre Unstaged, Staged y Published, tanto individualmente como en lotes. Finalmente, se probaron las integraciones con Fakenodo/Zenodo para asegurar que los procesos de publicación se realicen de manera adecuada.
 - Tests de **interfaz** con Selenium (6): los escenarios considerados para los tests de interfaz incluyen las acciones de stagear un dataset, unstagear un dataset, stagear todos los datasets, unstagear todos los datasets y proceder con su publicación.
@@ -305,132 +306,264 @@ Se desarrollaron pruebas para validar estos cambios, evitar acciones redundantes
 
 El workflow _lint.yml_ automatiza la revisión y el formateo de código Python en las ramas `main` y `develop` al realizar push o pull requests. Utiliza flake8 para analizar errores de estilo según PEP8 y _black_ para formatear automáticamente el código en la carpeta `app`. Si se detectan cambios tras el formateo, estos se confirman y se envían automáticamente a la rama del pull request, asegurando que el código se mantenga limpio y conforme a los estándares.
 
-## Visión global del proceso de desarrollo *(1500 palabras)* <!--{#visión-global-del-proceso-de-desarrollo-(1500-palabras)}-->
+## Visión global del proceso de desarrollo <!--{#visión-global-del-proceso-de-desarrollo-(1500-palabras)}-->
 
 El proceso de desarrollo se basó en las siguientes etapas:
 
-- **Planificación**: A la hora de planificar una tarea, debemos de crear una issue en el project para hacer seguimiento de esta. La issue deberá de pasar por sus estados naturales(Todo, in progress, in review, done). Para crearla, se debe de hacer según se explica en el acta fundacional que, entre otras cosas, indica que añadamos un tag, que le indiquemos una prioridad, etc.
+- **Planificación**: A la hora de afrontar una nueva tarea (en nuestro equipo se ha seguido una planificación individual), se debe crear una issue en el tablero de proyecto de GitHub siguiendo la plantilla establcecida en el [Acta Fundacional](https://github.com/EGC-G2-tortilla/tortilla-hub/blob/main/docs/Acta%20fundacional.md) para hacer seguimiento de esta. La issue deberá de pasar por los estados definidos (TODO, IN PROGRESS, IN REVIEW, DONE). Además, será necesario añadirle una etiqueta (WI, documentation, bug, workflow, fakenodo) e indicar la prioridad, así como la fecha límite de entrega.
 
-- **Desarrollo**: Para el desarrollo, si se estima que se van a realizar varios cambios, se deberá de hacer una rama específica para la tarea. Si se está absolutamente seguro que no va a dar error y que no necesita revisión, como puede ser hacer tareas de documentación, se podrá hacer cambio directamente a develop. La issuse asociada  al cambio, se deberá de mantener actualizada. De este modo, cuando se complete el cambio, se deberá de actualizar la issue, cerrándose únicamente cuando llegue el cambio a main. Cuando se trate de una pull request, deberá de revisarse el cambio por al menos una persona.
+- **Desarrollo**: Para el desarrollo, si se estima que se van a realizar varios cambios, se deberá crear una rama específica para la tarea. Si se está absolutamente seguro que no va a haber errores y que no necesita revisión, como pueden ser las tareas de documentación, se podrá hacer el cambio directamente en `develop`. La issuse asociada al cambio, se deberá mantener actualizada. De este modo, cuando se complete el cambio, se deberá actualizar la issue, cerrándose únicamente cuando llegue el cambio a main. Cuando se trate de una pull request, deberá revisarse el cambio por, al menos, una persona.
 
-- **Pruebas**: Dependiendo del cambio que sea, se harán pruebas para comprobar que el cambio es correcto. Por ejemplo, si un cambio no se muestra en la interfaz, en principio no tendría sentido hacer un test de selenium,  sino un test unitario o de interfaz.
+- **Pruebas**: Dependiendo de la naturaleza de la tarea, se harán pruebas para comprobar el funcionamiento esperado de la misma, ya sean de interfaz con Selenium, unitarias con Pytest, de integración o de carga con Locust. 
 
-- **Integración continua**: cuando se crea una pull request o se hace push a develop o a main, se activan workflows que hacen distintas tareas, como son ejecutar las pruebas unitarias o comprobar la calidad del código. Además, hay workflows que solucionan errores recurrentes, como son el problema con las migraciones de flask por haber varias HEADs.
+- **Integración continua**: cuando se crea una pull request o se hace push a `develop` o a `main`, se activan workflows que hacen distintas tareas, como son ejecutar las pruebas unitarias o comprobar la calidad del código. Además, hay workflows que solucionan errores recurrentes, como son el problema con las migraciones de flask por haber varias HEADs.
 
-- **Despliegue**: Una vez se integra un cambio, este se despliega automáticamente en render. Se tiene un render para la rama develop y otro para la rama main, para así poder comprobar el desarrollo y la producción.
+- **Despliegue**: Una vez se integra un cambio, este se despliega automáticamente en Render, tanto para el desarrollo (rama `develop`) como para producción (rama `main`).
 
-## Entorno de desarrollo *(800 palabras)*  <!--{#entorno-de-desarrollo-(800-palabras)}-->
-1. Introducción
-2. Cómo se instala manual, Docker y Vagrant
-3. Entorno de desarrollo y explicar las extensiones utilizadas
-4. Herramientas en requirements.txt
-5. Métodos de instalación (compatibilidad con linux, etc.)
-6. Indicar la fuente de dónde se saca esto si se saca del manual de usuario
-7. Indicar qué se ha incluido en el env
-El equipo utilizó una combinación de herramientas, incluyendo:
+## Entorno de desarrollo  <!--{#entorno-de-desarrollo}-->
+El entorno de desarrollo es el conjunto de herramientas, configuraciones y recursos utilizados para desarrollar, probar y desplegar el proyecto. El equipo ha trabajado con distintas configuraciones, tanto manuales como automatizadas, para asegurar la compatibilidad y facilidad en el despliegue.
 
-- **IDE y Sistemas de Control de Versiones**: Visual Studio Code, Git y GitHub.
+### Instalación del entorno
 
-- **Entornos de Prueba y Producción**: Docker, Render y Raspberry Pi OS.
+Contamos con tres métodos distintos de instalación: manual, Docker y Vagrant. Cada método sigue unas pautas y variables de entorno distintas. Para conocer en detalle cómo llevar a cabo cada una de las instalaciones mencionadas, visite el siguiente enlace: https://docs.uvlhub.io/installation
 
-- **Gestores de Bases de Datos**: MariaDB.
+### Resumen de las extensiones y dependencias
 
-- **Automatización**: GitHub Actions.
+- **Frameworks y Herramientas Principales**:
+  - **Flask (3.0.3)**: Framework ligero para el desarrollo web con Python.
+  - **Flask-Cors (4.0.1)**: Soporte para CORS en aplicaciones Flask.
+  - **Flask-SQLAlchemy (3.1.1)**: Extensión que facilita el uso de bases de datos relacionales con SQLAlchemy.
+  - **Flask-RESTful (0.3.10)**: Herramienta para crear APIs RESTful en Flask.
+  - **Flask-Migrate (4.0.7)**: Gestión de migraciones de base de datos con Flask.
+  - **SQLAlchemy (2.0.31)**: ORM que facilita la interacción con bases de datos SQL.
+  - WTForms (3.1.2) y Flask-WTF (1.2.1): Manejo avanzado de formularios en aplicaciones web.
 
-- **Colaboración y Documentación**: Google Drive, OneDrive, ChatGPT, Google Forms, Google Sheets, Google Docs, Markdown y Copilot.
+- **Bases de Datos:**
+  
+  - **PyMySQL (1.1.1)**: Cliente de MySQL para Python.
+  - **SQLAlchemy-Utils (0.41.2)**: Extensiones adicionales para SQLAlchemy.
+  - **alembic (1.13.2)**: Herramienta para migraciones de bases de datos.
 
-- **SO**: ubuntu
+- **Pruebas y Cobertura:**
+  - **pytest (8.2.2)**: Framework para pruebas unitarias.
+  - **pytest-cov (5.0.0)**: Genera informes de cobertura de código en pruebas.
+  - **pytest-asyncio (0.25.0)**: Extiende pytest con soporte para coroutines y pruebas asíncronas.
+  - **selenium (4.22.0)**: Automatización de pruebas en navegadores.
+  - **responses (0.25.3)**: Herramienta para mockear peticiones HTTP en pruebas.
 
-La configuración inicial del entorno está detallada en el README.md de este mismo repositorio en la sección **Instalación**.
+- **Automatización y CI/CD:**
+  - **GitPython (3.1.43)**: Interacción con repositorios Git desde Python.
+  - **PyGithub (2.5.0)**: Interfaz para interactuar con la API de GitHub.
+  - **webdriver-manager (4.0.1)**: Descarga y gestiona drivers para Selenium.
 
-## Ejercicio de propuesta de cambio <!--{#ejercicio-de-propuesta-de-cambio}-->
+### Métodos de instalación
+Para la instalación del sistema, es recomendable usar un sistema operativo Linux, en concreto usamos **Ubuntu 22.04 LTS**. Cabe mencionar que es buena idea tener este sistema operativo instalado y no hacer uso de una máquina virtual, ya que pueden surgir errores si el sistema no maneja correctamente la virtualización anidada en caso de hacer un despliegue con Vagrant.
+También se ha comprobado por parte de un miembro del equipo que el proyecto se puede desplegar correctamente con Mac OS Sequoia.
 
-El objetivo de esta ejercicio es añadir una nueva funcionalidad al proyecto tortilla-hub para fomentar la participación activa de la comunidad. El desarrollo se llevaría a cabo de la siguiente manera:
+### Archivos .env
+En los archivos .env podemos encontrar las variables de entorno necesarias para que el despliegue del proyecto sea exitoso. Se han añadido ciertas variables extra debido al desarrollo de WIs que así lo requerían.
 
-#### Work Item: Desarrollo de un foro para fomentar la participación de la comunidad (Dificultad: High)
+### Herramientas de desarrollo
+En cuanto a las herramientas usadas durante el desarrollo, el equipo utilizó el IDE **Visual Studio Code**, **Git** para el control de versiones desde consola y **GitHub** para el alojamiento del repositorio.
 
-#### **1. Definir los requerimientos del cambio**
-- **Título del Issue**: _Foro comunidades: Desarrollo de la funcionalidad_
-- **Descripción**: Se debe implementar una sección en la plataforma que permita a los usuarios colaborar mediante un foro de discusión.
-- **Criterios de Aceptación**: N/A
-- **Etiqueta**: WI.
-- **Asignado**: X.
-- **Prioridad**: M (medium).
-- **Fecha Límite**: _la que corresponda_.
+### Entornos de Prueba y Producción: Render
+El proyecto cuenta con dos despliegues, uno en producción y otro en desarrollo. Puede visitar ambos en las siguientes URLs:
 
-    Pasos para crear un Issue:
-    1. Abrir el repositorio en GitHub:
-    ```
-    git clone https://github.com/EGC-G2-tortilla/tortilla-hub.git
-    cd tortilla-hub
-    ```
-    2. Crear un nuevo issue:
-    - Navegar a la sección "Issues" del repositorio y pulsar en "New Issue".
-    - Completar el issue siguiendo el formato definido en el archivo de gestión de issues (5.1 del **Acta de constición**) y el contenido anteriormente mencionado.
+https://tortilla-hub-development.onrender.com/
 
-    3. Configurar una rama de trabajo:
-    - Crear una rama task/fomentar-comunidad a partir de la rama `develop`:
-    ```
-    git checkout -b task/fomentar-comunidad
-    ````
+https://tortilla-hub-production.onrender.com/
 
-    4. Implementación:
-    - Desarrollar los cambios requeridos empleando como herramienta Visual Studio Code y las configuraciones indicadas.
-    - _Nota: Se asume que se han instalado las dependencias necesarias y se ha configurado la base de datos correctamente tal y como se indica en el manual de instalación del proyecto_.
+### Gestores de Bases de Datos
+El sistema utiliza **MariaDB** como gestor de bases de datos principal. MariaDB es una bifurcación de MySQL, ampliamente reconocida por su alto rendimiento, estabilidad y compatibilidad con aplicaciones que previamente utilizaban MySQL. Se trata de un sistema de gestión de bases de datos relacional (RDBMS) de código abierto, diseñado para ofrecer velocidad y robustez, siendo ideal para aplicaciones que requieren un manejo eficiente de grandes volúmenes de datos.
 
-#### **2. Subir los cambios a GitHub**
-- Se realizarán commits atómicos siguiendo las buenas prácticas definidas:
-```
-git add foro.py
-git commit -m "feat: foro para las comunidades"
-```
+### Automatización: GitHub Actions.
+Todas las configuraciones de CI/CD  se han  realizado a través de  la herramienta **GitHub Actions**, dado que el control de versiones se llevó a cabo en GitHub y el equipo pudo familiarizarse rápidamente con su uso.
 
-#### **3. Pruebas**
-- Se realizarán una serie de pruebas para obtener una cobertura óptima de código de la funcionalidad implementada. Entre ellas deberían poder realizarse:
-  - Test unitarios: que prueben los casos positivos y negativos de cada funcionalidad.
-  - Test de selenium: para verificar cómo se muestran los elementos en la vista diseñada.
-  - Tests de carga: para evaluar cómo se comporta el sistema ante peticiones concurrentes de múltiples usuarios.
-- Los cambios se añadirán siguiendo la política de commits definida:
-```
-git add test_selenium.py
-git commit -m "test: pruebas de interfaz con selenium para el foro"
-```
+
+### Colaboración y Documentación en el Equipo
+Para garantizar una comunicación efectiva, la gestión de tareas y una documentación clara, el equipo utilizó diversas herramientas que facilitaron el flujo de trabajo colaborativo:
+**Google Drive** y **OneDrive**.
+Estas plataformas de almacenamiento en la nube permitieron al equipo organizar el contenido, asegurando que todos los miembros del equipo tuvieran acceso a la última versión de los archivos y la colaboración en tiempo real.
+
+#### Google Forms, Sheets y Docs
+- **Google Forms**: Utilizado para recopilar las aportaciones del grupo y poder unificarlas con facilidad.
+- **Google Sheets**: Permitió tener una matriz de asignación de tareas inicial, cuando discutimos sobre qué miembro haría cada WI.
+- **Google Docs**: Principal herramienta para redacción de documentación, actas de reuniones y acuerdos dentro del equipo.
+
+### ChatGPT
+Utilizado como herramienta de apoyo técnico y resolución rápida de dudas durante el desarrollo.
+Ayudó a generar fragmentos de código, depurar problemas, optimizar configuraciones y aclarar conceptos complejos.
+
+
+### GitHub Copilot
+GitHub Copilot funcionó como un asistente de código, ayudando al equipo a acelerar el desarrollo al generar automáticamente fragmentos de código y reducir errores mediante sugerencias precisas basadas en el contexto del código, al mismo tiempo que facilitaba el aprendizaje de librerías y sintaxis menos conocidas.
+
+**NOTA**: La configuración inicial del entorno está detallada en el [README.md](https://github.com/EGC-G2-tortilla/tortilla-hub) de este mismo repositorio en la sección Instalación.
+
+# Ejercicio de propuesta de cambio
+
+El objetivo de esta ejercicio es añadir una nueva funcionalidad al proyecto tortilla-hub para ajustarnos a los requerimientos establecidos en el Milestone 3 del proyecto de acuerdo con las directrices de la asignatura. El desarrollo se llevará a cabo de la siguiente manera:
+
+## Work Item: Nueva tarjeta de Bienvenida (Dificultad: Low)
+
+### **1. Definir la tarea (Issue) en GitHub Project: José Miguel Iborra Conejo**
+
+Se deberá crear una tarea en forma de *Issue* en el [*GitHub Project*](https://github.com/orgs/EGC-G2-tortilla/projects/1) del respositorio del tortilla-hub con la siguiente información y completando los campos adecuado:
+
+- **Título del Issue**: Nueva tarjeta de Bienvenida
+- **Descripción**: Se deberá modificar la tarjeta de bienvenida que aparece en la página de inicio del proyecto (Home) para que, además de la información que ya tiene, se incluya al principio este mensaje: 
+"
+¡Felices fiestas! 🎉 Desde el equipo de **tortilla-hub** queremos desearles unas fiestas llenas de alegría, comida rica y momentos inolvidables con sus familias y amigos. Que el espíritu navideño les traiga no solo turrones y polvorones, sino también mucha suerte y energía para el próximo año. Y, por supuesto, esperamos que los Reyes Magos (o Papá Noel, no discriminamos a nadie 😉) vengan cargados de **buenas notas**, porque al carbón ya le tenemos suficiente respeto en la barbacoa. ¡A disfrutar y a recargar pilas para lo que viene! 🎄✨
+"
+- **Criterios de Aceptación**: El texto deberá mostrarse en la tarjeta de bienvenida de la página de inicio se haya iniciado sesión o no. El texto debe ser tal y como el que se describe en la tarea. La tarjeta deberá tener un nuevo color de estética más "navideña".
+- **Etiqueta**: WI
+- **Asignado**: Leetee2
+- **Prioridad**: H (high)
+- **Fecha Límite**: 18/12/2024
   
 
-#### **4. Realizar Pull Request**
-- Subir la rama al repositorio remoto:
-```
-git push origin task/fomentar-comunidad
-```
-- Crear un Pull Request en GitHub y asignar revisores. La Pull Request deberá cumplir con la siguiente plantilla:
-  - Descripción clara del cambio: Explicar qué se ha modificado y por qué.
-  - Motivación del cambio: Contextualizar por qué el cambio es necesario (por ejemplo, corregir un bug o implementar una nueva característica).
-  - Impacto del cambio: Describir cómo afectará el sistema o qué áreas del código se ven impactadas.
-  - Evidencia de pruebas: Proporcionar información sobre las pruebas ejecutadas para validar el cambio.
-  - Instrucciones adicionales: Indicar si es necesario realizar alguna acción posterior a la integración del PR (como migraciones de base de datos o despliegues especiales).
+### **2. Elaboración de las modificaciones: Pablo Fernández Pérez**
 
-#### **5. Fusionar y documentar el cambio**
-Una vez aprobada la Pull Request, fusionarla con la rama develop:
+En primer lugar, el encargado de este paso deberá crear una rama con el nombre ```task/nueva-tarjeta-bienvenida``` y traerla a su repositorio local. Desde ahí deberá realizar los cambios pertinentes modificando los siguientes archivos: 
+
+1. En el archivo ```app/modules/public/templates/public/index.html```, el el *div* llamado ``` <div class="card card-dark">``` se deberá añadir lo siguiente:
+
 ```
-git checkout develop
-git merge task/fomentar-comunidad
-git push origin develop
+<div class="card-body card-body-slim">
+    ¡Felices fiestas! 🎉 Desde el equipo de *tortilla-hub* queremos desearles unas fiestas llenas de alegría, comida rica y momentos inolvidables con sus familias y amigos. Que el espíritu navideño les traiga no solo turrones y polvorones, sino también mucha suerte y energía para el próximo año. Y, por supuesto, esperamos que los Reyes Magos (o Papá Noel, no discriminamos a nadie 😉) vengan cargados de *buenas notas*, porque al carbón ya le tenemos suficiente respeto en la barbacoa. ¡A disfrutar y a recargar pilas para lo que viene! 🎄✨
+</div>
 ```
 
-## Conclusiones y trabajo futuro <!--{#conclusiones-y-trabajo-futuro}-->
+2. En el archivo ```app/static/css/own.css``` se deberá modificar el estilo ```card-dark``` sustituyedo el fondo actual por el siguiente:
 
-El proyecto Tortilla-Hub-1 demuestra la importancia de una gestión estructurada y colaborativa en el desarrollo de software. Para el futuro, se proponen las siguientes mejoras:
+```
+  background: #2B3947 radial-gradient(circle at center left, red, green);
+```
 
-Integración de Codacy para análisis de calidad código.
+Tras realizar las modificaciones ya comentadas, se deberá hacer `git add` de los archivos modificados, `git commit -m Feat: modificación de la tarjeta de bienvenida`y por último `git push` para incorporar los cambios al repositorio remoto.
 
-Reemplazo de Raspberry Pi por servidores con mayor capacidad.
+### **3. Elaboración de la Pull Request: Daniel Vela Camacho**
 
-Expansión de las funcionalidades de las comunidades.
+Se deberá crear una pull request en la que se incorporen los cambios realizados en la rama ```task/nueva-tarjeta-bienvenida``` a la rama develop del proyecto tortilla-hub. Debe contener lo siguiente: 
 
-Mayor cobertura de tests.
+- **Descripción del cambio:** Se ha actualizado la tarjeta de bienvenida que aparece en la página de inicio para que muestre una felicitación de navidad con un color divertido.
 
-Automatización y estandarización de procesos clave (GitHub Actions, migraciones).
+- **Motivación / Impacto:** Este cambio proporcionará una estética fresca y alegre a la página, dado así también sensación de actualidad acorde a las fiestas que vivimos a fecha de la finalización del proyecto.
 
-Si contásemos con más tiempo, hubiese sido una buena idea pararnos a analizar en detalle el estado de la Pipeline actual y refinarla para que sea óptima en cuanto al uso de recursos de GitHub Actions y poder también evitar la redundancia en el flujo. 
+- **Instrucciones:** Se debe comprobar visualmente que el cambio se ha realizado correctamente.
 
-1. Detallar más la funcionalidad de los WI, para tener claro el alcance de cada uno y poder planificar mejor, además de ahorrar comunicación con el profesorado.
+- **Asignado:** Leetee2
+
+- **Revisor:** guardipin
+
+
+### **4.Revisión de la Pull Request: Guadalupe Ridruejo Pineda**
+
+Se deberá comprobar que los cambios se ha realizado de manera correctamente en el proyecto local antes de aprobar la *Pull Request*. 
+
+1. Se deberá traer los últimos cambios al repositorio local: `git fetch``
+2. Se deberá cambiar a la rama ```task/nueva-tarjeta-bienvenida``` haciendo: `git checkout <nombre_rama>`
+3. Se tendrá que correr el proyecto en local desde esa rama y ver que en la página de inicio de uvlhub aparece la nueva tarjeta navideña.
+
+Si todo esto es así se aprobará la Pull Request con un comentario: 
+"
+Las modificaciones se muestras correctamente. ¡Feliz Navidad! 👍✨👉🎁🙀
+"
+
+
+### **5.Creación de un test de interfaz para probar el cambio: Delfín Santana Rubio**
+
+En primer lugar, el encargado de este paso deberá crear una rama con el nombre ```task/test-nueva-tarjeta-bienvenida``` y traerla a su repositorio local. Desde ahí deberá realizar los test pertinentes (en este caso se pide un test de interfaz que pruebe que el cambio se ha realizado correctamente): 
+
+1. Crear una nueva carpeta en la ubicación: ```app/public``` llamada `tests` e incluir ahí el nuevo archivo `test_selenium.py`. 
+
+2. En ese nuevo archivo ```app/public/tests/test_selenium.py``` se deberá implementar el siguiente test:
+
+```
+  class TestHomePage(unittest.TestCase):
+    def test_home_page_text(self):
+        driver = initialize_driver()
+
+        try:
+            host = get_host_for_selenium_testing()
+
+            # Open the main page
+            driver.get(f"{host}/")
+            wait_for_page_to_load(driver)
+
+            expected_text = """¡Felices fiestas! 🎉 Desde el equipo de *tortilla-hub* queremos desearles unas fiestas llenas de alegría, comida rica y momentos inolvidables con sus familias y amigos. Que el espíritu navideño les traiga no solo turrones y polvorones, sino también mucha suerte y energía para el próximo año. Y, por supuesto, esperamos que los Reyes Magos (o Papá Noel, no discriminamos a nadie 😉) vengan cargados de *buenas notas*, porque al carbón ya le tenemos suficiente respeto en la barbacoa. ¡A disfrutar y a recargar pilas para lo que viene! 🎄✨"""
+
+            # Locate the element
+            element = driver.find_element(By.XPATH, "//div[@class='card-body card-body-slim']")
+
+            # Assertions
+            self.assertEqual(element.text, expected_text)
+            self.assertTrue(element.is_displayed(), "Popular datasets chart not displayed!")
+
+            print("Data display test passed! Merry Christmas!")
+
+        finally:
+            # Close the browser
+            close_driver(driver)
+
+
+# Run tests
+if _name_ == "_main_":
+    unittest.main()
+```
+
+Tras realizar las modificaciones ya comentadas, se deberá hacer `git add` de los archivos modificados, `git commit -m Feat: modificación de la tarjeta de bienvenida`y por último `git push` para incorporar los cambios al repositorio remoto.
+
+
+
+### **6.Creación de la Pull Request de pruebas: Benjamin Ignacio Maureira Flores**
+
+Se deberá crear una pull request en la que se incorporen los cambios realizados en la rama ```task/test-nueva-tarjeta-bienvenida``` a la rama develop del proyecto tortilla-hub. Debe contener lo siguiente: 
+
+- **Descripción del cambio:** Se creado un test de interfaz de selenium usando unitest (ya que public no es un modulo del proyecto) y se ha comprobado que funciona correctamente.
+
+- **Motivación / Impacto:** Este cambio va acorde con las tareas de mantenimiento, calidad e integración continua del código que pretenden mantener un proyecto bien testeado en todos sus aspectos.
+
+- **Instrucciones:** Se debe ejecutar el test con `rosemary selenium public` y comprobar que de positivo, además se debe comprobar visualmente que el cambio se ha realizado correctamente.
+
+- **Asignado:** DelfinSR
+
+- **Revisor:** antoniommff
+
+
+
+### **7.Revisión de la Pull Request de pruebas: Antonio Macías Ferrera**
+Se deberá comprobar que los cambios se ha realizado de manera correctamente en el proyecto local y que las pruebas de interfaz funcionan adecuadamente antes de aprobar la *Pull Request*. 
+
+1. Se deberá traer los últimos cambios al repositorio local: `git fetch``
+2. Se deberá cambiar a la rama ```task/test-nueva-tarjeta-bienvenida``` haciendo: `git checkout <nombre_rama>`
+3. Se tendrá que correr el proyecto en local desde esa rama y ver que en la página de inicio de uvlhub aparece la nueva tarjeta navideña y que el test de selenium da positivo: `rosemary selenium public`.
+
+Si todo esto es así se aprobará la Pull Request con un comentario: 
+"
+Los test funcionan correctamente. ¡Feliz Navidad! 👍✨👉🎁🙀
+"
+
+
+
+# Conclusiones y trabajo futuro
+
+Creemos que nuestro proyecto ha sido un ejemplo claro de cómo una gestión estructurada, el trabajo colaborativo y la adopción de buenas prácticas en el desarrollo de software pueden llevar a resultados satisfactorios. La implementación de funcionalidades clave, como la creación de comunidades, el área de preparación (Staging Area), la sincronización con GitHub/GitLab y mejoras en la interfaz de usuario, ha permitido ofrecer una solución robusta y funcional a los problemas que se nos planteaban. Además, nos gustaría destacar que la integración de flujos de CI/CD mediante GitHub Actions, ha aumentado nuestro conocimiento sobre la metodología de una manera exponencial, de tal forma, que a día de hoy encontramos imposible desarrollar un nuevo proyecto de software sin CI/CD.
+
+Durante el desarrollo, se identificaron diversas oportunidades de mejora y propuestas para el futuro:
+
+- **Integración de Codacy**, para garantizar un análisis continuo de la calidad del código y reforzar las buenas prácticas de programación.
+
+- **Reemplazo de Raspberry Pi** por servidores de mayor capacidad, lo que permitiría un despliegue más eficiente y estable, evitando limitaciones de rendimiento. La idea de desplegar nuestra aplicación en la Raspberry era ambiciosa y novedosa, pero pese a ser una tarea de difícil ejecución conseguimos desarrollarla casi al completo, nos frustramos al ver que la tecnología nos limitaba, a parte de perder muchas horas durante el intento de la implementación.
+
+- **Ampliación de las funcionalidades de las comunidades**, ofreciendo mayor interacción y opciones personalizadas a los usuarios, incluso planteabamos la idea de incluir un foro para que los usuarios puedan interactuar directamente sobre los datasets.
+
+- **Mayor cobertura de pruebas**, abarcando un espectro más amplio de escenarios y garantizando la fiabilidad del sistema ante cambios futuros.
+
+- **Automatización y estandarización de procesos clave**, como las migraciones de bases de datos, que hemos tenido que hacerla nosotros para que no fuera una tarea tan tediosa y nos hubiera gustado que el proyecto original lo tuviera, sobre todo para contemplar la idea de que varias personas trabajen en el proyecto. También creemos que es esencial el uso de Github Projects, sobre todo para tener un vistazo muy rápido de las tareas y su estado, al ser 13 personas en el desarrollo, esto nos ha sido muy útil.
+
+Por otro lado, nos hubiera gustado haber dedicado más tiempo al análisis detallado del **pipeline** actual. Esto habría permitido optimizar el uso de recursos en GitHub Actions, evitando **redundancias** y **reduciendo tiempos** en el flujo de trabajo.
+
+Además, creemos que es imprescindible que se documente y se detalle mejor las **funcionalidades** y el **alcance** de los *Work Items*, lo que facilitaría la planificación y reduciría la dependencia de aclaraciones con el profesorado.
+
+En resumen, el proyecto deja una base sólida para seguir evolucionando, con posibilidades claras de mejora que, si se implementan, consolidarán aún más su calidad, eficiencia y escalabilidad. Por nuestra parte, agradecer a todo el profesorado por darnos la oportunidad de aportar a este proyecto, en general ha sido una experiencia muy satisfactoria y ha sido un aprendizaje inmenso, sobre todo, sabiendo que nos vamos a ver en situaciones así al entrar al mundo laboral.
