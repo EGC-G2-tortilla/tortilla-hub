@@ -56,9 +56,9 @@
 
 
 .card-dark {
-        background: #2B3947 radial-gradient(circle at center left, #2B3947, #ffffff80);
-        color: #fff;}
-
+    background: #2B3947 radial-gradient(circle at center left, red, green);
+    color: #fff;}
+    
 .card-header-dark {
     background: inherit;
     color: inherit !important;
